@@ -1,0 +1,89 @@
+---
+title: 🦀 Rust 多线程通道 sync::mpsc::channel 报错：RecvError
+date: 2024-06-03 17:28:57
+tags:
+  - Rust
+  - 疑难杂症
+  - 异步并发
+summary: 多线程的通信问题，这回不是编译器的问题了。
+draft: false
+---
+
+# 问题
+
+这次遇到的报错信息 panic 是：
+
+```
+Compiling playground v0.0.1 (/playground)
+  Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.58s
+    Running `target/debug/playground`
+thread 'main' panicked at src/main.rs:7:23:
+called `Result::unwrap()` on an `Err` value: RecvError
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+```
+
+示例代码：
+
+```rust
+use std::sync::mpsc;
+
+fn main() {
+    let rx = create_channel();
+    // 侦听 rx 接收端通道，在这一步 panic
+    let data = rx.recv().unwrap();
+    println!("{:?}", data);
+}
+
+fn create_channel() -> mpsc::Receiver<u16> {
+    let (tx, rx) = mpsc::channel::<u16>();
+    return rx;
+}
+```
+
+# 分析
+
+这个问题一般是在使用 `std::sync::mpsc::channel` 遇到的错误。当发送端 tx 已经被销毁，但是 rx 仍然在被使用的情况下会出现。
+
+# 解决 1
+
+在 main 内部创建 channel。
+
+```rust
+use std::sync::mpsc;
+
+fn main() {
+    // 在 main 函数创建 channel
+    let (tx, rx) = mpsc::channel::<u16>();
+    // 侦听，这里就不会 panic，而会阻塞，因为 tx 没有发送信息
+    let data = rx.recv().unwrap();
+    println!("{:?}", data);
+}
+```
+
+# 解决 2
+
+create_channel 函数中将 tx 也同时返回
+
+```rust
+use std::sync::mpsc;
+
+fn main() {
+    let (tx, rx)= create_channel();
+    let data = rx.recv().unwrap();
+    println!("{:?}", data);
+}
+
+fn create_channel() -> (mpsc::Sender<u16>, mpsc::Receiver<u16>) {
+    let (tx, rx) = mpsc::channel::<u16>();
+    // 同时返回 tx, rx
+    return (tx, rx);
+}
+```
+
+# 总结：通道的生命周期
+
+因为 Rust 有生命周期机制。如果 `tx` 在 `create_channel()` 中不返回，那么会在函数执行后销毁。`rx` 变为孤儿，通道状态变为关闭，然后报错。
+
+如果将 `tx` 返回，那么它的所有权交给 `main()` ，`tx` 依然存活，同时 `rx` 仍然是有效状态，程序正常执行。
+
+我好喜欢，理性而又严谨的 Rust ！😁

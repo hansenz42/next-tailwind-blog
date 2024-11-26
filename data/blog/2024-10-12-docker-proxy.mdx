@@ -1,0 +1,214 @@
+---
+title: 🐳 令人头疼的 docker 代理问题，我整理了解决方法和验证方案
+date: 2024-10-12
+tags:
+- docker
+summary: 互联网上关于 docker 配置代理的帖子太多了，但是有些帖子的解决方法不太正确，在这里，我根据不同的问题场景，提出几个不同的解决方案。
+draft: false
+---
+
+2024-09-13 开始，所有的 docker 服务都被墙了，而且国内的镜像相继停止服务。
+
+在兔子搞开发，代理总是绕不开的，docker 挂代理的方式又比较复杂，网上找了很多资料，有的对有的不对，在这里根据场景整理一下希望帮到大家。
+
+# 0 Docker 的三个环境
+
+开始前讲一下 Docker 的三个环境。
+
+Docker 是一个虚拟化容器服务，要管理的环境很多，稍有不注意就容易混淆。
+
+- 第一个环境是 docker daemon 守护程序，就是运行在我们电脑上的 docker 软件，它负责管理镜像和容器。我们在命令行输入的内容，就是由 docker daemon 来处理的。
+- 第二个环境是 docker build 环境。也是一个容器环境。docker 在 build 镜像时总是要新建一个临时容器，这个容器带了一个环境，build 的过程就在该环境中运行。
+- 第三个环境是容器 container 自己的环境。每个运行的容器拥有的环境不同。
+
+有了以上理解，下文将根据三个环境，分为三种不同的场景，提出不同的解决方法。
+
+# 1 场景一：docker pull 失败
+
+比较典型的情况就是访问链接失败：
+
+```
+Error response from daemon: Head "***“: Get "***": net/http: TLS handshake timeout
+```
+
+也有可能是其他报错，例如 `EOF 0` 之类错误。这时候就要考虑要给 docker daemon 挂代理了。有以下两种解决方案
+
+## 1.1 推荐的方法：修改 daemon.json 配置文件
+
+首先，找到你的 `daemon.json` 配置文件，比较坑的是，不同的 docker 安装方式这个文件的位置不同。
+- linux（默认情况）: `/etc/docker/daemon.json`
+- macos（默认情况）: `~/docker/daemon.json`
+- 使用 orbstack 客户端: 你可以在软件 setting 中找到这个配置
+- 使用 docker desktop 客户端：你可以在软件 Preference Daemon 中找到这个配置。可以参考：[Change settings | Docker Docs](https://docs.docker.com/desktop/settings/#proxies)
+- 使用 rancher desktop 客户端：这个最复杂，你需要先进入到 VM 内部，然后修改。可以参考：[modify docker daemon configuration in Rancher Desktop VM · rancher-sandbox/rancher-desktop · Discussion #1477](https://github.com/rancher-sandbox/rancher-desktop/discussions/1477)。这个实在是太复杂了，建议换 docker desktop 或者 orbstack 吧……
+
+然后，添加以下内容，把你自己本地的代理地址写进去：
+
+``` json
+{
+  "proxies" : {
+    "http-proxy" : "http://127.0.0.1:7890",
+    "no-proxy" : "localhost,127.0.0.0/8",
+    "https-proxy" : "http://127.0.0.1:7890"
+  }
+}
+```
+
+然后重启一下 docker 服务，使其生效。若要检查生效情况，可以执行：
+
+```bash
+$ docker info
+...
+HTTP Proxy: http://127.0.0.1:7890
+HTTPS Proxy: http://127.0.0.1:7890
+No Proxy: localhost,127.0.0.1
+...
+```
+
+如果出现以上几行的话，说明代理配置成功，这时候可以尝试 docker pull 看看是否正常。
+
+## 1.2 方式 2：适用于 Linux 部署，修改 systemd 自启动配置
+
+一般情况下，用上面的方法就可以了。不过官方文档里，另外还提出了一种方案，适合 linux 环境下直接在 systemd 中配置代理。简单介绍一下。
+
+就是新增 systemd 配置文件`/etc/systemd/sysytem/docker.service.d/http_proxy.conf`，加入以下内容
+
+```
+[Service]
+Environment="HTTP_PROXY=http://127.0.0.1:7890"
+Environment="HTTPS_PROXY=https://127.0.0.1:7890"
+Environment="NO_PROXY=localhost,127.0.0.1"
+```
+
+更详细的介绍，请见[Daemon proxy configuration | Docker Docs](https://docs.docker.com/engine/daemon/proxy/)。
+
+# 2 场景二：docker build 时网络连接失败
+
+docker build 是创建镜像的命令，创建镜像需要网络连接。这时候就要给 docker build 的临时容器指定代理。
+
+## 2.1 推荐的方式：使用宿主机网络
+
+docker build 时，docker 会创建一个临时容器，在容器中组装镜像。
+
+根据这篇文章：[使用代理进行 docker build 问题的解决思路_docker build proxy-CSDN博客](https://blog.csdn.net/sizaif/article/details/117756973)
+
+如果宿主机没有设置环境变量，那么要先配置好本地代理。如果已经在 zsh 或者 bash 中配置了，那么无须重复配置：
+
+```bash
+export http_proxy="http://127.0.0.1:7890"
+export HTTP_PROXY="http://127.0.0.1:7890"
+export https_proxy="http://127.0.0.1:7890"
+export HTTPS_PROXY="http://127.0.0.1:7890"
+````
+
+然后使用宿主网络运行 docker build：
+
+```bash
+docker build --network host .
+```
+
+以上方法适用于 linux 和 macOS 环境。win 我暂时没有测试，不过思路是一样的。
+
+## 2.2 方式 2：修改 docker cli 的代理配置
+
+根据：[Proxy configuration | Docker Docs](https://docs.docker.com/engine/cli/proxy/)
+
+找到位于 `~/.docker/config.json` 的配置文件（如果没有就新建一个），该文件是用户级的，不同用户可以使用不同的配置文件。
+
+```json
+{
+ "proxies": {
+   "default": {
+     "httpProxy": "http://proxy.example.com:3128",
+     "httpsProxy": "https://proxy.example.com:3129",
+     "noProxy": "*.test.example.com,.example.org,127.0.0.0/8"
+   }
+ }
+}
+```
+
+这种方式不太推荐，因为以上配置文件中的地址，必须是虚拟网络中宿主机的地址，而不是简单的 `127.0.0.1`，关于如何找虚拟网络中找宿主机的地址，见 3.1。
+
+## 2.3 方式 3：使用 docker build --build-arg 参数
+
+根据 [配置 HTTP/HTTPS 网络代理 | Docker — 从入门到实践](https://yeasy.gitbook.io/docker_practice/advanced_network/http_https_proxy)，这种情况下，可以在 docker build 时，使用 `build-arg` 参数指定 build 时的代理。
+
+```bash
+docker build \
+    --build-arg "HTTP_PROXY=http://proxy.example.com:8080/" \
+    --build-arg "HTTPS_PROXY=http://proxy.example.com:8080/" \
+    --build-arg "NO_PROXY=localhost,127.0.0.1,.example.com" .
+```
+
+也一样，还是有宿主机网络的问题。
+
+# 3 场景三：docker run 的容器无法连接网络
+
+每一个运行的容器都有自己的环境，这时候就需要为不同的容器创建代理。
+
+## 3.1 推荐的方式：指定 docker run --env 环境变量参数
+
+为容器指定代理，做以下几个步骤：
+
+第一步，列出所有 docker 正在使用的网络环境。
+
+```bash
+$ docker network ls
+NETWORK ID     NAME      DRIVER    SCOPE
+4399b0394284   bridge    bridge    local
+e80b70352e66   host      host      local
+6aa903fc462f   none      null      local
+```
+
+第二步，找到对应的网络配置，这里以 bridge 为例（一般 docker run 默认是 bridge 网络），找到 Gateway 网关地址（网关一般就是宿主机的地址）。
+
+```bash
+$ docker network inspect bridge
+[
+    {
+      ...
+        "IPAM": {
+            "Driver": "default",
+            "Options": null,
+            "Config": [
+                {
+                    "Subnet": "172.17.0.0/16",
+                    "Gateway": "172.17.0.1"
+                }
+            ]
+        },
+     ...
+    }
+]
+```
+示例中的 ip 地址为 `172.17.0.1`，记下来。
+
+注意：
+
+- 有的软件例如 orbstack 会指定一个固定的域名，例如 `host.orb.internal`，则可以直接用。见这篇文章：[Container networking · OrbStack Docs](https://docs.orbstack.dev/docker/network#connecting-to-servers-on-mac)
+- 像是高版本的 docker，可以用 `host.docker.internal`，可参考这篇文章：[如何检测docker是否支持host.docker.internal-CSDN博客](https://blog.csdn.net/bobo789456123/article/details/130866328)
+- `172.17.0.1` 是 Linux 下 bridge 默认网卡的地址，`192.168.65.1` 是 macOS 下的地址，供你参考。
+
+第三步：运行容器并指定代理参数
+
+```bash
+docker run \
+  --env HTTP_PROXY="http://172.17.0.1:7890/"\
+  --env HTTPS_PROXY="http://172.17.0.1:7890/"\
+  --env http_proxy="http://172.17.0.1:7890/"\
+  --env https_proxy="http://172.17.0.1:7890/"\
+  --env NO_PROXY="localhost,127.0.0.1,.example.com"\
+  {your_image}
+```
+
+基本就可以了，可以进入容器终端看看，验证下配置是否生效。
+
+## 3.2 方式 2：修改 docker cli 命令行工具的代理配置
+
+同 2.2。不过不推荐，因为不同容器也许挂载在不同的网络下，宿主机的地址可能不同，如果用固定 IP 访问宿主机，就会连接不上。
+
+# -1 结束语
+
+我以为这篇文章会很简单，没想到一不小心写了这么多，足以见得 docker 的代理配置实在是挺反人类的。
+
+希望对你有用。

@@ -1,0 +1,170 @@
+---
+title: 🦀 Rust 多线程报错：error[E0521] borrowed data escapes outside of method
+date: 2024-05-23 14:50:19
+tags:
+  - Rust
+  - 疑难杂症
+  - 异步并发
+summary: 又是多线程问题，和 Rust 编译器战斗的另一天！
+draft: false
+---
+
+# 问题
+
+报错信息：
+
+```
+error[E0521]: borrowed data escapes outside of method
+  --> src/threading.rs:14:9
+   |
+13 |       pub fn run(&self) {
+   |                  -----
+   |                  |
+   |                  `self` is a reference that is only valid in the method body
+   |                  let's call the lifetime of this reference `'1`
+14 | /         thread::spawn(move || {
+15 | |             println!("{}", self.foo);
+16 | |         });
+   | |          ^
+   | |          |
+   | |__________`self` escapes the method body here
+   |            argument requires that `'1` must outlive `'static`
+
+```
+
+翻译一下，借用的数据逃脱了函数的范围。
+
+源代码：
+
+```rust
+use std::thread;
+
+
+struct TestThread {
+    // 对象中包含了
+    foo: String
+}
+
+impl TestThread {
+    pub fn new() -> TestThread {
+        TestThread { foo: String::from("bar") }
+    }
+
+    pub fn run(&self) {
+        // 创建新线程
+        thread::spawn(move || {
+            // 闭包中使用 self.foo
+            println!("{}", self.foo.as_str());
+        });
+    }
+}
+
+fn main() {
+    let td = TestThread::new();
+    td.run();
+}
+```
+
+## 分析
+
+情况是，我声明了一个结构体，并创建对象，但在对象中创建新线程时遇到了所有权转移的问题。
+
+Rust 编译器没有给出解决方案，只能靠我们自己了。
+
+我用 `thread::spawn` 方法创建了新线程，传入的闭包中使用 `move` 标注，含义为需要将所有权从外部变量转移到内部。
+
+因为在闭包内部使用了 `self.foo` ，编译器即认为 `self` 的所有权应该转移到闭包内。然而 `run(&self)` 中的参数却表示 `run` 只会使用当前变量的引用，无法转移所有权。编译器即报错。
+
+因为编译器认为： `self` 逃脱了当前的主线程，转移到了子线程。但是编译器并不知道 `self` 在主线程生命周期是什么样的，所以就报错了。
+
+## 方法 1 ：完全转移所有权
+
+第一种方法，将当前对象的所有权整个转移到线程闭包中：
+
+```rust
+
+use std::thread;
+
+struct TestThread {
+    // 对象中包含了
+    foo: String
+}
+
+impl TestThread {
+    pub fn new() -> TestThread {
+        TestThread { foo: String::from("bar") }
+    }
+
+    // !!!!!!!!!!! 注意这里将 &self 变成了 self !!!!!!!!
+    pub fn run(self) {
+        thread::spawn(move || {
+            println!("{}", self.foo.as_str());
+        });
+    }
+}
+
+fn main() {
+    let td = TestThread::new();
+    td.run();
+    // 报错！因为 td 的所有权已经转移到了新的现成
+    td.run();
+}
+```
+
+但这种方法有个问题：当 `run` 被调用后，整个对象的所有权会转移到新的线程，主线程中就无法再使用这个对象了。
+
+稍微有点不完美。
+
+## 方法 2 ：拷贝成员
+
+另一种方案，将对象中 `foo` 拷贝出来，传递给新的线程。
+
+```rust
+
+use std::thread;
+
+struct TestThread {
+    foo: String
+}
+
+impl TestThread {
+    pub fn new() -> TestThread {
+        TestThread { foo: String::from("bar") }
+    }
+
+    pub fn run(&self) {
+        // 拷贝 foo，然后传递给新线程
+        let foo_copy = self.foo.clone()
+        thread::spawn(move || {
+            println!("{}", foo_copy);
+        });
+    }
+}
+
+fn main() {
+    let td = TestThread::new();
+    td.run();
+}
+```
+
+嗯，这个方法明显比之前的方案优雅多了。`foo` 被拷贝后就完全脱离了和 `self` 的所有权关系，在子线程中可以单独使用。
+
+但是要注意，子线程的 `foo` 和主线程的 `self.foo` 已经完全分离了，对任何一方的修改都不会影响另一方。
+
+# 总结
+
+你需要根据你的情况选择一种方案。一般来说，如果对象中的成员允许拷贝（实现了 `Clone` 特征），则适用方法 2。反之，如果没有，那么只能方法 1。
+
+在使用方法 1 时，一定要注意这个操作是一次性的，一旦这么做了，主线程就无法访问 `self` 对应的对象了。
+
+如果你需要更复杂的多线程数据传递操作，那么应考虑使用异步通信方式，例如 `std::sync::mpsc::channel` 或者 `Mutex` `RwLock` 等并发原语。
+
+# 为什么要如此复杂？
+
+因为 Rust 是一个安全的语言！新线程一旦创建以后，会独立主线程运行。那么两边的数据一定要分离，Rust 用所有权的方式保证了这一点。
+
+Rust 真的是非常“理性”呢。
+
+# 参考
+
+可参考我之前的一篇文章：[🦀 简单讲讲 Rust 多线程中的引用安全 | 阿森的知识图谱](https://www.assen.top/2024/03/08/rust-multi-threading/)

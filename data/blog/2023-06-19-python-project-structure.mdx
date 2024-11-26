@@ -1,0 +1,216 @@
+---
+title: 🐍 python项目结构的最佳实践
+date: 2023-06-19 10:59:56
+tags: 
+- Python
+- 项目结构
+summary: python 是一个脚本语言，做小项目非常方便。但是在做大项目的时候，往往要合理管理代码文件，这时候如何组织项目结构就成了一个问题。本篇文章就尝试解答这个问题……
+draft: false
+---
+
+2023-06-17 更新：
+
+我在 github 上分享了该文章关联的 Python 项目脚手架（封装了环境管理和日志管理），功能比较简单，欢迎直接使用：
+
+[GitHub - hansenz42/python_scaffold: 一个在 poetry 基础上的 Python 项目脚手架，自带配置文件管理和日志管理功能](​github.com/hansenz42/python_scaffold)
+
+FastAPI 版本在：
+
+[hansenz42/fastapi-starter: 一个 fastapi 框架，集成简单的配置管理，错误处理，返回结构管理等功能](https://github.com/hansenz42/fastapi-starter?tab=readme-ov-file)
+
+# 0 前言
+
+Python 作为脚本语言，代码是写在一个一个脚本文件中的，由解释器顺序执行。不像 Java 或者 C++ 这类编译语言有相对规范的项目目录结构。这为开发小项目提供了便利。但是当我们在做大项目、文件比较多的时候往往会遇到各种模块引入问题。
+
+## 0.1 项目技术栈
+
+Python 3.11 IDE：PyCharm 2022.3 使用的库：FastAPI，SQLAlchemy，MySQL 等 使用的项目管理工具：poetry 部署方法：Docker
+
+## 0.2 本文的使用方式
+
+本文第一章说明了问题背景和项目结构。如果你遇到了 import 重复导入的问题，为了节省时间，可以直接从第二章开始阅读。
+
+# 1 起源于项目重构
+
+今年年初接到了一个做中间件服务的需求，当时和同事沟通了一下，我们认为功能比较简单，主要是数据结构转换，同时我对 Python 比较熟悉，开发快，再加上 Python 处理数据结构也方便，于是果断就选择了 FastAPI 实现简单的服务器。
+
+项目一开始结构简单，代码文件很少，于是第一个服务很快就上线了。
+
+然而，随着功能越来越复杂，渐渐的代码文件变多，项目开始混乱。于是我下决心对整个项目重构。
+
+因为我之前有使用 SpringBoot 的开发经验（比较浅），所以我打算参考它的项目，对项目结构做重构。
+
+## 1.1 整理后的项目结构
+
+于是我重新整理了项目结构：
+
+```
+/res/ 下面放所有的 yaml 配置文件，我用 yaml 来保存项目配置信息，例如数据库访问路径和其他 token
+/src/ 目录存放所有的源码
+/src/common/ 目录存放工具函数和整个项目要使用的小模块
+/src/component/ 目录存放项目要使用的工具类，我将数据库相关的功能例如 SQLAlchemy 这些库做了二次封装。
+/src/dao/ 目录存放直接操作数据库的类
+/src/entity/ 存放各种数据对象的定义，我把所有的 Python 字典用 typing 库做了 TypedDict 数据类型描述，这样在开发的时候不容易出错，避免动态类型语言难以重构的通病
+/src/route/ 下保存 FastAPI 的 API 入口函数，类似于 SpringBoot 的 Controller
+/src/service/ 下存放各种实现业务逻辑的服务类
+/src/app.py FastAPI 的 APP 定义脚本
+/src/run.py 执行 app.py 的脚本
+/test/ 目录存放测试用例
+/main.py 在项目根目录下的入口脚本文件。每次启动项目从这里开始就行了，简单方便。这个脚本直接调用 /src/run.py
+/pyproject.toml poetry 使用的项目配置文件
+/Dockerfile.base 生成 Docker 依赖的镜像
+/Dockerfile.build 打包项目源码的镜像
+```
+
+## 1.2 实现单例模式
+
+参考 SpringBoot 的 IoC，我用 Python 的 module 实现原生的单例模式。就是在每一个类的文件末尾实例化这个类的对象。当另外的文件要引用对象时，直接 import 该文件中的对象名就行。简单快捷。
+
+## 1.3 IDE 设置源代码根目录
+
+因为我使用 PyCharm，我愉快的将 src 目录设置为“源代码根目录”，这样 IDE 就可以找到所有的 .py 源代码的位置了。
+
+![](/static/blog/2023-06-19-python-project-structure/2024-01-25-09-16-20.png)
+
+# 2 遇到的问题：对象重复生成
+
+然而，很快我就发现了问题：
+
+因为 Python 的 import 机制，当导入路径不一致的时候，会生成两个模块。
+
+如果用原生单例模式，import 的路径不同，就会生成两个对象，这就破坏了单例模式的规范。
+
+举个例子，在两个不同的文件中用不同的路径引入对象：
+
+```python
+# 在 route_a.py 中引入 request_service 单例
+from src.service.RequestService import request_service
+
+
+#  在 route_b.py 中引入 request_service 单例
+from service.RequestService import request_service
+```
+
+以上代码，项目会生成两个 RequestService 对象。如果引入的是一个 Log 模块，还会导致日志重复输出。
+
+但是 PyCharm 却不会检查两种不同的路径。它会认为这两种写法都是正确的。
+
+## 2.1 解决：规范化引入路径
+
+解决方法也很简单：只要把整个项目里的根路径规范一下就行，于是我对所有文件中 import 路径全部做了规范，保证所有的路径都从 src 开始。
+
+## 2.2 问题：PyCharm 自动导入的路径不一致
+
+但是这又引入了新的问题，之前把 IDE 的 src 目录设置为源代码根目录。所以当我在使用 PyCharm 自动引入的时候，它不会在 import 前自动添加 src 。
+
+例如，自动导入的文件，名称为：
+
+```python
+# IDE 把所有使用 RequestService 文件的 import 语句重命名了
+from service.DemoService import request_service
+```
+
+在很长一段时间里，我都避免使用自动引入。
+
+但是随着项目体量变大，不使用 IDE 自带的功能很不方便。于是我决定要死磕这个问题。
+
+# 3 死磕完美的解决方案
+
+现在我面临两个选择：
+
+- import 中使用 src 作为开头，并且将 PyCharm 的源代码根目录设置为项目根目录
+  。
+- import 中不使用 src 开头
+  。
+
+我没有选择选项 1 因为这样实在是太奇怪了，这样就失去了把 src 作为源代码根目录的意义，而且在项目根目录里还有 Readme 和 poetry 的项目声明文件，并没有源代码。
+
+于是我采纳了选项 2。
+
+## 3.1 新的问题：生产环境的路径配置
+
+这又出现了新的问题。我的项目入口文件 main.py 在根目录下，在生产环境直接用 python3 main.py 执行，解释器会报错找不到项目其他模块。因为没有指定 src 目录，解释器只会从项目根目录来找其他的 .py 文件。
+
+这个问题的核心是要**统一开发环境和生产环境的 import 搜索路径**。
+
+## 3.2 尝试解决
+
+经过一番谷歌，我找到了三个办法：
+
+- 在启动项目前指定环境变量 PYTHONPATH ，将 src 目录放入其中。这是 PyCharm 在本地运行使用的方法，见：python 环境变量设置PYTHONPATH_pythonpath = (not set)\_wuguangbin1230的博客-CSDN博客
+
+- 在 main.py 中对 sys.path 添加搜索路径，见：unit testing - How to import the src from the tests module in python - Stack Overflow
+
+- 在 poetry 中将 src 目录下所有的源代码预先引入项目。
+  既然都已经使用 poetry 来管理项目依赖，所以我选择了第三个方法。解决方式也很简单，在 pyproject.toml 文件中加入
+
+```toml
+# 在 [tool.poetry] 标签下加入以下内容
+
+packages = [
+    { include = "*", from = "src"}
+]
+```
+
+加入以后运行 poetry install 更新项目依赖，然后在工作目录使用以下命令就可以启动项目
+
+```bash
+poetry run python3 main.py
+```
+
+到此，问题已经解决。yay！
+
+## 3.3 部署到 Docker 时的 poetry 依赖问题
+
+接下来还有一些部署问题。如果你的项目不用 Docker 部署则可以跳过这部分内容。
+
+我把 Docker 部署分为两步并用两个 DockerFile 描述这两个步骤：
+
+1. 安装依赖和相关库然后生成带依赖的镜像
+2. 复制我的源代码生成项目镜像
+
+这样在每次修改源代码的时候可以快速打包，不需要每次都安装依赖。
+
+但是如果在 poetry 中制定了 package 依赖，因为这个时候镜像中不存在项目源代码，所以在第一步打包依赖镜像的时候会报错。
+
+解决方法也很简单：
+在第一步打包的 Dockerfile 中为 poetry 加入 --no-root 参数，这样就可以在安装依赖的时候不扫描项目源代码。
+
+```dockerfile
+# 第一步安装项目依赖的 Dockerfile
+# 创建虚拟环境并安装依赖，安装时不扫描源代码
+RUN poetry config virtualenvs.create false \
+    && poetry install --no-dev --no-interaction --no-ansi --no-root
+
+# 第二步打包是在复制好项目代码以后，在做一次 poetry install
+# 第二步拷贝项目源代码的 Dockerfile
+# 复制项目文件到 /app 目录下
+COPY . /app
+
+# 在做一次 poetry install 即可
+RUN poetry install --no-dev --no-interaction --no-ansi
+```
+
+至此，部署问题完美解决。
+
+# 4 启发：动态类型语言的规范性
+
+这个问题最终完美解决。其实说实话，我有点死磕代码的规范性了。
+
+但是不管怎么样，从这个过程里，我还是学到了关于 Python import 、 poetry 和 Docker 处理依赖环境路径的知识。
+
+Python 作为动态类型语言的脚本，开发的确便利，然而，不论在代码规范性还是在项目规范性上要做好的确有不小的挑战。其他静态类型语言例如 Java，如果使用 SpringBoot 框架，只要按照框架规范开发，就不会有类似的问题。Python 工程师却要来手动处理这些问题。
+
+所以，我认为，**工程师要用好动态类型语言，不仅仅需要有过硬的代码能力，同时也要更加关注规范性，这也是对工程师职业素养的考验**
+。
+祝你成为最一流的 Python 工程师！
+
+# 5 参考附录
+
+另一篇文章说明同样的问题： [python中的module不一定是单例，有可能会被多次import成多个module - 知乎](https://zhuanlan.zhihu.com/p/68888890)
+
+使用 poetry 解决源代码路径依赖的问题，和本文讨论的是同一个问题： [python - How poetry knows my package is located in the src folder? - Stack Overflow](https://stackoverflow.com/questions/68684670/how-poetry-knows-my-package-is-located-in-the-src-folder)
+
+Python import 原理 sys.path 和 PYTHONPATH 的比较： [Python import, sys.path, and PYTHONPATH Tutorial | DevDungeon](https://www.devdungeon.com/content/python-import-syspath-and-pythonpath-tutorial)
+
+在 Docker 中部署 poetry 遇到的找不到项目源代码的问题 [Poetry still fails to install in Docker · Issue #1227 · python-poetry/poetry](https://github.com/python-poetry/poetry/issues/1227)

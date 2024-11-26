@@ -1,29 +1,33 @@
 /** @type {import("pliny/config").PlinyConfig } */
 const siteMetadata = {
-  title: 'Next.js Starter Blog',
-  author: 'Tails Azimuth',
-  headerTitle: 'TailwindBlog',
-  description: 'A blog created with Next.js and Tailwind.css',
-  language: 'en-us',
+  title: '阿森的知识图谱',
+  author: 'Hansen Zheng',
+  headerTitle: '阿森的知识图谱',
+  description:
+    '欢迎来到我的博客，我是一名独立开发者、创业者，同时也是全栈工程师。我喜欢关于计算机技术的一切，平时也热爱阅读和写作，特别是历史和哲学。我会把我的思考和感悟写成文章分享在这里，希望你能喜欢！',
+  language: 'zh-cn',
   theme: 'system', // system, dark or light
-  siteUrl: 'https://tailwind-nextjs-starter-blog.vercel.app',
-  siteRepo: 'https://github.com/timlrx/tailwind-nextjs-starter-blog',
-  siteLogo: `${process.env.BASE_PATH || ''}/static/images/logo.png`,
-  socialBanner: `${process.env.BASE_PATH || ''}/static/images/twitter-card.png`,
-  mastodon: 'https://mastodon.social/@mastodonuser',
-  email: 'address@yoursite.com',
-  github: 'https://github.com',
-  x: 'https://twitter.com/x',
+  siteUrl: 'https://www.assen.top',
+  siteRepo: 'https://github.com/hansenz42/next-blog',
+  siteLogo: '/static/images/logo.png',
+  socialBanner: '/static/images/twitter-card.png',
+  // mastodon: 'https://mastodon.social/@mastodonuser',
+  email: 'assenz42@outlook.com',
+  github: 'https://github.com/hansenz42',
+  googleSiteVerification: '2nNR6fnkid3ON1sobk49qbls553VW_XxbKkn5jqyFk0',
+  zhihu: 'https://www.zhihu.com/people/hnsn42',
+  wechat_qr: '/static/images/qrcode_for_gh.jpg',
+  jianshu: 'https://www.jianshu.com/u/093df07ec856',
+  xiaohongshu: 'https://www.xiaohongshu.com/user/profile/5ccdb237000000001200d736',
+  // wechat: 'https://www.assen.top/blog/0_navigate_wechat',
+  // x: 'https://twitter.com/x',
   // twitter: 'https://twitter.com/Twitter',
-  facebook: 'https://facebook.com',
-  youtube: 'https://youtube.com',
-  linkedin: 'https://www.linkedin.com',
-  threads: 'https://www.threads.net',
-  instagram: 'https://www.instagram.com',
-  medium: 'https://medium.com',
-  locale: 'en-US',
-  // set to true if you want a navbar fixed to the top
-  stickyNav: false,
+  // facebook: 'https://facebook.com',
+  // youtube: 'https://youtube.com',
+  // linkedin: 'https://www.linkedin.com',
+  // threads: 'https://www.threads.net',
+  // instagram: 'https://www.instagram.com',
+  locale: 'zh-CN',
   analytics: {
     // If you want to use an analytics provider you have to add it to the
     // content security policy in the `next.config.js` file.
@@ -33,6 +37,7 @@ const siteMetadata = {
       umamiWebsiteId: process.env.NEXT_UMAMI_ID, // e.g. 123e4567-e89b-12d3-a456-426614174000
       // You may also need to overwrite the script if you're storing data in the US - ex:
       // src: 'https://us.umami.is/script.js'
+      src: 'https://cloud.umami.is/script.js',
       // Remember to add 'us.umami.is' in `next.config.js` as a permitted domain for the CSP
     },
     // plausibleAnalytics: {
@@ -49,16 +54,16 @@ const siteMetadata = {
     // },
   },
   newsletter: {
-    // supports mailchimp, buttondown, convertkit, klaviyo, revue, emailoctopus, beehive
+    // supports mailchimp, buttondown, convertkit, klaviyo, revue, emailoctopus
     // Please add your .env file and modify it according to your selection
-    provider: 'buttondown',
+    // provider: 'buttondown',
   },
   comments: {
     // If you want to use an analytics provider you have to add it to the
     // content security policy in the `next.config.js` file.
     // Select a provider and use the environment variables associated to it
     // https://vercel.com/docs/environment-variables
-    provider: 'giscus', // supported providers: giscus, utterances, disqus
+    // provider: 'giscus', // supported providers: giscus, utterances, disqus
     giscusConfig: {
       // Visit the link below, and follow the steps in the 'configuration' section
       // https://giscus.app/

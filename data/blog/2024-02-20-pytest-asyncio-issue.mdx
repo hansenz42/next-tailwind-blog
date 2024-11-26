@@ -1,0 +1,51 @@
+---
+title: 🐍 PyCharm 在调试 Pytest 函数时报错 '_UnixSelectorEventLoop' object has no attribute '_compute_internal_coro'
+date: 2024-02-20 16:40:57
+tags:
+  - Python
+  - IDE
+  - 疑难杂症
+summary: 原来是 PyCharm IDE 的问题！
+draft: false
+---
+
+# 环境
+
+- PyCharm 2023.3.3
+- MacOS Sonoma 14.2.1
+- pytest 7.2.1
+- pytest-asyncio 0.23.4
+
+# 问题
+
+在使用 Pycharm 调试 Pytest 测试用例时，如果使用了异步方法 asyncio 协程，报错：
+
+![](/static/blog/2024-02-20-pytest-asyncio-issue/2024-02-20-16-47-07.png)
+
+<center>
+  <small>写好测试用例，点击调试之后就报错了！😫</small>
+</center>
+
+错误信息：
+
+```
+AttributeError: '_UnixSelectorEventLoop' object has no attribute '_compute_internal_coro'
+```
+
+但是如果直接运行，则不会报错……很奇怪
+
+# 解决方法
+
+问题是 PyCharm IDE 在调试时会覆盖一部分内置方法，其中就包括了获取 EventLoop 对象的方法。
+
+只要在 IDE 中关闭对 asyncio 的覆盖即可：
+
+- 帮助 -> 查找操作 -> 注册表
+- ctrl+f 搜索 `python.debug.asyncio.repl` 取消勾选
+- 点击“关闭”，重启 PyCharm
+
+![](/static/blog/2024-02-20-pytest-asyncio-issue/2024-02-20-16-51-50.png)
+
+# 参考
+
+[python - Using starlette TestClient causes an AttributeError : '\_UnixSelectorEventLoop' object has no attribute '\_compute_internal_coro' - Stack Overflow](https://stackoverflow.com/questions/77920123/using-starlette-testclient-causes-an-attributeerror-unixselectoreventloop-o/77926544#77926544)

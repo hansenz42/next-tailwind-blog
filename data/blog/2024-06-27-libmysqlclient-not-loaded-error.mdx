@@ -1,0 +1,107 @@
+---
+title: 🐍 Python MySQL 在 macOS 环境下报错：Library not loaded libmysqlclient.**.dylib
+date: 2024-06-27 14:45:02
+tags:
+  - Python
+  - 疑难杂症
+summary: 一个 macOS 环境下的依赖小错误，很快就能解决！
+draft: false
+---
+# 240930 更新
+
+今天又有一个项目出了类似的问题，我又查了一下资料，发现之前的解决方案有些不完整。在此更新一下最新的解决方法。我是 Intel mac 环境，如果是 apple silicon 处理器，brew 的路径会不同，但是基本原理差不多。
+
+问题的原因是在于，本地使用 brew upgrade 更新的时候，更新了 mysql 包并更新了动态链接库，但是之前由 pip 编译安装的 python 部分代码没有更新，导致 python 在 import 驱动的时候会引用旧文件。
+
+此时因为文件已经更新，旧文件不存在，所以报错。
+
+最新的解决方案分为两步，第一步先确认 macOS 本地的 mysql 库。第二部更新项目中的 python 虚拟环境。
+
+## 1 确认 macOS 本地 mysql 库
+
+截止 2024-09-30。最新版本的 mysql 会有兼容性问题，可安装 8.4 版本。
+
+```bash
+# 如之前已经安装过 mysql，则先卸载
+brew remove mysql
+
+# 安装 8.4 版本
+brew install mysql@8.4
+
+# 因为安装的不是最新版本，所以要手动更新一下 mysql 的安装环境
+# 使用 zsh
+echo 'export PATH="/usr/local/opt/mysql@8.4/bin:$PATH"' >> ~/.zshrc
+echo 'export LDFLAGS="-L/usr/local/opt/mysql@8.4/lib"' >> ~/.zshrc
+echo 'export CPPFLAGS="-I/usr/local/opt/mysql@8.4/include"' >> ~/.zshrc
+echo 'export PKG_CONFIG_PATH="/usr/local/opt/mysql@8.4/lib/pkgconfig"' >> ~/.zshrc
+
+# 使用 bash （默认的情况）
+echo 'export PATH="/usr/local/opt/mysql@8.4/bin:$PATH"' >> ~/.bashrc
+echo 'export LDFLAGS="-L/usr/local/opt/mysql@8.4/lib"' >> ~/.bashrc
+echo 'export CPPFLAGS="-I/usr/local/opt/mysql@8.4/include"' >> ~/.bashrc
+echo 'export PKG_CONFIG_PATH="/usr/local/opt/mysql@8.4/lib/pkgconfig"' >> ~/.bashrc
+```
+
+## 2 项目中重新安装 mysqlclient 包
+
+```bash
+# cd 到你的项目目录，并开启 virtualenv 或者 poetry
+
+# 卸载并重新安装
+pip3 uninstall mysqlclient
+pip3 install --no-cache mysqlclient
+```
+注意重新安装 mysqlclient 必须要禁用原先的缓存，让 pip 重新编译安装。如果使用 poetry，因为缓存的关系，不能用 poetry remove 和 poetry add 重新安装，而还是要通过 pip 保证安装成功。
+
+至此，该问题就能完全解决。
+
+# 以下为原来的文章
+
+## 240909 更新
+
+我发现，不同的库会引用不用的 libmysqlclient.**.dylib 版本的文件。
+
+例如 apscheduler 2.0.3 可能会引用较低版本的 libmysqlclient.23.dylib。如果此时你的系统中只有 24 版本，那么仍然会报错。
+
+所以在解决问题时，也要考虑哪些会使用 mysqlclient 的其他库并更新。
+
+## 错误情况
+
+Python 在运行时报错
+
+```
+Library not loaded: /usr/local/opt/mysql/lib/libmysqlclient.22.dylib python
+```
+
+环境
+
+- macOS Sonoma 14.5
+- Idea 2024.1 使用 Python 插件（等同于 PyCharm）
+- poetry 1.8.3
+- mysqlclient 1.3.2
+- macos 的 mysql 环境我用 homebrew 安装
+
+## 解决方案
+
+解决方法：更新项目的 mysqlclient 依赖到最新版本
+
+在项目文件的 `pyproject.toml` 文件中更新依赖
+
+```toml
+[tool.poetry.dependencies]
+...
+mysqlclient = "^2.1.1"
+...
+```
+
+运行
+
+```bash
+poetry update
+```
+
+## 讨论
+
+问题的根源在于我用 homebrew 更新了 mac 本地的 MySQL 环境，导致 mysqlclient 识别不到之前版本的依赖所以报错。
+
+最好的办法是更新 mysqlclient 到最新版本，当然你也可以尝试用 brew 回退到之前的版本。不过回退起来很麻烦不建议这样用。

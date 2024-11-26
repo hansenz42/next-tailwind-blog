@@ -1,0 +1,183 @@
+---
+title: 🐍 讲讲 Python 的 SansIO
+date: 2024-01-24 15:08:12
+tags:
+  - Python
+  - 网络
+summary: SansIO 名字听起来不明所以，但是背后概念非常简单。就是“解耦”！
+draft: false
+---
+
+- 预备条件：Python web 编程知识，asyncio 异步编程知识，设计模式
+
+# 前言
+
+这两天写一个小项目要用到 [websockets](https://websockets.readthedocs.io/en/stable/intro/index.html) 这个库。看了文档以后发现这个库实现了三种接口：asyncio 异步接口；threading 多线程接口，SansIO 接口。
+
+当时我一看有点蒙，SansIO 是个啥，从来没听说过，于是搜索了官方资料。无奈官方文档有点难读，而且中文互联网上也没有相应的介绍。于是我阅读了一些英文资料，结合自己的理解，尝试写一篇文章讲讲这个概念。
+
+# 1 一句话简述 SansIO
+
+很简单：
+
+**SansIO 是一种架构设计模式，为的是在编写 IO 相关的代码时，将业务逻辑层和 IO 层分开。达到方便移植和测试的目的。**
+
+从以下两点来理解这句话：
+
+- **是一种模式**：SansIO 不是一个库，而是一种编程方法，类似于设计模式
+- **分层解耦**：用分层的方法来解耦，实现一种两层结构。具体的，SansIO 将代码分为业务逻辑层，专门处理协议等逻辑，而 IO 层处理和字节流的通信。就像计算机网络的 OSI 七层结构，从应用程序层到物理层，每一层都各司其职，组合起来保证了应用的正常运行。
+
+如果你做过比较大型的项目，你应该知道**解耦**的思想在计算机工程中非常重要。即为尽量保证类似功能的代码都写在一起，这样项目维护起来就更加容易，代码也更方便修改和移植。
+
+SansIO 就是解耦哲学下的架构方法。
+
+# 2 详细讲讲
+
+对于 IO 编程，工程师往往要做以下两件事：
+
+- **处理协议**：例如我们需要发送一条 HTTP 请求，我们要定义请求头，请求体，url 等数据，然后将这些数据用 urlencode 或者 json 编码然后发送。
+- **处理 IO 字节流**：一般的 IO 接口，例如 TCP 和 UDP 协议，直接的处理对象都是字节。在将协议编码后，我们利用相应的接口方法，来发送和接收这些字节流。
+
+可能把你说晕了，接下来就举个简单的例子来说明：
+
+## 2.1 经典的编程模式
+
+在经典的编程流程里，这两件事我们会一起做。例如要发送一条 http 请求，我们会这么写：
+
+```python
+class UserServiceClient:
+    def get_name(self, user_id: int) -> Dict[str, Any]:
+        return requests.get(
+            self.base_url,
+            "v1/users/{}/name/".format(user_id)
+        )
+```
+
+以上的代码可以正确运行，但是有一个问题，就是**难以移植和测试**。
+
+假如现在架构师出现在我面前，和我说整个项目要改为异步架构（async/await），那么 IO 相关代码必须要全部重写。这个项目也很难测试，我必须用很多 mock 来模拟要访问的每一个 url。
+
+## 2.2 SansIO 编程模式
+
+如何优化以上流程呢？
+
+我们可以把事情拆分开来做：先定义好协议，再实现 IO。
+
+不妨先定义一个类，把我们要发送请求的内容全部封装起来：
+
+```python
+@dataclass
+class RequestDefinition:
+    method: str
+    path: str
+    ...
+```
+
+然后再在发送请求的代码中使用封装好的对象：
+
+```python
+import requests
+class SyncRequestClient:
+    def __init__(self, base_url: str) -> None:
+        self.base_url = base_url
+
+    def request(self, request_definition: RequestDefinition) -> Any:
+        # 使用定义好的 RequestDefinition
+        if request_definition.method == “GET”:
+            return requests.get(
+                self.base_url, request_definition.path, ...
+            )
+        ...
+```
+
+如果要写成异步方法，那么就：
+
+```python
+import aiohttp
+class AsyncRequestClient:
+    def __init__(self, base_url: str) -> None:
+        self.base_url = base_url
+    async def request(
+        self, request_definition: RequestDefinition
+    ) -> Any:
+        async with aiohttp.ClientSession() as session:
+            # 使用定义好的 RequestDefinition
+            if request_definition.method == “GET”:
+                return await session.get(
+                    self.base_url, request_definition.path, ...
+                )
+            ...
+```
+
+你看，我们将处理的协议的部分抽象封装成了一个对象，实现了业务逻辑，然后分别用同步和异步的库实现了 IO 层。达到了完美的解耦！
+
+代码的维护和迁移是不是变容易了。
+
+![](/static/blog/2024-01-24-sansio/2024-01-24-16-32-00.png)
+
+<center>
+  <small>
+    使用 SansIO 的项目就好像一个“IO 三明治”，将业务逻辑代码集中在一起，将处理 IO 的部分放在程序的
+    “边缘”。（网图）
+  </small>
+</center>
+
+# 3 SansIO 的好处
+
+这样做的好处显而易见：
+
+首先，代码**更易测试**了，我们可以单独测试业务逻辑部分，在确定此部分没有问题后，再做 IO 部分的测试。对于业务逻辑部分来说，测试不需要 mock ，在任何环境都可以执行。
+
+其次，代码**可以复用**，这对于编写协议库的工程师尤其重要，因为这样的库往往要把一个协议对接到多个 IO 上。
+
+例如物联网中常用的 Modbus 协议要保证可在 TCP 上传输，也要支持在 RTU 串口模式下传输。
+
+可测试性和可复用性保证了代码的正确性和简单性，使得项目更容易维护。
+
+不过这样做也有代价，工程师必须精心设计软件的结构，在架构上要花一点脑子。
+
+# 4 冷知识：为什么叫 SansIO ？
+
+SansIO 背后的逻辑很容易就能接受，只是这个名字起的有点别扭，所以对于惯用中文的我们来说有点难以理解。
+
+Sans 不是一个英文单词，而是来自中世纪时期的古英语，表示“否定”和“不”。（古英语起源于 1066 英格兰地区诺曼征服）
+
+交互设计的同学一定知道字体中有一类叫做 “Sans-Serif”，中文译为“无衬线字体”。
+
+![](/static/blog/2024-01-24-sansio/2024-01-24-16-35-29.png)
+
+<center>
+  <small>Sans-Serif 无衬线字体（网图）</small>
+</center>
+
+“Sans” 的意思就是 “Without”，“没有” 的意思。“SansIO” 就是 “Without IO” ，含义就是**将管理业务逻辑的协议层分离出来，这部分代码不应考虑任何与 IO 相关的问题。**
+
+# 总结
+
+我们介绍了 SansIO 的基本概念及其“解耦”的设计哲学。用了一个简单的例子解释了它的含义，并且说明了它的好处：“可测试性”和“可复用性”，最后为了便于你记忆，介绍了 Sans 这个词的起源。
+
+希望这篇文章能够帮到你。
+
+# 参考
+
+两篇 SansIO 的官方文章，原文有些长，应该是工程师写的，可读性不是很好，可供参考：
+
+- [SansIO — Migrating microservices to asyncio | by João Alves | Smarkets HQ](https://smarketshq.com/sansio-migrating-microservices-to-asyncio-b97c69e391b2)
+
+- [Writing I/O-Free (Sans-I/O) Protocol Implementations — Sans I/O 1.0.0 documentation](https://sans-io.readthedocs.io/how-to-sans-io.html)
+
+一个用了 SansIO 的示例，本文中的代码也引用该处的例子：
+
+- [Network protocols, sans I/O — Sans I/O 1.0.0 documentation](https://sans-io.readthedocs.io/)
+
+“SansIO 三明治” 的图片来自于：
+
+- [Sans I/O programming: what, why and how (PyCon UK talk) – alexwlchan](https://alexwlchan.net/2019/sans-io-programming/)
+
+“无衬线字体” 的图片来自于：
+
+- [Serif vs. Sans Serif Fonts](https://newenglandrepro.com/serif-vs-sans-serif-typeface/)
+
+古英语的起源：
+
+- [Middle English - Wikipedia](https://en.wikipedia.org/wiki/Middle_English)
