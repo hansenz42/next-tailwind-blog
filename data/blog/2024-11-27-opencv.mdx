@@ -1,0 +1,165 @@
+---
+title: 从源码编译 OpenCV 并打包到 Python 的 Docker 镜像
+date: 2024-11-27
+tags:
+- OpenCV
+- Docker
+summary: 要在服务器上部署自编译的 OpenCV 服务，最好的方式是用 Docker 打包成为一个独立的镜像并发布到服务器。过程实在挺复杂的做个记录。
+draft: false
+---
+
+目前在做的有个项目，因为一些原因，需要在 Debian 环境的服务器上部署自编译的 OpenCV 服务并且集成到一个 Python 项目中。记录一下具体过程。
+
+用到的技术方案有：
+- OpenCV 源代码
+- Docker
+- Poetry
+- Python 3.11
+
+本文仅介绍 opencv 和 opencv-contrib 包的源码编译并打包到 Docker。不涉及 GPU 部分，如果你需要开启 GPU 功能，请参考其他文章。
+
+另外，本文默认读者了解 Docker，Poetry 等基础知识。相关技术栈不另外介绍。
+
+## 使用 Dockerfile 打包 opencv 依赖
+
+相关的 Dockerfile 我放在以下的 repo 中，使用方式已经写在 repo 的 readme 里。
+
+[hansenz42/docker-opencv-poetry-base: Dockerfile and script for building OpenCV image from source code. including opencv+opencv-contrib+poetry.](https://github.com/hansenz42/docker-opencv-poetry-base)
+
+docker build 完成后就得到了一个名为 `opencv-python-base:latest` 的基础镜像。
+
+### 使用 opencv 基础镜像
+
+在需要引入 OpenCV 的项目中，修改 pyproject.toml 添加如下依赖:
+
+```toml
+[tool.poetry.dependencies]
+opencv = {path = "/app/lib/opencv/build/python_loader", develop = true}
+```
+
+在项目目录下创建 Dockerfile 文件，参考以下模板：
+
+```dockerfile
+FROM opencv-python-base:latest
+
+# 安装 poetry
+RUN pip3 install poetry
+
+# 创建目录，拷贝 pyproject.toml 项目说明文件
+WORKDIR /app
+COPY pyproject.toml /app/pyproject.toml
+
+# 安装项目依赖
+RUN poetry config virtualenvs.create false && \
+    poetry install --with release --without dev --no-interaction --no-ansi --no-root
+
+# 拷贝代码源文件
+COPY . /app
+
+# 指定容器的开放端口
+EXPOSE 8080
+
+# 指定程序的运行入口
+CMD poetry run python3 main.py
+```
+
+接下来就用你自己的方式打包项目镜像，就可以使用 opencv 了。
+
+```bash
+docker build . -t my-opencv-project
+```
+
+## 本地编译的试验过程
+
+以下是我在本地用 Debian 环境试验编译 OpenCV 的过程，留作参考。
+
+如果你要直接编译 OpenCV 镜像，用前一章 github 的方案即可。
+
+### 获取资源
+
+从 OpenCV 的 GitHub 上下载需要的源码包。在这里我们用到了 opencv 和 opencv-contrib 包。
+
+opencv: [opencv/opencv: Open Source Computer Vision Library](https://github.com/opencv/opencv)
+opencv-contrib: [opencv/opencv_contrib at 4.10.0](https://github.com/opencv/opencv_contrib/tree/4.10.0)
+
+当然也可直接用命令行下载：
+
+```bash
+wget -O opencv-4.10.0.tar.gz https://github.com/opencv/opencv/archive/refs/tags/4.10.0.tar.gz
+wget -O opencv_contrib-4.10.0.tar.gz https://github.com/opencv/opencv_contrib/archive/refs/tags/4.10.0.tar.gz
+```
+
+下载的版本为 4.10.0，如果有更新版本，请关注以上 Github 主页。
+
+将下载到好的两个文件解压并放在同一个目录下。
+
+```bash
+tar -xvf opencv-4.10.0.tar.gz
+tar -xvf opencv_contrib-4.10.0.tar.gz
+```
+
+### 环境准备
+
+如果在 debian 环境下，注意以下的依赖，其他环境类似
+
+```bash
+sudo apt install build-essential cmake git pkg-config libgtk-3-dev \
+libavcodec-dev libavformat-dev libswscale-dev libv4l-dev \
+libxvidcore-dev libx264-dev libjpeg-dev libpng-dev libtiff-dev \
+gfortran openexr libatlas-base-dev \
+libtbb-dev libopenexr-dev \
+libgstreamer-plugins-base1.0-dev libgstreamer1.0-dev
+```
+
+另外还需要确认 Python 的版本，我这里使用的是 3.11。另外还需要确认当前的 Python 环境已安装了 numpy。
+
+如果你使用我提供的 Dockerfile 直接打包，则不存在 Python 环境的问题，只有在自己电脑用本地环境编译的时候需要注意。
+
+### 编译和安装
+
+```bash
+# 切换到目录并新建文件夹 build
+cd opencv-4.10.0
+mkdir build
+cd build
+
+cmake \
+-D CMAKE_BUILD_TYPE=Release \
+-D OPENCV_EXTRA_MODULES_PATH=../../opencv_contrib-4.10.0/modules \
+-D OPENCV_ENABLE_NONFREE=ON \
+-D BUILD_EXAMPLES=ON \
+-D CMAKE_INSTALL_PREFIX=/usr/local \
+-D BUILD_DOCS=ON \
+-D BUILD_TESTS=ON \
+-D BUILD_PERF_TESTS=ON \
+-D BUILD_opencv_python2=OFF \
+-D BUILD_opencv_python3=ON \
+-D PYTHON3_EXECUTABLE=$(which python3) \
+-D PYTHON3_INCLUDE_DIR=$(python3 -c "from distutils.sysconfig import get_python_inc; print(get_python_inc())") \
+-D PYTHON3_PACKAGES_PATH=$(python3 -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())") \
+..
+```
+
+cmake 完成后，确认一下输出的内容，着重看 Python 环境是否已经配置正确，如下：
+
+```bash
+--   Python 3:
+--     Interpreter:                 /Users/username/.pyenv/shims/python3 (ver 3.11.10)
+--     Libraries:                   /Library/Frameworks/Python.framework/Versions/3.11/lib/libpython3.11.dylib (ver 3.11.10)
+--     Limited API:                 NO
+--     numpy:                       /Users/username/.pyenv/versions/3.11.10/lib/python3.11/site-packages/numpy/_core/include (ver 2.1.3)
+--     install path:                /Users/username/.pyenv/versions/3.11.10/lib/python3.11/site-packages/cv2/python-3.11
+--
+--   Python (for build):            /Users/username/.pyenv/shims/python3
+```
+
+如果这里出现很多 No，就要排查是否是本地 Python 环境有问题，是否已经安装 numpy。
+
+接下来开始编译
+
+```bash
+# 此处 -j 后面的参数可以根据你的 CPU 核心数目决定，我这里使用了 4，使用更好的 CPU 可以提升到 8 甚至 12
+make -j4
+make install
+```
+如果到目前为止没有问题，此时 OpenCV 已经安装到了当前的系统和 Python 环境中。
