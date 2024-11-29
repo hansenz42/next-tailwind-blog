@@ -12,6 +12,12 @@ const projectsData: Project[] = [
     imgSrc: '/static/images/project-lawyer.jpg',
     href: 'https://suspect.assen.top',
   },
+  {
+    title: '🎄 阿森的花园 —— 双链知识管理系统',
+    description: '将关于计算机，世界观，数学和产品的笔记整理在其中。',
+    imgSrc: '/static/images/project-garden.png',
+    href: 'https://garden.assen.top',
+  },
 ]
 
 export default projectsData
