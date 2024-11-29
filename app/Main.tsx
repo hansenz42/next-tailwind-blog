@@ -30,10 +30,10 @@ export default function Home({ posts }) {
             {siteMetadata.description}
           </h2>
           <h2 className="prose text-lg text-gray-600 dark:text-gray-400">
-            我会把我的思考写成文章放在这里，同时我也会把笔记发布在我的
-            <h2 className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
+            我会把我的思考写成文章放在这里，同时我会把结构化的笔记放在
+            <span className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
               <Link href="https://garden.assen.top">知识库</Link>
-            </h2>
+            </span>
             ，希望我的笔记对你有用。
           </h2>
         </div>
