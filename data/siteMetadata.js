@@ -4,7 +4,7 @@ const siteMetadata = {
   author: 'Hansen Zheng',
   headerTitle: '阿森的知识图谱',
   description:
-    '欢迎来到我的博客，我是一名独立开发者、创业者，同时也是全栈工程师。我喜欢关于计算机技术的一切，平时也热爱阅读和写作，特别是历史和哲学。我会把我的思考和感悟写成文章分享在这里，希望你能喜欢！',
+    '欢迎来到我的博客，我喜欢思考、写作，还有和计算机相关的一切。',
   language: 'zh-cn',
   theme: 'system', // system, dark or light
   siteUrl: 'https://www.assen.top',

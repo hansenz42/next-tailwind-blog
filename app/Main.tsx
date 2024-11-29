@@ -37,6 +37,9 @@ export default function Home({ posts }) {
           <h2 className="prose text-lg text-gray-600 dark:text-gray-400">
             {siteMetadata.description}
           </h2>
+          <h2>
+            我会把我的思考写成文章放在这里，同时我也会把笔记发布在我的<Link href="https://garden.assen.top">知识库</Link>，希望我的笔记对你有用。
+          </h2>
         </div>
       </div>
       <div className="divide-y divide-gray-200 dark:divide-gray-700">
