@@ -2,11 +2,10 @@ import Link from '@/components/Link'
 import Tag from '@/components/Tag'
 import siteMetadata from '@/data/siteMetadata'
 import { formatDate } from 'pliny/utils/formatDate'
-import Image from "@/components/Image";
-import NewsletterForm from 'pliny/ui/NewsletterForm';
-import { allAuthors, Authors } from "contentlayer/generated";
-import { coreContent } from "pliny/utils/contentlayer";
-
+import Image from '@/components/Image'
+import NewsletterForm from 'pliny/ui/NewsletterForm'
+import { allAuthors, Authors } from 'contentlayer/generated'
+import { coreContent } from 'pliny/utils/contentlayer'
 
 const MAX_DISPLAY = 5
 
@@ -20,25 +19,22 @@ export default function Home({ posts }) {
       <div className="my-6 flex flex-col items-center justify-between xl:mb-12 xl:flex-row">
         <div className="my-6 mr-8 flex">
           {avatar && (
-            <Image
-              src={avatar}
-              alt="avatar"
-              width={192}
-              height={192}
-              className="rounded-full"
-            />
+            <Image src={avatar} alt="avatar" width={192} height={192} className="rounded-full" />
           )}
         </div>
         <div className="pt-6">
-          <h1
-            className="pb-6 text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14">
+          <h1 className="pb-6 text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14">
             Hi, I’m {author.name}
           </h1>
           <h2 className="prose text-lg text-gray-600 dark:text-gray-400">
             {siteMetadata.description}
           </h2>
-          <h2>
-            我会把我的思考写成文章放在这里，同时我也会把笔记发布在我的<Link href="https://garden.assen.top">知识库</Link>，希望我的笔记对你有用。
+          <h2 className="prose text-lg text-gray-600 dark:text-gray-400">
+            我会把我的思考写成文章放在这里，同时我也会把笔记发布在我的
+            <h2 className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
+              <Link href="https://garden.assen.top">知识库</Link>
+            </h2>
+            ，希望我的笔记对你有用。
           </h2>
         </div>
       </div>
@@ -46,7 +42,7 @@ export default function Home({ posts }) {
         <ul className="divide-y divide-gray-200 dark:divide-gray-700">
           {!posts.length && 'No posts found.'}
           {posts.slice(0, MAX_DISPLAY).map((post) => {
-            const {slug, date, title, summary, tags} = post
+            const { slug, date, title, summary, tags } = post
             return (
               <li key={slug} className="py-12">
                 <article>
@@ -70,7 +66,7 @@ export default function Home({ posts }) {
                           </h2>
                           <div className="flex flex-wrap">
                             {tags.map((tag) => (
-                              <Tag key={tag} text={tag}/>
+                              <Tag key={tag} text={tag} />
                             ))}
                           </div>
                         </div>
@@ -108,7 +104,7 @@ export default function Home({ posts }) {
       )}
       {siteMetadata.newsletter?.provider && (
         <div className="flex items-center justify-center pt-4">
-          <NewsletterForm/>
+          <NewsletterForm />
         </div>
       )}
     </>
