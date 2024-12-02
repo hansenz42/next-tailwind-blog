@@ -14,7 +14,7 @@ const projectsData: Project[] = [
   },
   {
     title: '🎄 阿森的花园 —— 个人知识管理数据库',
-    description: '利用双链笔记软件 Obsidian 制作的知识库网站，我会将关于计算机，世界观，数学和产品的笔记整理在里面。一个长期工程，志在打造一个完整的知识图谱。',
+    description: '利用双链笔记软件 Obsidian 制作的知识库网站，我会将关于计算机，世界观，数学和产品的笔记整理在里面。知识库中的内容不在乎有多完整，而在于它是不断进化的。',
     imgSrc: '/static/images/project-garden.png',
     href: 'https://garden.assen.top',
   },
