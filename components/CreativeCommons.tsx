@@ -1,10 +1,11 @@
 import Image from 'next/image'
+import Link from '@/components/Link'
 
 export default function CreativeCommonsLicense() {
   return (
     <p className="flex items-center gap-1">
       This work is licensed under{' '}
-      <a
+      <Link
         href="https://creativecommons.org/licenses/by-nc/4.0/?ref=chooser-v1"
         target="_blank"
         rel="license noopener noreferrer"
@@ -32,7 +33,7 @@ export default function CreativeCommonsLicense() {
           height={22}
           className="inline-block"
         />
-      </a>
+      </Link>
     </p>
   )
 }
