@@ -6,7 +6,7 @@ import Image from '@/components/Image'
 import NewsletterForm from 'pliny/ui/NewsletterForm'
 import { allAuthors, Authors } from 'contentlayer/generated'
 import { coreContent } from 'pliny/utils/contentlayer'
-import {getGardenUrl} from "@/components/siteconfig";
+import {getUrlWithDomainName} from "@/components/siteconfig";
 
 const MAX_DISPLAY = 5
 
@@ -33,7 +33,7 @@ export default function Home({ posts }) {
           <h2 className="prose text-lg text-gray-600 dark:text-gray-400">
             我会把我的思考写成文章放在这里，同时我会把结构化的笔记放在
             <span className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
-              <Link href={getGardenUrl()}>知识库</Link>
+              <Link href={getUrlWithDomainName('garden')}>知识库</Link>
             </span>
             ，希望我的笔记对你有用。
           </h2>

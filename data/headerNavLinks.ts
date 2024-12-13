@@ -1,4 +1,4 @@
-import { getGardenUrl } from '@/components/siteconfig'
+import { getUrlWithDomainName } from '@/components/siteconfig'
 
 const headerNavLinks = [
   { href: '/', title: 'Home' },
@@ -7,7 +7,7 @@ const headerNavLinks = [
   { href: '/projects', title: 'Projects' },
   { href: '/about', title: 'About' },
   { href: '/feed.xml', title: 'RSS' },
-  { href: getGardenUrl(), title: '👉🏻 知识库' },
+  { href: getUrlWithDomainName('garden'), title: '👉🏻 知识库' },
 ]
 
 export default headerNavLinks
