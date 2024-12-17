@@ -1,8 +1,8 @@
 /** @type {import("pliny/config").PlinyConfig } */
 const siteMetadata = {
-  title: '阿森的知识图谱',
+  title: '阿森毛不多',
   author: 'Hansen Zheng',
-  headerTitle: '阿森的知识图谱',
+  headerTitle: '阿森毛不多',
   description:
     '欢迎来到我的博客，我喜欢思考、写作，还有和计算机相关的一切。',
   language: 'zh-cn',
