@@ -38,34 +38,34 @@ draft: false
 
 我把 NextJS 的优点总结为以下几点：
 - **一体化和干净**：NextJS 有点类似于 SpringBoot 这样的 Web 全家桶，它自带了一套服务器和模版渲染引擎。直接创建一个项目，TS/JS 就可以完成服务端操作和客户端页面渲染，项目既干净又美丽。而无需学习其他语言，在一个项目里混杂各种不同语言的语法。
-- **SEO**：因为服务端渲染，搜索引擎的爬虫无需执行页面上的 JS 就能获得全部的页面信息，使得搜索引擎能够更好地收入网页
-- **性能**：得益于一体化，NextJS 在其内部对函数计算和缓存做了更多优化。而懒加载，服务端发送到客户端数据的缓存，都能很方便地处理。
+- **SEO**：得益于服务端渲染，搜索引擎的爬虫无需执行页面上的脚本就能获得全部的页面信息。让网页可以被更好收录。
+- **性能**：得益于一体化，NextJS 在其内部对函数计算和缓存做了更多优化。而从懒加载，到数据缓存，都能很方便地处理。
 - **部署**：部署极为方便，直接 `npm run build` 就可以得到 Web 应用，开发调试也做了很多优化。如果利用 vercel 技术栈，那是更加方便了。
 
 ## 一些注意事项
 
-对于对前端熟练的开发者来说，也许这里有最关键的一点是你要注意的：
+对于对前端熟练的开发者来说，这里有最关键的一点是你要注意的：
 
-注意**运行边界，就是一定要搞清楚你正在写的代码，到底运行在服务器还是浏览器**。
+**注意运行边界：一定要搞清楚你正在写的代码，到底运行在服务器还是浏览器**。
 
-这里有很多奥妙，而也是我认为 NextJS 最大的一个坑。这一切的根源就是在于 NextJS 会自动拆分代码，一部分运行在服务器，另一部分运行在客户端。
+这里有很多奥妙，而也是我认为 NextJS 最大的一个坑。这里的根源就是在于 NextJS 会自动拆分代码，一部分运行在服务器，另一部分运行在客户端。
 
-所以，在落笔代码之前，一定要对你的项目有个大体的构架。哪些功能用 Server 组件，哪些用客户端渲染的 Client 组件，哪些地方用 ServerAction，哪些地方声明 API Routes。
+所以，在落笔代码之前，一定要对你的项目有个大体的构架：哪些功能用 Server 组件，哪些用客户端渲染的 Client 组件，哪些地方用 ServerAction，哪些地方声明 API Routes。
 
-否则，你的项目在运行时会遇到大量错误，其中很多需要重构才能解决。
+否则，你的项目在运行时会遇到大量错误，很多要重构才能解决。
 
 对于这个问题，我有以下四点总结：
 
-- **优先使用服务端渲染的 Server 组件**（`'use server'`）：因为会最大化 NextJS 的优势，也可以获得更好的性能。一般来说，数据展示、单项的表单提交这样的功能都适合用服务端渲染。当然 NextJS 默认也是服务端渲染。
+- **优先使用服务端渲染的 Server 组件**（`'use server'`）：将最大化 NextJS 的优势，也可以获得更好的性能。一般来说，数据展示、单向的表单提交功能都适合用服务端渲染。当然 NextJS 默认也是服务端渲染。
 - **复杂交互使用客户端渲染的 Client 组件**（`'use client'`）：当服务端渲染无法胜任的时候，考虑客户端渲染。一般需要客户端处理的情况：复杂的表单交互，绘图，动画，复杂的响应。对于复杂的页面，做好 Server 和 Client 组件的相互嵌套，达到最好的懒加载效果。
-- **ServerAction**：绝大部分在服务端执行的操作都可以用 ServerAction 来做，例如发起 http request，操作数据库等。NextJS 会为你自动做好代码拆分，保证缓存的有效和代码的安全性。
+- **ServerAction**：绝大部分在服务端执行的操作都可以用 ServerAction 来处理，例如发起 http request，操作数据库等。NextJS 会为你自动做好代码拆分，保证缓存的有效和代码的安全性。
 - **API Routes**：我个人认为，API Router 的存在是为了保证最大的兼容性，所以最好只有在外部系统要访问当前项目的时候再考虑利用 API Router 来开发。否则尽量使用 ServerAction 以获得更好的性能。
 
 你可以参考：
 - 关于挑选客户端和服务端组件：[Rendering: Composition Patterns | Next.js](https://nextjs.org/docs/app/building-your-application/rendering/composition-patterns)
 - 关于 ServerAction：[Data Fetching: Server Actions and Mutations | Next.js](https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations)
 - 关于 API Routes：[Routing: Route Handlers | Next.js](https://nextjs.org/docs/app/building-your-application/routing/route-handlers)
-- 关于挑选 ServerAction 还是 API Routes：[reactjs - Nextjs 14: Server actions vs Route handlers - Stack Overflow](https://stackoverflow.com/questions/77748391/nextjs-14-server-actions-vs-route-handlers)
+- 关于挑选 ServerAction 还是 API Routes，这篇文章认为写数据用 ServerAction，读数据用 API：[reactjs - Nextjs 14: Server actions vs Route handlers - Stack Overflow](https://stackoverflow.com/questions/77748391/nextjs-14-server-actions-vs-route-handlers)
 
 ## 关于编程框架的反思
 
