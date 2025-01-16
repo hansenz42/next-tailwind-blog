@@ -56,10 +56,10 @@ draft: false
 
 对于这个问题，我有以下四点总结：
 
-- **优先使用服务端渲染的 Server 组件**（`'use server'`）：这将最大化 Next.js 的优势，也可以获得更好的性能。一般来说，数据展示、单向的表单提交功能都适合用服务端渲染。当然 Next.js 默认也是服务端渲染。
+- **优先使用服务端渲染的 Server 组件**（`'use server'`）：这将最大化 Next.js 的优势，也可以获得更好的性能。一般来说，数据展示、单向的表单提交，发起 http 请求等功能都适合用服务端渲染。当然 Next.js 默认也是服务端渲染。
 - **复杂交互使用客户端渲染的 Client 组件**（`'use client'`）：当服务端渲染无法胜任的时候，考虑客户端渲染。一般需要客户端处理的情况：复杂的表单交互，绘图，动画，复杂的响应。对于复杂的页面，做好 Server 和 Client 组件的相互嵌套，达到最好的懒加载效果。
-- **ServerAction**：绝大部分在服务端执行的操作都可以用 ServerAction 来处理，例如发起 http request，操作数据库等。Next.js 会为你自动做好代码拆分，保证缓存的有效和代码的安全性。
-- **API Routes**：我个人认为，API Router 的存在是为了保证最大的兼容性，所以最好只有在外部系统要访问当前项目的时候再考虑利用 API Router 来开发。否则尽量使用 ServerAction 以获得更好的性能。
+- **ServerAction**：绝大部分操作数据库都可以用 ServerAction 来处理，例如为 Server 或 Client 组件提供读写数据的能力。Next.js 会为你自动做好代码拆分，保证性能和安全性。
+- **API Routes**：我个人认为，API Router 的存在是为了保证最大的兼容性，所以最好只有在外部系统要访问当前项目的时候，或者功能不适合用 ServerAction 时，再考虑利用 API Router。
 
 你可以参考：
 - 关于挑选客户端和服务端组件：[Rendering: Composition Patterns | Next.js](https://nextjs.org/docs/app/building-your-application/rendering/composition-patterns)
