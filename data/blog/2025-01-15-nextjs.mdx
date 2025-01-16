@@ -52,7 +52,7 @@ Next.js 需要 React 基础，本文不另外讨论，如对 React 感兴趣，�
 
 这里有很多奥妙，而也是我认为 Next.js 最大的一个坑。这里的根源就是在于它会自动拆分代码，一部分运行在服务器，另一部分运行在客户端。
 
-并且，在服务器端，还有两个环境，一个是 Node 环境，另一个是边缘环境（Edge Runtime），前者是服务器主要的运行环境，后者一般用来运行一些轻量级函数，例如中间件。边缘环境受限很多，只能做一些轻量级的操作。
+并且，在服务器端，还有两个环境，一个是 Node 环境，另一个是边缘环境（Edge Runtime），前者是服务器主要的运行环境，后者一般用来运行一些轻量级函数，例如中间件。边缘环境受限很多，只能做一些轻量级的操作。这让编程变得更复杂！
 
 关于两个环境的说明，可移步：[Rendering: Runtimes | Next.js](https://nextjs.org/docs/app/building-your-application/rendering/edge-and-nodejs-runtimes)
 
