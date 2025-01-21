@@ -16,7 +16,7 @@ const siteMetadata = {
   github: 'https://github.com/hansenz42',
   googleSiteVerification: '2nNR6fnkid3ON1sobk49qbls553VW_XxbKkn5jqyFk0',
   zhihu: 'https://www.zhihu.com/people/hnsn42',
-  wechat_qr: '/static/images/qrcode_for_gh.jpg',
+  wechat_qr: '/static/images/qrcode-for-gh.png',
   jianshu: 'https://www.jianshu.com/u/093df07ec856',
   xiaohongshu: 'https://www.xiaohongshu.com/user/profile/5ccdb237000000001200d736',
   // wechat: 'https://www.assen.top/blog/0_navigate_wechat',
