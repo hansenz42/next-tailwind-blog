@@ -51,8 +51,8 @@ const SocialTooltip = ({ kind, image, href, size = 8 }: SocialIconProps) => {
         rel="noopener noreferrer"
         href={href}
       >
-        <span className="tooltip -ml-[300px] -mt-[250px] rounded bg-gray-100 p-1 text-red-500 shadow-lg dark:bg-gray-950 dark:text-gray-200">
-          <Image src={image} alt={kind} width={600} height={225} />
+        <span className="tooltip -ml-[96px] -mt-[230px] rounded bg-gray-100 p-1 text-red-500 shadow-lg dark:bg-gray-950 dark:text-gray-200">
+          <Image src={image} alt={kind} width={190} height={210} />
         </span>
         <span className="sr-only">{kind}</span>
         <SocialSvg
