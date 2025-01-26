@@ -4,9 +4,93 @@ date: 2025-01-21
 tags:
 - 前端
 summary: Cursor 是一个 AI 赋能的自动化 IDE。然而，这个工具如此强大以至于它不仅仅可以用于编码，如有简单的开发经验，还可以很方便地构建一个 AI Agent 工具。
-draft: true
+draft: false
 ---
 
-我用了 Cursor 很长一段时间，发现确实好用。另外，其中的 Composer 功能在升级为 Agent 之后，我发现，Cursor 再也不仅仅是一个 AI 开发工具，它甚至可以集成各种各样的周边控件，成为一个 AI Agent IDE！
+我用了 Cursor 很长一段时间，发现确实好用。
 
-这简直太棒了。
+最近，它的 Composer 在升级为 Agent 之后，我发现，Cursor 再也不仅仅是一个 AI 开发工具，它甚至可以集成各种各样的周边控件，成为一个 AI Agent IDE！
+
+这简直太棒了，比起 FastAPI 这些还需要网络部署的框架，Cursor 更适合开发人员使用。
+
+## 将 Cursor 转变为 Agent 工具
+
+从 Composer 的功能来看，它不仅可以读取和修改代码，还可以查看目录，读取文件，新增、删除文件，最重要的是，它可以**执行指令并查看结果**。
+
+这就意味着，Composer 和我们本地的命令行、文件系统是打通的，我们可以利用它来操作本地计算机。
+
+那么，该如何操作呢？
+
+首先，先明确我们想要做什么。在本文中，我会实现一个带有搜索功能和网络访问功能的 Agent，类似于 metaso 和 perplexity。
+
+要实现搜索 Agent，我们需要两个功能模块，一个是搜索功能，一个是网页访问功能：
+- 搜索我们选用比较好用的 duckduckgo API（需要梯子）
+- 网页访问我们使用 Chromedriver ，也就是操作浏览器来获取网页内容。
+
+做好以上两个功能以后，剩下的就交给 python 啦。🐍
+
+### duckduckgo API
+
+duckduckgo 的访问很简单，使用 duckduckgo_search 包就能实现，给它一个搜索请求，它会返回 JSON 格式的搜索结果，包含标题、链接和简短说明。
+
+既然都用上 Cursor 了，为什么还要自己写代码？直接用 Composer 生成一个 duckduckgo_search 脚本不就行了？
+
+### chrome 爬虫
+
+因为 chrome 是我的主力浏览器，为了把开发环境和日常环境区分开来，我推荐使用 chromium。
+
+虽然 AI 也可以生成这部分代码，但是因为要调用本地机器上的浏览器，调试过程会稍微复杂一点。
+
+所以，我们这里使用的包就是：selenium, webdriver_manager。
+
+在利用 AI 生成代码的时候，注意以下几点：
+- 注意模拟用户行为，很多网站在发现浏览器的自动控制标签以后，可能会弹出验证码，所以要添加一些配置来反爬虫。
+- 注意配置浏览器的路径，因为本地环境中存在两个 chrome，所以要为 webdriver 制定一个 chrome。
+- 注意在本地环境中安装 chromedriver 和 chrome。
+
+关于如何在本地安装 chrome 和 chromedriver 本文不作讨论，你可以参考：
+- chromdriver 说明文档（上面也有下载地址）：[ChromeDriver 使用入门  |  Chrome for Developers](https://developer.chrome.com/docs/chromedriver/get-started?hl=zh-cn)
+- chromimum 下载：[Home](https://www.chromium.org/chromium-projects/)
+
+### 关于 python 环境
+
+python 的环境永远是一个需要关注的问题。有多种方案可以选择，你可以用 pipenv、conda、或者 poetry，当然也可以直接用系统环境。
+
+为了方便起见，我这里直接使用 conda 。
+
+## 配置 Cursor
+
+当以上三个功能用 Python 脚本实现以后，我们还应该告诉 Cursor 这三个脚本的位置以及如何调用。
+
+关于这个配置，你可以在用提示词的方式写在 `.cursorrules` 文件里。我的项目里内容如下：
+
+```
+请使用中文。
+
+你可以在互联网上搜索并总结内容。
+
+当你觉得你需要搜索互联网时，按照以下步骤执行：
+1. 调用 `python3 -m tools.search "{query}"` 来搜索。在搜索结果中，的 href 为 url 链接。控制台将输出搜索结果路径。
+2. 阅读步骤1输出的文件，根据链接的权威性，挑选最相关的 10 条链接。
+3. 调用 `python3 -m tools.web_access {url1} {url2} ...` 访问你选出的链接。你可以传递多个链接作为参数，尽管示例中仅有两个，执行完成后，控制台将输出文件路径。
+4. 阅读步骤3输出的文件，总结答案，在答案中告诉我你参考了哪些资料
+
+在第二步筛选搜索结果的过程中，你认为以下来源最权威（不要加入到搜索请求中）：
+- 维基百科
+- 百度百科
+- 其他权威的数据来源
+```
+
+在以上提示词中，我指定了搜索指令和网页访指令，在使用 Composer 时，Cursor 会自行判断是否要调用搜索，并执行正确的指令。
+
+当然，你完全可以根据你的需求修改提示词。
+
+## 最终的效果
+
+最终，我们只需要在 Composer 中以 Agent 方式运行我们的指令即可，你可以看到 Agent 执行的每一个步骤及其相应的结果。
+
+![](/static/blog/2025-01-21-cursor-ai/screenshot.png)
+
+嗯，很好，看起来结果还不错。
+
+不仅如此，你还可以利用 Python 脚本实现更多的功能来让 Cursor 执行。咱们之需要指定好输入和输出就行了。
