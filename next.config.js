@@ -83,6 +83,15 @@ module.exports = () => {
     async headers() {
       return [
         {
+          source: '/acme-challenge/(.*)',
+          headers: [
+            {
+              key: 'Content-Type',
+              value: 'text/plain',
+            },
+          ],
+        },
+        {
           source: '/(.*)',
           headers: securityHeaders,
         },
