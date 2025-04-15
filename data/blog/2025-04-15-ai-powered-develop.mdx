@@ -74,9 +74,7 @@ def get_user_info(parameter: Paramter) -> Result:
 
 举个例子：
 
-```plaintext
-在 src/service 目录中生成一个 ParameterService.py 用于处理来自上游传递来的 xml 参数。你需要将这些参数翻译成为 ffmpeg 参数。xml 文件示例位于 @api_demo.xml ，其中参数说明位于 @common_api_spec.csv 和 @spec_api_spec.csv 。你需要自定义 pydantic datamodel 用于定义参数字段。该模块的下游是 @ffmpeg_service.py ，上游是 @ffmpeg_route.py。
-```
+> 在 src/service 目录中生成一个 ParameterService.py 用于处理来自上游传递来的 xml 参数。你需要将这些参数翻译成为 ffmpeg 参数。xml 文件示例位于 @api_demo.xml ，其中参数说明位于 @common_api_spec.csv 和 @spec_api_spec.csv 。你需要自定义 pydantic datamodel 用于定义参数字段。该模块的下游是 @ffmpeg_service.py ，上游是 @ffmpeg_route.py。
 
 ## 总结
 
