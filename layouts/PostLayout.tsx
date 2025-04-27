@@ -9,7 +9,7 @@ import Image from '@/components/Image'
 import Tag from '@/components/Tag'
 import siteMetadata from '@/data/siteMetadata'
 import ScrollTopAndComment from '@/components/ScrollTopAndComment'
-import CreativeCommonsLicense from "@/components/CreativeCommons";
+import CreativeCommonsLicense from '@/components/CreativeCommons'
 
 const editUrl = (path) => `${siteMetadata.siteRepo}/blob/main/data/${path}`
 const discussUrl = (path) =>
@@ -103,7 +103,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                 {/*{` • `}*/}
                 {/*<Link href={editUrl(filePath)}>View on GitHub</Link>*/}
                 {/*{` • `}*/}
-                <CreativeCommonsLicense/>
+                <CreativeCommonsLicense />
               </div>
               {siteMetadata.comments && (
                 <div
