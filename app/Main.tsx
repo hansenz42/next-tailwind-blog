@@ -16,30 +16,37 @@ export default function Home({ posts }) {
 
   return (
     <>
-      <div className="my-6 flex flex-col items-center justify-between xl:mb-12 xl:flex-row">
-        <div className="my-6 mr-8 flex">
-          {avatar && (
-            <Image src={avatar} alt="avatar" width={192} height={192} className="rounded-full" />
-          )}
+      <div className="my-20 space-y-2 pt-6 md:space-y-5">
+        <div className="space-y-2 xl:grid xl:grid-cols-4 xl:items-center xl:space-y-0">
+          <div className="flex items-center justify-center xl:justify-start xl:pl-8">
+            {avatar && (
+              <Image
+                src={avatar}
+                alt="avatar"
+                width={160}
+                height={160}
+                className="rounded-full shadow-md transition-shadow duration-300 hover:shadow-lg"
+              />
+            )}
+          </div>
+          <div className="space-y-4 text-center xl:col-span-3 xl:text-left">
+            <h1 className="text-3xl leading-9 font-extrabold tracking-tight text-gray-900 sm:text-4xl sm:leading-10 dark:text-gray-100">
+              {mainContent.name}
+            </h1>
+            <h2 className="prose text-lg text-gray-600 dark:text-gray-400">
+              {siteMetadata.description}
+            </h2>
+            <h2 className="prose text-lg text-gray-600 dark:text-gray-400">
+              我会把我的思考写成文章放在这里，同时我会把结构化的笔记放在
+              <span className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
+                <Link href="https://garden.assen.top">知识库</Link>
+              </span>
+              ，希望我的笔记对你有用。
+            </h2>
+          </div>
         </div>
       </div>
-      <div className="divide-y divide-gray-200 dark:divide-gray-700">
-        <div className="space-y-2 pt-6 pb-8 md:space-y-5">
-          <h1 className="text-3xl leading-9 font-extrabold tracking-tight text-gray-900 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14 dark:text-gray-100">
-            Latest
-          </h1>
-          <h2 className="prose text-lg text-gray-600 dark:text-gray-400">
-            {siteMetadata.description}
-          </h2>
-          <h2 className="prose text-lg text-gray-600 dark:text-gray-400">
-            我会把我的思考写成文章放在这里，同时我会把结构化的笔记放在
-            <span className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
-              <Link href="https://garden.assen.top">知识库</Link>
-            </span>
-            ，希望我的笔记对你有用。
-          </h2>
-        </div>
-      </div>
+      <div className="my-4 border-t border-gray-200 dark:border-gray-700"></div>
       <div className="divide-y divide-gray-200 dark:divide-gray-700">
         <ul className="divide-y divide-gray-200 dark:divide-gray-700">
           {!posts.length && 'No posts found.'}
