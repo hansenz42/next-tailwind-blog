@@ -18,7 +18,7 @@ export default function Home({ posts }) {
     <>
       <div className="my-20 space-y-2 pt-6 md:space-y-5">
         <div className="space-y-2 xl:grid xl:grid-cols-4 xl:items-center xl:space-y-0">
-          <div className="space-y-4 text-center xl:col-span-4 mx-auto max-w-3xl">
+          <div className="mx-auto max-w-3xl space-y-4 text-center xl:col-span-4">
             <div className="text-9xl">👋</div>
             <h1 className="text-3xl leading-9 font-extrabold tracking-tight text-gray-900 sm:text-4xl sm:leading-10 dark:text-gray-100">
               &nbsp;&nbsp;&nbsp;你好，我是{mainContent.name}
