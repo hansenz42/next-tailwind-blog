@@ -21,9 +21,8 @@ const projectsData: Project[] = [
   },
   {
     title: 'MindGraph | 小红书分享图生成器',
-    description:
-      '使用一段文字，生成可以分享到小红书的图片，DeepSeek + HTML + Canvas 生成并渲染',
-    imgSrc: '/static/images/project-garden.png',
+    description: '使用一段文字，生成可以分享到小红书的图片，DeepSeek + HTML + Canvas 生成并渲染',
+    imgSrc: '/static/images/project-mindgraph.png',
     href: 'https://mindgraph.assen.top',
   },
 ]
