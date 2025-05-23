@@ -3,8 +3,7 @@ const siteMetadata = {
   title: '阿森毛不多',
   author: '浩森Hansen',
   headerTitle: '阿森毛不多',
-  description:
-    '欢迎来到我的博客，我喜欢计算机的与数学的一切。',
+  description: '欢迎来到我的博客，我喜欢计算机与数学的一切。',
   language: 'zh-cn',
   theme: 'system', // system, dark or light
   siteUrl: 'https://www.assen.top',
