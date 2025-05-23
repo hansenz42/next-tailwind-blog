@@ -13,15 +13,15 @@ const projectsData: Project[] = [
   //   href: 'https://suspect.assen.top',
   // },
   {
-    title: '我的个人知识库',
+    title: '个人知识库',
     description:
-      '使用 Obsidian 双链笔记知识库，涵盖计算机科学、数学、机器学习、软件工程、文史哲的个人知识库笔记。',
+      '使用 Obsidian 双链笔记知识库，涵盖计算机科学、数学、机器学习、软件工程、文史哲的个人笔记。',
     imgSrc: '/static/images/project-garden.png',
     href: 'https://garden.assen.top',
   },
   {
     title: 'MindGraph | 小红书分享图生成器',
-    description: '使用一段文字，生成可以分享到小红书的图片，DeepSeek + HTML + Canvas 生成并渲染',
+    description: '使用一段文字，生成可以小红书风格的图片，DeepSeek + HTML + Canvas 生成并渲染',
     imgSrc: '/static/images/project-mindgraph.png',
     href: 'https://mindgraph.assen.top',
   },
