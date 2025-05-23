@@ -13,7 +13,7 @@ export default function Projects() {
             Projects
           </h1>
           <p className="text-lg leading-7 text-gray-500 dark:text-gray-400">
-            实践，是对知识最好的验证手段。
+            实践的目的，在于验证知识的正确性。
           </p>
         </div>
         <div className="container py-12">
