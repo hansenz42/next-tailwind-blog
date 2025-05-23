@@ -4,7 +4,7 @@ const siteMetadata = {
   author: 'Hansen Zheng',
   headerTitle: '阿森毛不多',
   description:
-    '欢迎来到我的博客，我喜欢思考、写作，还有和计算机相关的一切。',
+    '欢迎来到我的博客，我喜欢计算机的一切、数学还有思考。',
   language: 'zh-cn',
   theme: 'system', // system, dark or light
   siteUrl: 'https://www.assen.top',
