@@ -1,0 +1,57 @@
+---
+title: 带思维链的 AI 解决问题的上限在哪里？
+date: 2025-05-25
+tags:
+- 人工智能
+summary: 不必再焦虑了，AI 解决不了所有问题……
+draft: false
+---
+
+## AI 上限的数学证明
+
+之前万维钢在《精英日课6》里有一篇文章讲到思维链，他说，“使用[思维链](https://garden.assen.top/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%80%9D%E7%BB%B4%E9%93%BE)的 [Transformer](https://garden.assen.top/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/Transformer)，可以解决‘一切’数学问题”。
+
+我看了这篇文章中引用资料的论文，仔细阅读了之后，这个说法并不准确。
+
+论文中的原文是：
+
+> “Taking T to be polynomial in the sequence length, the result suggests that transformers with polynomially many intermediate steps are capable of computing all circuits in with polynomial size, P/poly, a superclass of P.”
+
+翻译一下，正确的说法应该是，"可以解决一切**[P问题](https://garden.assen.top/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/P-NP%E9%97%AE%E9%A2%98)**的超集"。
+
+另外解释一下，“P 问题”在计算复杂度理论中的意思是“在我们常见的计算机上，在多项式时间内可解决的问题”。
+
+说明两个点：
+- “常见的计算机”指的是我们的现代计算机，也是“确定性[图灵机](https://garden.assen.top/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E5%9B%BE%E7%81%B5%E6%9C%BA)”。
+- “多项式时间”是指在计算时间可以用多项式表示，即为花费的时间可以用类似于 $ax^2 + bx + c$ 这样的公式表示，另外，形如指数函数 $2^x$ 就不算是多项式。
+
+所以，P 问题在计算机中不属于一个很复杂的数学问题，P 问题之外还有 NP、NP-hard、NP-complete 等等。
+
+另外，论文中还证明了思维链对 Transformer 能力的加成。
+
+## 思维链对模型能力的加成
+
+当前的文字生成式 AI 主要还是基于 Transformer 和[注意力机制](https://garden.assen.top/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6)的，例如 GPT、Claude、llama 等。
+
+论文说明，限制大语言模型的，有两个参数：
+- 嵌入规模 (embedding size)，类似于模型的“词汇量”的大小。
+- 深度 (depth)，类比到模型的“反思”能力。
+
+![](/static/blog/2025-05-28-ai-problem-upperbound/image-from-paper.png)
+
+嵌入规模越大，深度越深，模型处理问题的能力越强。
+
+论文进一步证明，在没有思维链的情况下，模型解决问题的能力受制于模型本身的深度 T，对于过于复杂的问题，模型很可能给出错误的答案。
+
+这与我日常使用 AI 的直觉相符。没有开启思维链的模型，似乎更加“单纯”，会使用它的“直觉”给出答案。就像是小学生上课回答问题，脱口而出错误答案。
+
+而使用了思维链之后，模型不断反思自己的输出，然后在每次输出的基础上再整理、改进，给出更准确的答案。这就好像一个会反思的哲学家，总是要先在脑海里面思考之后再给出回答。
+
+使用了思维链的模型，相当于成倍加深了模型的深度 T*n，而这样的分步处理可以解决更复杂的问题。
+
+也许，家人经常说我“说话不过脑子”，大概也是没有开启“思维链”的原因吧！哈哈。
+
+## 参考文献
+
+- [关于 OpenAI o1 的几个认识 - 得到APP](https://www.dedao.cn/course/article?id=zl12vGeNAM0YVpPqQMVdmxjOQBP5oL)
+- [[2402.12875] Chain of Thought Empowers Transformers to Solve Inherently Serial Problems](https://arxiv.org/abs/2402.12875)
