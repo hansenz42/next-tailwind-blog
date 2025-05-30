@@ -17,7 +17,7 @@ const siteMetadata = {
   zhihu: 'https://www.zhihu.com/people/hnsn42',
   wechat_qr: '/static/images/qrcode-for-gh.png',
   // jianshu: 'https://www.jianshu.com/u/093df07ec856',
-  xiaohongshu: 'https://www.xiaohongshu.com/user/profile/5ccdb237000000001200d736',
+  // xiaohongshu: 'https://www.xiaohongshu.com/user/profile/5ccdb237000000001200d736',
   // wechat: 'https://www.assen.top/blog/0_navigate_wechat',
   // x: 'https://twitter.com/x',
   // twitter: 'https://twitter.com/Twitter',
