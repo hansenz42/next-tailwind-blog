@@ -11,7 +11,7 @@ const siteMetadata = {
   siteLogo: '/static/images/logo.png',
   socialBanner: '/static/images/twitter-card.png',
   // mastodon: 'https://mastodon.social/@mastodonuser',
-  email: 'assenz42@outlook.com',
+  email: 'hansenz42@outlook.com',
   github: 'https://github.com/hansenz42',
   googleSiteVerification: '2nNR6fnkid3ON1sobk49qbls553VW_XxbKkn5jqyFk0',
   zhihu: 'https://www.zhihu.com/people/hnsn42',
