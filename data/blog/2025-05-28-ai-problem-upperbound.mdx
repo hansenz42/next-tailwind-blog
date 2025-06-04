@@ -9,7 +9,7 @@ draft: false
 
 ## AI 上限的数学证明
 
-之前万维钢在《精英日课6》里有一篇文章讲到思维链，他说，“使用[思维链](https://garden.assen.top/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%80%9D%E7%BB%B4%E9%93%BE)的 [Transformer](https://garden.assen.top/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/Transformer)，可以解决‘一切’数学问题”。
+之前万维钢在《精英日课6》里有一篇文章讲到思维链，他说，“使用[思维链](https://garden.assen.top/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%90%86%E8%AE%BA/%E6%80%9D%E7%BB%B4%E9%93%BE)的 [Transformer](https://garden.assen.top/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%90%86%E8%AE%BA/Transformer)，可以解决‘一切’数学问题”。
 
 我看了这篇文章中引用资料的论文，仔细阅读了之后，这个说法并不准确。
 
@@ -17,12 +17,12 @@ draft: false
 
 > Taking T to be polynomial in the sequence length, the result suggests that transformers with polynomially many intermediate steps are capable of computing all circuits in with polynomial size, P/poly, a superclass of P.
 
-翻译一下，正确的说法应该是，“可以解决一切[P问题](https://garden.assen.top/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/P-NP%E9%97%AE%E9%A2%98)的超集”。
+翻译一下，正确的说法应该是，“可以解决一切[P问题](https://garden.assen.top/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%90%86%E8%AE%BA/P-NP%E9%97%AE%E9%A2%98)的超集”。
 
 另外解释，“P 问题”在计算复杂度理论中的意思是“在我们常见的计算机上，在多项式时间内可解决的问题”。
 
 说明两个点：
-- “常见的计算机”指的是我们的现代计算机，也是“确定性[图灵机](https://garden.assen.top/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E5%9B%BE%E7%81%B5%E6%9C%BA)”。
+- “常见的计算机”指的是我们的现代计算机，也是“确定性[图灵机](https://garden.assen.top/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%90%86%E8%AE%BA/%E5%9B%BE%E7%81%B5%E6%9C%BA)”。
 - “多项式时间”是指在计算时间可以用[多项式](https://garden.assen.top/%E6%95%B0%E5%AD%A6/%E5%A4%9A%E9%A1%B9%E5%BC%8F)表示，即为花费的时间可以用类似于 $ax^2 + bx + c$ 这样的公式表示，另外，形如指数函数 $2^x$ 就不算是多项式。
 
 所以一般来说，P 问题被认为是计算机可以高效解决的问题，例如排序问题。
@@ -31,7 +31,7 @@ draft: false
 
 ## 思维链对模型能力的加成
 
-当前的文字生成式 AI 主要还是基于 Transformer 和[注意力机制](https://garden.assen.top/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6)的，例如 GPT、Claude、llama 等。
+当前的文字生成式 AI 主要还是基于 Transformer 和[注意力机制](https://garden.assen.top/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%90%86%E8%AE%BA/%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6)的，例如 GPT、Claude、llama 等。
 
 论文说明，限制大语言模型的，有两个参数：
 - 嵌入规模 (embedding size)，类似于模型的“词汇量”的大小。
