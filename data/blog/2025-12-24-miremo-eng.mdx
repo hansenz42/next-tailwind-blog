@@ -1,0 +1,60 @@
+---
+title: Why Develop a Note-Taking App?
+date: 2025-12-24
+tags:
+- product
+summary: The motivations behind developing Miremo, some thoughts on its product design, and AI.
+draft: false
+---
+
+It's been six months since the last blog update. During this time, I’ve been developing a note-taking app called Miremo.
+
+Why build this app? There are two main motivations:
+
+First, seeing AI capabilities grow stronger each year, I wanted to explore how far Vibe Coding[^1] could really go, while also honing my own ability to collaborate with AI.
+
+Second, because I enjoy reading, I've often felt that no existing note-taking app perfectly solves my knowledge management needs. I've seen numerous product managers study note-taking software, along with various methodologies. However, these are often overly complex with a high learning curve. Moreover, if the initial note structure isn't right, you end up spending a huge amount of time "refactoring" notes later—much like code. Personally, I believe this approach is fundamentally flawed.
+
+Note-taking should be "easy and natural": **quick to store, convenient to retrieve**. That is the ultimate form a note-taking app should take. If you have to spend a lot of time thinking about questions like "What should my note structure be?" or "What kind of note-taking suits me?", you've already strayed from the original purpose of note-taking.
+
+Yet in practice, I've found a natural contradiction between "recording naturally" and "structuring knowledge." If notes are recorded without considering structure, they become difficult to query and cumbersome to organize later.
+
+This led me to wonder: **Can AI help us bridge this gap?**
+
+So, I embarked on a bold experiment: Miremo. Miremo's philosophy is: **Jot it down, let knowledge connect automatically.** It's essentially an AI-powered "personal knowledge base."
+
+![](/static/blog/2025-12-24-miremo/miremo.png)
+
+<center>
+  <small>
+    Jot it down, let knowledge connect automatically!
+  </small>
+</center>
+
+When it comes to note-taking apps, I greatly admire Flomo's frictionless recording, Logseq's rigorous knowledge structure, and Notion's design sensibility. Each of these apps has its own design philosophy and dedicated fans, which is all great.
+
+My hope is that Miremo becomes a tool that **"genuinely helps users manage knowledge and ideas,"** while also carrying a certain rational, tech-minded气质 😉.
+
+Regarding note indexing, as a computer engineer, I deeply understand the importance of indexing for information. Therefore, the solution I designed for Miremo is: **an outline-style tagging system combined with a knowledge graph index structure**, with all information then processed for RAG (Retrieval-Augmented Generation) to facilitate AI-powered retrieval.
+
+All users need to do is "write cards and add tags." AI then helps organize a "current understanding" for each tag. Additionally, the generation of the knowledge graph index is completely seamless to the user—AI handles it all behind the scenes. This will prove extremely useful for future knowledge retrieval.
+
+With this idea in mind, I started development. Since I still have my full-time job, Miremo could only occupy my spare time. Though busy, it has been incredibly meaningful.
+
+The biggest takeaway from this process is how powerful AI is. Work that once required an entire team can now be accomplished by a single person. I took on the roles of product manager, UI designer, frontend developer, and backend developer. The tech stack spanned from Python, PostgreSQL, vector search, and full-text search to Agent development and Next.js.
+
+It's truly remarkable—this era is the best time ever to be a software engineer. These past six months have also been my best practice in Vibe Coding.
+
+![](/static/blog/2025-12-24-miremo/screenshot.jpg)
+
+<center>
+  <small>
+    On the left is my Logseq notes, on the right is Miremo. Now, Miremo has become one of my most frequently used note-taking apps alongside Logseq! 🎉
+  </small>
+</center>
+
+The product is now taking shape. I will gradually migrate my notes to Miremo and continue its development. I hope you'll be able to try it out in the not-too-distant future.
+
+Project homepage: [Miremo](https://www.miremoapp.com)
+
+[^1]: Vibe Coding, or atmosphere coding, essentially refers to AI-assisted programming. Since AI is already quite proficient at handling programming language syntax and simple algorithms, programmers can code while listening to music, soaking in the "vibe."
