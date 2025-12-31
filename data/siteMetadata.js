@@ -1,8 +1,8 @@
 /** @type {import("pliny/config").PlinyConfig } */
 const siteMetadata = {
-  title: '阿森毛不多',
+  title: '阿森毛不多 Hansen',
   author: '浩森Hansen',
-  headerTitle: '阿森毛不多',
+  headerTitle: '阿森毛不多 Hansen',
   description: '',
   language: 'zh-cn',
   theme: 'system', // system, dark or light
