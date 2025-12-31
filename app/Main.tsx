@@ -21,7 +21,7 @@ export default function Home({ posts }) {
           <div className="mx-auto max-w-3xl space-y-4 text-center xl:col-span-4">
             <div className="text-9xl">👋</div>
             <h1 className="text-3xl leading-9 font-extrabold tracking-tight text-gray-900 sm:text-4xl sm:leading-10 dark:text-gray-100">
-              &nbsp;&nbsp;&nbsp;你好，我是{mainContent.name}
+              &nbsp;&nbsp;&nbsp;你好，我是{mainContent.name} (Hello, I am {mainContent.name})
             </h1>
             <h2 className="prose text-lg text-gray-600 dark:text-gray-400">
               {siteMetadata.description}
@@ -31,7 +31,11 @@ export default function Home({ posts }) {
               <span className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
                 <Link href="https://garden.assen.top">🗄️知识库</Link>
               </span>
-              ，开卷有益。
+              ，开卷有益。 (Writing is thinking, and there are more notes stored in
+              <span className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
+                <Link href="https://garden.assen.top">🗄️Knowledge Base</Link>
+              </span>
+              , reading is beneficial.)
             </h2>
           </div>
         </div>
