@@ -1,0 +1,59 @@
+---
+title: Why AI Isn't Good at Subtraction?
+date: 2026-02-25
+tags:
+- Artificial Intelligence
+summary: Subtraction requires more courage than addition...
+draft: false
+---
+
+I recently noticed an interesting trait of AI: it likes to pile on extra layers.
+
+## AI Likes Addition
+
+These past few days I was working on a web project that needed to handle user click events on some pages. Because of how React behaves, some parts kept re-rendering, which caused flickering in the UI.
+
+Since the codebase involved a lot of moving parts, I asked Claude for help: I briefly described the problem and asked it to help me modify the code.
+
+Claude's suggestion was simple: “Add a guard in the click handler that prevents unnecessary duplicate renders,” and then it added about ten lines of code.
+
+The issue was resolved, but the change undeniably increased complexity and didn't address the root cause.
+
+After several rounds of back-and-forth with Claude, I tried to steer it toward finding the root cause. Claude kept proposing variations that all meant adding more checks — it kept adding rather than simplifying — and it couldn't find the final root cause.
+
+Eventually I read through the code myself, found the actual problem, redesigned the event handling, and only then presented my revised approach to Claude to finish the fix.
+
+That made me wonder: why does AI prefer addition?
+
+## Subtraction Takes Courage
+
+After reviewing the basics of reinforcement learning, it’s clear that RL optimizes behavior by using samples gathered during exploration; in agent scenarios it's a step-by-step, incremental optimization process.
+
+From this perspective, Claude is designed as a programming agent whose metric of success is whether the code runs without errors.
+
+Whether the code is elegant or whether it addresses the root cause does not seem to be part of that design metric.
+
+Deleting code arbitrarily can break project structure, while adding code is generally safer and easier.
+
+I've encountered this many times and asked programmer friends — they reported the same frustration: when people use AI without thinking, they end up piling up messy code, and the project becomes harder to maintain.
+
+In short, addition solves the problem, while subtraction requires courage.
+
+In my post [When I work with AI, what exactly am I doing?](/blog/2026-02-13-ai-think-eng) I discussed limits of AI from a mathematical perspective.
+
+Viewed this way, subtraction goes beyond pure math.
+
+Questions such as:
+- Where is the real root cause of this bug?
+- How should this project be designed?
+- How should the code be implemented to best match the project's needs?
+
+These questions current AIs seem unable to fully answer. Framing them as mathematical modeling problems is still difficult.
+
+But perhaps in the not-too-distant future, these problems will also be solvable by mathematics.
+
+Twenty years ago, natural language was a problem that computer science struggled to formalize. Today we can have fluent conversations with AI.
+
+---
+
+Haosen, Lunar New Year Day 9, 2026
