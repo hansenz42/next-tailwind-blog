@@ -20,13 +20,6 @@ const projectsData: Project[] = [
     imgSrc: '/static/images/project-garden.png',
     href: 'https://garden.assen.top',
   },
-  {
-    title: 'JSON Sampler | JSON 简短示例生成工具',
-    description:
-      '写技术文档时，是否因为 JSON 列表过长而困扰？JSON Sampler 可对 JSON 中的列表采样，生成一个简短的 JSON 示例。When writing technical documentation, do you struggle with long JSON lists? JSON Sampler can sample lists in JSON to generate a concise JSON example.',
-    imgSrc: '/static/images/project-sampler.png',
-    href: 'https://sampler.assen.top',
-  },
 ]
 
 export default projectsData

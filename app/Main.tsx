@@ -19,7 +19,7 @@ export default function Home({ posts }) {
       <div className="my-20 space-y-2 pt-6 md:space-y-5">
         <div className="space-y-2 xl:grid xl:grid-cols-4 xl:items-center xl:space-y-0">
           <div className="mx-auto max-w-3xl space-y-4 text-center xl:col-span-4">
-            <div className="text-9xl">👋</div>
+            <div className="text-8xl">👋</div>
             <h1 className="text-3xl leading-9 font-extrabold tracking-tight text-gray-900 sm:text-4xl sm:leading-10 dark:text-gray-100">
               I am {mainContent.name}
             </h1>
@@ -27,18 +27,31 @@ export default function Home({ posts }) {
               {siteMetadata.description}
             </h2>
             <h2 className="prose text-lg text-gray-600 dark:text-gray-400">
-              写作即思考，另有
+              我是一名全栈开发者。
+              <br />
+              目前正在开发
+              <span className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
+                <Link href="https://www.miremoapp.com">🤔 Agentic 知识管理工具</Link>
+              </span>
+              <br />
+              另外还有
               <span className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
                 <Link href="https://garden.assen.top">🗄️知识库</Link>
               </span>
-              ，开卷有益。
+              ，记录计算机、算法、AI等的思考。
             </h2>
             <h2 className="prose text-lg text-gray-600 dark:text-gray-400">
-              Writing is thinking, and check more notes in &nbsp;
+              I am a full-stack developer.
+              <br />
+              currently building an
               <span className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
-                <Link href="https://garden.assen.top">🗄️Knowledge Base</Link>
+                <Link href="https://www.miremoapp.com">🤔 Agentic Knowledge Management WebApp</Link>
               </span>
-              &nbsp;, reading is beneficial.
+              <br />I also maintain a
+              <span className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
+                <Link href="https://garden.assen.top">🗄️ Knowledge Base</Link>
+              </span>
+              , where I record my thoughts on computer science, algorithms, and AI.
             </h2>
           </div>
         </div>
