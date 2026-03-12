@@ -17,7 +17,7 @@ const Header = () => {
       <Link href="/" aria-label={siteMetadata.headerTitle}>
         <div className="flex items-center justify-between">
           {typeof siteMetadata.headerTitle === 'string' ? (
-            <div className="hidden items-center text-2xl font-semibold sm:flex">
+            <div className="items-center text-2xl font-semibold sm:flex">
               {siteMetadata.headerTitle}
             </div>
           ) : (
