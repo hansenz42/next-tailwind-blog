@@ -19,7 +19,17 @@ export default function Home({ posts }) {
       <div className="my-20 space-y-2 pt-6 md:space-y-5">
         <div className="space-y-2 xl:grid xl:grid-cols-4 xl:items-center xl:space-y-0">
           <div className="mx-auto max-w-3xl space-y-4 text-center xl:col-span-4">
-            <div className="text-8xl">👋</div>
+            <div className="mx-auto">
+              <div className="mx-auto flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border-2 border-gray-200 dark:border-gray-700">
+                <Image
+                  src="/static/images/avatar.png"
+                  alt={mainContent.name}
+                  width={92}
+                  height={92}
+                  className="object-cover"
+                />
+              </div>
+            </div>
             <h1 className="text-3xl leading-9 font-extrabold tracking-tight text-gray-900 sm:text-4xl sm:leading-10 dark:text-gray-100">
               I am {mainContent.name}
             </h1>
