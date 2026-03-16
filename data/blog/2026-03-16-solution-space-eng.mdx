@@ -1,0 +1,75 @@
+---
+title: The "Solution Space" and How to Use AI Effectively
+date: 2026-03-16
+tags:
+- Artificial Intelligence
+summary: Why can't you produce decent results with AI?
+draft: false
+---
+
+Have you ever noticed that some people can use AI to create polished videos, write beautiful articles, or build fully-featured apps — while you struggle to get anything effective out of the same tools?
+
+After studying deep learning theory I realized the way AI works is different from what most people imagine.
+
+I recently watched a video on Bilibili that uses the video-generation model Seedance as an example. It explains the underlying mechanics of AI clearly — below I summarize the main points and add my own thoughts.
+
+[【闪客】AI视频的底层诅咒！Seedance2.0真的很牛吗？_哔哩哔哩_bilibili](https://www.bilibili.com/video/BV1buFdz9EYb/?spm_id_from=333.1007.top_right_bar_window_history.content.click&vd_source=751cbb28c5c4838f8f8b5d7d3261bdc3)
+
+**Anyone who uses AI should understand this principle.**
+
+## AI Is Essentially a "Function"
+
+At heart, AI is a mathematical model — not unlike a function.
+
+If you remember basic algebra, a simple linear equation looks like:
+
+$$y = wx + b$$
+
+Here $x$ is the input (for example user input), $y$ is the output, and $w$ and $b$ are parameters.
+
+That's a two-parameter function; large AI models are the same idea but with billions of parameters. The scale changes, but the fundamental nature does not.
+
+**AI is a function with an enormous number of parameters.**
+
+Where do these parameters come from? They are learned from massive amounts of data. The AI "summarizes" patterns from data and stores them as parameters inside the model.
+
+## Generation with AI Is Essentially "Solving"
+
+When you ask AI to generate a video, you are asking it to "solve" a mapping: given your input $x$ (the prompt), what should the output $y$ be?
+
+The AI computes $y$ using its learned parameters and arithmetic operations — and the result is the generated video.
+
+But here's the key issue:
+
+**A single input $x$ can correspond to many possible outputs $y$.**
+
+For example, if you tell AI: "Please generate a video of a dog running," the possible solutions might include:
+- A corgi running around on grass.
+- 101 spotted dogs sprinting across a snowy field with branches.
+- A short-faced Shiba Inu, carrying a shield in its left paw and a sword in its right, running into my living room toward my girlfriend, slashing once, and shouting: "My sword-and-shield."
+
+There can be thousands — even millions — of such solutions, which together form a "solution space."
+
+The video the AI returns is simply one carefully selected element from that solution space.
+
+The selection process can be stochastic (random) or guided by what the AI judges to best match your prompt.
+
+![](/static/blog/2026-03-16-solution-space/solution.png)
+
+## Your Input Defines the "Solution Space"
+
+So how can you get effective results from AI? I believe you need to do at least the following:
+
+**First — think and clarify your requirements.** You must decide what you actually want instead of outsourcing the entire thinking process to the AI. Vague or unrealistic requests such as "Make a gorgeous, high-end video for me" or "Increase the funds in my bank account tenfold" are meaningless.
+
+**Second — express your requirements correctly.** Clear, non-contradictory prompts matter. If your prompt is ambiguous or contains conflicting instructions, don't expect valuable output. Practice writing and reading carefully. Some AI tools accept modalities beyond text (e.g., motion data, reference images or videos), so provide them when possible.
+
+**Third — iterate on prompts.** After the AI returns a result you might notice shortcomings in your prompt. Revise the prompt, add constraints, and try again.
+
+The core idea: **make the solution space as close as possible to your expected range of outputs.**
+
+Of course, the AI's solution space is finite; if your desired outcome lies outside that space, the AI cannot help.
+
+---
+
+Hansen, 2026-03-16
