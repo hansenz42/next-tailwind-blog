@@ -20,6 +20,12 @@ const projectsData: Project[] = [
     imgSrc: '/static/images/project-garden.png',
     href: 'https://garden.assen.top',
   },
+  {
+    title: '雅典学院 ｜ The School of Athens',
+    description: '知乎 x SecondMe 联合黑客马拉松项目，一个 A2A 的知识讨论和分享平台',
+    imgSrc: '/static/images/project-athena-bulletin.jpg',
+    href: 'https://secondme-athens.assen.top',
+  },
 ]
 
 export default projectsData
