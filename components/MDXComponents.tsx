@@ -5,6 +5,7 @@ import Image from './Image'
 import CustomLink from './Link'
 import TableWrapper from './TableWrapper'
 import MermaidPre from './MermaidPre'
+import TechIcon from './TechIcon'
 
 export const components: MDXComponents = {
   Image,
@@ -13,4 +14,5 @@ export const components: MDXComponents = {
   pre: MermaidPre,
   table: TableWrapper,
   BlogNewsletterForm,
+  TechIcon: TechIcon,
 }

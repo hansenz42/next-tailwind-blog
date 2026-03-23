@@ -43,12 +43,6 @@ export default function Home({ posts }) {
               <span className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
                 <Link href="https://www.miremoapp.com">🤔 Agentic 知识管理工具</Link>
               </span>
-              <br />
-              另外还有
-              <span className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
-                <Link href="https://garden.assen.top">🗄️知识库</Link>
-              </span>
-              ，记录计算机、算法、AI等的思考。
             </h2>
             <h2 className="prose text-lg text-gray-600 dark:text-gray-400">
               I am a full-stack developer.
@@ -57,11 +51,6 @@ export default function Home({ posts }) {
               <span className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
                 <Link href="https://www.miremoapp.com">🤔 Agentic Knowledge Management WebApp</Link>
               </span>
-              <br />I also maintain a
-              <span className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
-                <Link href="https://garden.assen.top">🗄️ Knowledge Base</Link>
-              </span>
-              , where I record my thoughts on computer science, algorithms, and AI.
             </h2>
           </div>
         </div>
