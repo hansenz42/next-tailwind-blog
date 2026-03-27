@@ -37,7 +37,7 @@ export default function Home({ posts }) {
               {siteMetadata.description}
             </h2>
             <h2 className="prose text-lg text-gray-600 dark:text-gray-400">
-              全栈开发者。从事后端数据系统开发 3 年，创业 5 年，创业项目为行业 SaaS 平台。
+              全栈开发者。从事后端系统开发 3 年，技术负责人 5 年，项目为行业 SaaS 平台。
               <br />
               目前正在开发
               <span className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
@@ -45,8 +45,8 @@ export default function Home({ posts }) {
               </span>
             </h2>
             <h2 className="prose text-lg text-gray-600 dark:text-gray-400">
-              Full-stack developer. Previously worked on backend data systems for three years and
-              spent five years as a founder building an industry SaaS platform.
+              Full-stack developer. Backend system development for 3 years, technical lead for 5
+              years, projects in the industry SaaS platform.
               <br />
               Currently developing the
               <span className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
