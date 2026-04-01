@@ -1,0 +1,56 @@
+---
+title: What Should Software Engineering Look Like in the AI Era?
+date: 2026-03-31
+tags:
+  - Artificial Intelligence
+  - Software Engineering
+summary: Programmers won't disappear; they'll exist in different ways.
+draft: false
+---
+
+I recently read several articles about computer engineering in the AI era and found them very insightful. I wanted to share a few takeaways.
+
+## Best Practices for Working with Claude Workflows
+
+[Vishakha Singhal on X](https://x.com/vishisinghal_/status/2032368817981305196)
+
+Vishakha shared her thoughts on how to build workflows with Claude and integrate them into projects; I found her summary very helpful.
+
+She summarized her approach into five points:
+
+- `CLAUDE.md` project description: Record all notes and operating guides related to the current project, including what the project does, a project map, and the specific commands to operate the project. This serves as a guiding description for the project as a whole.
+- `.claude/skills`: Reusable capabilities — common repeated operations such as code review, refactoring guidance, debugging procedures, and release/deployment processes. I view skills as abstractions and encapsulations of capabilities; the core idea remains modular software encapsulation.
+- `.claude/hooks`: "Guardrails" or hooks — frequently run scripts such as linters, tests, or data-masking scripts. This preserves knowledge and processes as code for reuse.
+- `docs/`: Documentation and the Agent's changelog. Every key change and major technical decision can be recorded here by the Agent for later reference.
+- Local `CLAUDE.md` in each directory: These record modular change logs and provide detailed descriptions of each module. When an Agent modifies a module, it can consult these docs for context.
+
+![](/static/blog/2026-03-31-ai-era-coder/project-structure.jpeg)
+
+The above approach is essentially a software development harness — it provides software requirements to the Agent more effectively, organizes more information, and continuously records operational paths. The result is more controllable Agent outputs.
+
+## The “Distributed” Challenges of Agent Applications
+
+[Ashpreet Bedi on X: "Agentic Software Engineering"](https://x.com/ashpreetbedi/status/2028176285575594465)
+
+Ashpreet found that building Agent applications differs significantly from traditional software because Agents do not operate in a simple request–response mode; they run more continuously and autonomously.
+
+Ashpreet summarizes the characteristics as:
+
+- Persistence. Agents run for long durations and span multiple steps. If an Agent fails, it should be possible to resume from an intermediate step rather than starting over.
+- Isolation. Agents often run concurrently for multiple users; different Agents need data and execution isolation. Because Agents act autonomously, execution isolation becomes more important.
+- Agent governance. How do we prevent Agents from performing destructive actions? We frequently see cases where Agent tools accidentally delete user data irreversibly — that’s unacceptable.
+- Data persistence. Data is always critical for an Agent to perform correctly. In Agent products, data becomes even more important. Without persistent data, an Agent is just a forgetful chatbot.
+- Scalability. A practical Agent architecture should be distributed and horizontally scalable.
+- Composability. Agents should be able to interact with the external world and be invoked by other apps or agents. Because Agent protocols differ from traditional systems, communication protocols may need to be redesigned.
+
+My impression is that the disruptive aspect of Agents lies not only in product design but also in engineering. Given Agents’ autonomous behavior, the underlying compute and infrastructure must be redesigned.
+
+Ashpreet is essentially updating "traditional software engineering practices" into "software engineering for the AI era."
+
+## Differences Between Agent Execution Environments and Current Infrastructure (Cloud-Native)
+
+[Agentic AI: A Comprehensive Survey of Architectures, Applications, and Future Directions](https://arxiv.org/html/2510.25445v1)
+
+This literature review on Agentic AI argues that modern Agentic AI integration is not limited to LLMs: it emphasizes the completeness of the Agent and its environment, including tools, memory, feedback loops, and the runtime environment.
+
+In summary: from a computer engineering perspective, the arrival of Agents is a major transformation in engineering. Computer engineers have significant opportunities here.
