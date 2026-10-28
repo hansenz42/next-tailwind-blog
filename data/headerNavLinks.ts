@@ -5,7 +5,6 @@ const headerNavLinks = [
   { href: '/projects', title: 'Projects' },
   { href: '/about', title: 'About' },
   { href: '/feed.xml', title: 'RSS' },
-  { href: 'https://garden.assen.top', title: '🗄️KB' },
 ]
 
 export default headerNavLinks

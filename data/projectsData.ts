@@ -13,19 +13,6 @@ const projectsData: Project[] = [
     imgSrc: '/static/images/miremo.png',
     href: 'https://www.miremoapp.com',
   },
-  {
-    title: '阿森知识库 ｜ My Bidirectional Knowledge Base',
-    description:
-      '使用 Obsidian 双链笔记知识库，涵盖计算机科学、数学、机器学习、软件工程、文史哲的个人笔记。Using Obsidian for bidirectional linked notes, covering personal notes in computer science, mathematics, machine learning, software engineering, and humanities.',
-    imgSrc: '/static/images/project-garden.png',
-    href: 'https://garden.assen.top',
-  },
-  {
-    title: '雅典学院 ｜ The School of Athens',
-    description: '知乎 x SecondMe 联合黑客马拉松项目，一个 A2A 的知识讨论和分享平台',
-    imgSrc: '/static/images/project-athena-bulletin.jpg',
-    href: 'https://secondme-athens.assen.top',
-  },
 ]
 
 export default projectsData
