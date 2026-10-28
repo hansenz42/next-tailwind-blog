@@ -1,0 +1,2064 @@
+{
+  "document_version": "7a50726ce4ac82a9cc296fcd0689841489624cdf636e91a7aa832ecb9bd97c2b",
+  "source_files": [
+    {
+      "path": "agent_work/20261022-jate-extraction/tables/manifest.json",
+      "sha256": "849bc59997e11f039f7eccb8f327ad00bde9c35a373685efe55822c53728e1a6"
+    },
+    {
+      "path": "agent_work/20261022-jate-extraction/tables/candidates.json",
+      "sha256": "cbd592dfdb8605058ceb91d02f111bd55b7937f4945c7b43bf4ce376e9f51ad2"
+    },
+    {
+      "path": "agent_work/20261022-jate-extraction/tables/chapters.json",
+      "sha256": "bb28fdfed971be3fbb950164dc0aa1b13f52f63f26cbcb367ba1a640bcf627ad"
+    },
+    {
+      "path": "agent_work/20261022-jate-extraction/tables/shards.json",
+      "sha256": "f199c7132816891dd25ccca107ea5f0ed90572fba13753aeee4d7fe4cfd48a68"
+    },
+    {
+      "path": "agent_work/20261022-jate-extraction/workflow-v8-20261024-reading-run01/reading-only-manifest.json",
+      "sha256": "d25a5f9caeae055b3454ddfa8d0f4b63e0237abd867ee789292ef53010508512"
+    },
+    {
+      "path": "agent_work/20261022-jate-extraction/workflow-v8-20261024-reading-run01/workflow-state.json",
+      "sha256": "c7d4f696abc155ce53d9296fef6b47cde4c5cc38de66e949cd2060e3fa59d9d4"
+    },
+    {
+      "path": "agent_work/20261024-candidate-refinement/run-03/manifest.json",
+      "sha256": "539367aa18f2591948a1008bec0975790e20f7dcc24ce393b536e6353b180fe9"
+    },
+    {
+      "path": "agent_work/20261024-candidate-denoise/run-03/manifest.json",
+      "sha256": "9892882bc51c1076dae492c9f9217057e0b8668a24e36bdb6574d2e32cda9729"
+    },
+    {
+      "path": "agent_work/20261024-candidate-denoise/run-03/04-delivery/candidates.json",
+      "sha256": "6a6f8ef95a39111b046e29d7aa89864fb917862faa3e3ed3ba3eec6465c09219"
+    }
+  ],
+  "counts": {
+    "preselected": 994,
+    "delivered": 160
+  },
+  "initial_candidates": [
+    {
+      "id": "J0016",
+      "name": "attention",
+      "document_version": "7a50726ce4ac82a9cc296fcd0689841489624cdf636e91a7aa832ecb9bd97c2b",
+      "source_status": "document_only",
+      "source_kinds": ["document"],
+      "origins": [
+        {
+          "kind": "document",
+          "method": "keyword_algorithm"
+        }
+      ],
+      "algorithm_scores": {
+        "JATE C-Value": {
+          "score": 4.51390877965304,
+          "source_ranks": [16, 234]
+        }
+      },
+      "rank": 16,
+      "mention_shard_ids": [
+        "SH002",
+        "SH003",
+        "SH004",
+        "SH006",
+        "SH007",
+        "SH008",
+        "SH010",
+        "SH011",
+        "SH012",
+        "SH013",
+        "SH014",
+        "SH015",
+        "SH017",
+        "SH018",
+        "SH020",
+        "SH021",
+        "SH022",
+        "SH023",
+        "SH024",
+        "SH025",
+        "SH026",
+        "SH027",
+        "SH030",
+        "SH031",
+        "SH032",
+        "SH033",
+        "SH044",
+        "SH045",
+        "SH048",
+        "SH052",
+        "SH053",
+        "SH057",
+        "SH058",
+        "SH059"
+      ],
+      "mentions": [
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH002",
+              "start": 3,
+              "end": 12
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH003",
+              "start": 233,
+              "end": 242
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH003",
+              "start": 333,
+              "end": 342
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH004",
+              "start": 87,
+              "end": 96
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH004",
+              "start": 312,
+              "end": 321
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH004",
+              "start": 334,
+              "end": 343
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH006",
+              "start": 1,
+              "end": 10
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH006",
+              "start": 279,
+              "end": 288
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH006",
+              "start": 469,
+              "end": 478
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH007",
+              "start": 731,
+              "end": 740
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH007",
+              "start": 801,
+              "end": 810
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH008",
+              "start": 6,
+              "end": 15
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH008",
+              "start": 40,
+              "end": 49
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH008",
+              "start": 56,
+              "end": 65
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH008",
+              "start": 185,
+              "end": 194
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH008",
+              "start": 448,
+              "end": 457
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH008",
+              "start": 729,
+              "end": 738
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH008",
+              "start": 918,
+              "end": 927
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH010",
+              "start": 139,
+              "end": 148
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH010",
+              "start": 198,
+              "end": 207
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH010",
+              "start": 240,
+              "end": 249
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH011",
+              "start": 71,
+              "end": 80
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH012",
+              "start": 164,
+              "end": 173
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH013",
+              "start": 199,
+              "end": 208
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH013",
+              "start": 390,
+              "end": 399
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH014",
+              "start": 3,
+              "end": 12
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH014",
+              "start": 17,
+              "end": 26
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH015",
+              "start": 24,
+              "end": 33
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH017",
+              "start": 17,
+              "end": 26
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH018",
+              "start": 89,
+              "end": 98
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH018",
+              "start": 165,
+              "end": 174
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH018",
+              "start": 195,
+              "end": 204
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH018",
+              "start": 225,
+              "end": 234
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH020",
+              "start": 23,
+              "end": 32
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH020",
+              "start": 57,
+              "end": 66
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH020",
+              "start": 87,
+              "end": 96
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH020",
+              "start": 365,
+              "end": 374
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH020",
+              "start": 560,
+              "end": 569
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH020",
+              "start": 634,
+              "end": 643
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH020",
+              "start": 667,
+              "end": 676
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH020",
+              "start": 717,
+              "end": 726
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH020",
+              "start": 740,
+              "end": 749
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH020",
+              "start": 831,
+              "end": 840
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH020",
+              "start": 999,
+              "end": 1008
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH021",
+              "start": 77,
+              "end": 86
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH021",
+              "start": 111,
+              "end": 120
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH022",
+              "start": 15,
+              "end": 24
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH022",
+              "start": 57,
+              "end": 66
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH022",
+              "start": 376,
+              "end": 385
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH022",
+              "start": 789,
+              "end": 798
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH022",
+              "start": 927,
+              "end": 936
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH022",
+              "start": 1035,
+              "end": 1044
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH023",
+              "start": 40,
+              "end": 49
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH023",
+              "start": 224,
+              "end": 233
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH024",
+              "start": 20,
+              "end": 29
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH024",
+              "start": 76,
+              "end": 85
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH024",
+              "start": 134,
+              "end": 143
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH024",
+              "start": 405,
+              "end": 414
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH024",
+              "start": 506,
+              "end": 515
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH024",
+              "start": 534,
+              "end": 543
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH025",
+              "start": 19,
+              "end": 28
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH025",
+              "start": 312,
+              "end": 321
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH026",
+              "start": 55,
+              "end": 64
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH027",
+              "start": 805,
+              "end": 814
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH027",
+              "start": 896,
+              "end": 905
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH027",
+              "start": 1005,
+              "end": 1014
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH030",
+              "start": 11,
+              "end": 20
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH030",
+              "start": 73,
+              "end": 82
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH030",
+              "start": 402,
+              "end": 411
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH031",
+              "start": 641,
+              "end": 650
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH031",
+              "start": 846,
+              "end": 855
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH032",
+              "start": 322,
+              "end": 331
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH033",
+              "start": 643,
+              "end": 652
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH033",
+              "start": 754,
+              "end": 763
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH033",
+              "start": 814,
+              "end": 823
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH033",
+              "start": 927,
+              "end": 936
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH044",
+              "start": 360,
+              "end": 369
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH044",
+              "start": 384,
+              "end": 393
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH044",
+              "start": 513,
+              "end": 522
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH044",
+              "start": 659,
+              "end": 668
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH045",
+              "start": 922,
+              "end": 931
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH048",
+              "start": 114,
+              "end": 123
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH048",
+              "start": 231,
+              "end": 240
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH048",
+              "start": 623,
+              "end": 632
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH048",
+              "start": 822,
+              "end": 831
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH052",
+              "start": 229,
+              "end": 238
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH052",
+              "start": 722,
+              "end": 731
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH053",
+              "start": 450,
+              "end": 459
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH053",
+              "start": 1026,
+              "end": 1035
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH057",
+              "start": 3,
+              "end": 12
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH058",
+              "start": 29,
+              "end": 38
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH058",
+              "start": 106,
+              "end": 115
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH058",
+              "start": 145,
+              "end": 154
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH058",
+              "start": 263,
+              "end": 273
+            }
+          ],
+          "match_method": "english_noun_lemma",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH059",
+              "start": 15,
+              "end": 24
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH059",
+              "start": 108,
+              "end": 118
+            }
+          ],
+          "match_method": "english_noun_lemma",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH059",
+              "start": 148,
+              "end": 158
+            }
+          ],
+          "match_method": "english_noun_lemma",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH059",
+              "start": 188,
+              "end": 197
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH059",
+              "start": 227,
+              "end": 237
+            }
+          ],
+          "match_method": "english_noun_lemma",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH059",
+              "start": 911,
+              "end": 920
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH059",
+              "start": 1078,
+              "end": 1087
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        }
+      ],
+      "occurrences": 101,
+      "definition": "",
+      "definition_shard_ids": [],
+      "reference_classifications": [],
+      "classification": null,
+      "classification_shard_ids": [],
+      "sense": "",
+      "status": "preselected",
+      "revision": 0,
+      "history": [],
+      "conflicts": [],
+      "matching": {
+        "policy": "en-noun-lemma-zh-literal-v3",
+        "language": "en",
+        "key": "attention"
+      },
+      "jate_original_forms": ["attention", "# attention"]
+    },
+    {
+      "id": "J0055",
+      "name": "transformer",
+      "document_version": "7a50726ce4ac82a9cc296fcd0689841489624cdf636e91a7aa832ecb9bd97c2b",
+      "source_status": "document_only",
+      "source_kinds": ["document"],
+      "origins": [
+        {
+          "kind": "document",
+          "method": "keyword_algorithm"
+        }
+      ],
+      "algorithm_scores": {
+        "JATE C-Value": {
+          "score": 3.1625810462485053,
+          "source_ranks": [56]
+        }
+      },
+      "rank": 55,
+      "mention_shard_ids": [
+        "SH003",
+        "SH004",
+        "SH006",
+        "SH007",
+        "SH008",
+        "SH010",
+        "SH011",
+        "SH024",
+        "SH038",
+        "SH041",
+        "SH043",
+        "SH045",
+        "SH046",
+        "SH047",
+        "SH048"
+      ],
+      "mentions": [
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH003",
+              "start": 304,
+              "end": 315
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH003",
+              "start": 1007,
+              "end": 1018
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH004",
+              "start": 198,
+              "end": 209
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH006",
+              "start": 379,
+              "end": 390
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH006",
+              "start": 547,
+              "end": 558
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH007",
+              "start": 599,
+              "end": 610
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH008",
+              "start": 660,
+              "end": 671
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH008",
+              "start": 891,
+              "end": 902
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH010",
+              "start": 369,
+              "end": 380
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH011",
+              "start": 6,
+              "end": 17
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH024",
+              "start": 48,
+              "end": 59
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH038",
+              "start": 93,
+              "end": 104
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH038",
+              "start": 695,
+              "end": 706
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH038",
+              "start": 742,
+              "end": 753
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH041",
+              "start": 84,
+              "end": 95
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH041",
+              "start": 103,
+              "end": 114
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH041",
+              "start": 778,
+              "end": 789
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH043",
+              "start": 79,
+              "end": 90
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH043",
+              "start": 334,
+              "end": 345
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH045",
+              "start": 52,
+              "end": 63
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH045",
+              "start": 440,
+              "end": 451
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH046",
+              "start": 17,
+              "end": 28
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH047",
+              "start": 249,
+              "end": 260
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH047",
+              "start": 500,
+              "end": 511
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH047",
+              "start": 1070,
+              "end": 1081
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH048",
+              "start": 45,
+              "end": 56
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH048",
+              "start": 270,
+              "end": 281
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH048",
+              "start": 707,
+              "end": 718
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        }
+      ],
+      "occurrences": 28,
+      "definition": "",
+      "definition_shard_ids": [],
+      "reference_classifications": [],
+      "classification": null,
+      "classification_shard_ids": [],
+      "sense": "",
+      "status": "preselected",
+      "revision": 0,
+      "history": [],
+      "conflicts": [],
+      "matching": {
+        "policy": "en-noun-lemma-zh-literal-v3",
+        "language": "en",
+        "key": "transformer"
+      },
+      "jate_original_forms": ["transformer"]
+    },
+    {
+      "id": "J0630",
+      "name": "feed",
+      "document_version": "7a50726ce4ac82a9cc296fcd0689841489624cdf636e91a7aa832ecb9bd97c2b",
+      "source_status": "document_only",
+      "source_kinds": ["document"],
+      "origins": [
+        {
+          "kind": "document",
+          "method": "keyword_algorithm"
+        }
+      ],
+      "algorithm_scores": {
+        "JATE C-Value": {
+          "score": 0.34375880937483755,
+          "source_ranks": [645]
+        }
+      },
+      "rank": 630,
+      "mention_shard_ids": ["SH010", "SH012", "SH020", "SH026", "SH033"],
+      "mentions": [
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH010",
+              "start": 104,
+              "end": 108
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH010",
+              "start": 163,
+              "end": 167
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH012",
+              "start": 244,
+              "end": 248
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH020",
+              "start": 885,
+              "end": 889
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH026",
+              "start": 17,
+              "end": 21
+            }
+          ],
+          "match_method": "normalized",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH026",
+              "start": 150,
+              "end": 154
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        },
+        {
+          "highlight_spans": [
+            {
+              "shard_id": "SH033",
+              "start": 676,
+              "end": 680
+            }
+          ],
+          "match_method": "exact",
+          "language": "en"
+        }
+      ],
+      "occurrences": 7,
+      "definition": "",
+      "definition_shard_ids": [],
+      "reference_classifications": [],
+      "classification": null,
+      "classification_shard_ids": [],
+      "sense": "",
+      "status": "preselected",
+      "revision": 0,
+      "history": [],
+      "conflicts": [],
+      "matching": {
+        "policy": "en-noun-lemma-zh-literal-v3",
+        "language": "en",
+        "key": "feed"
+      },
+      "jate_original_forms": ["feed"]
+    }
+  ],
+  "document_meta": {
+    "shared": {
+      "overview": {
+        "text": "本文介绍了Transformer架构，一种完全基于注意力机制的新颖网络结构，摒弃了传统的循环和卷积。该模型在机器翻译任务上取得了优于现有最佳结果的BLEU分数，且训练成本显著降低，并展示了在其他任务（如句法分析）上的良好泛化能力。作者主要来自Google Brain、Google Research及多伦多大学。",
+        "shard_ids": ["SH002", "SH003", "SH004"]
+      },
+      "content_role": {
+        "text": "SH001为版权声明；SH002-SH004包含标题、作者信息及摘要，确立了文档的核心贡献（Transformer架构）和实验结果；SH050-SH056为参考文献列表；SH057-SH059展示了注意力可视化示例，用于解释模型内部机制。",
+        "shard_ids": [
+          "SH001",
+          "SH002",
+          "SH003",
+          "SH004",
+          "SH050",
+          "SH051",
+          "SH052",
+          "SH053",
+          "SH054",
+          "SH055",
+          "SH056",
+          "SH057",
+          "SH058",
+          "SH059"
+        ]
+      },
+      "uncertainties": []
+    },
+    "ontology_specific": {
+      "focus": {
+        "text": "关注核心模型架构及其关键组件。重点识别‘Transformer’作为整体架构，‘attention mechanism’作为核心机制，以及其具体变体如‘scaled dot product attention’、‘multi-head attention’和‘self-attention’。同时关注编码器-解码器结构中的‘encoder’和‘decoder’，以及位置表示‘position representation’。排除泛化的神经网络术语或仅出现在参考文献中的非核心概念。",
+        "shard_ids": ["SH003", "SH004", "SH058", "SH059"]
+      },
+      "uncertainties": [
+        "候选提示中包含大量人名、会议名称及参考文献条目，这些不属于具有专业定义的术语，已根据指南排除。部分通用词汇如'model'、'task'因缺乏特定专业定义语境而未抽取。"
+      ]
+    }
+  },
+  "chapter_metas": {
+    "CH05": {
+      "title": "Model Architecture",
+      "shared": {
+        "overview": {
+          "text": "本章详细阐述了Transformer模型的整体架构，包括编码器（Encoder）和解码器（Decoder）的结构。重点介绍了嵌入层（Embeddings）、Softmax输出机制以及位置编码（Positional Encoding）的具体实现方式，并对比了不同层类型的复杂度与路径长度。",
+          "shard_ids": ["SH009", "SH010", "SH011", "SH027", "SH028", "SH029"]
+        },
+        "content_role": {
+          "text": "本节作为模型架构章节的核心部分，具体定义了Transformer的组件构成、数据流向及关键数学公式，为后续子模块（如注意力机制）的详细描述奠定基础。",
+          "shard_ids": ["SH009", "SH010", "SH011", "SH027", "SH028", "SH029"]
+        },
+        "uncertainties": []
+      },
+      "ontology_specific": {
+        "focus": {
+          "text": "关注Transformer整体架构及其核心组件的专业定义。重点识别‘Transformer’作为基于自注意力和前馈网络的序列转导模型；‘Encoder’和‘Decoder’作为堆叠的自注意力和点式全连接层结构；‘Positional Encoding’作为注入序列顺序信息的正弦/余弦函数机制；‘Embeddings’及‘Softmax’作为输入输出向量化及概率预测的标准组件。同时关注‘Self Attention’、‘Multi Head Attention’等核心机制在架构中的角色。排除泛化的‘model’、‘layer’或仅作为变量符号的‘z’、‘n’等。",
+          "shard_ids": ["SH009", "SH010", "SH011", "SH027", "SH028", "SH029"]
+        },
+        "uncertainties": [
+          "候选提示中的'model'、'input sequence'、'output sequence'等词过于泛化，缺乏独立的专业定义语境，故未纳入核心术语。'Table 1'中的'complexity per layer'等属于性能指标而非架构组件定义。"
+        ]
+      }
+    },
+    "CH06": {
+      "title": "Why Self-Attention",
+      "shared": {
+        "overview": {
+          "text": "本节旨在通过对比自注意力层与循环层、卷积层，阐述采用自注意力机制的动机。主要考量因素包括每层的总计算复杂度以及可并行化的计算量（即所需的最小串行操作数）。",
+          "shard_ids": ["SH030"]
+        },
+        "content_role": {
+          "text": "该章节作为‘Why Self Attention’部分，从计算复杂度和并行化能力两个维度论证自注意力相对于传统RNN和CNN架构的优势，并提及自注意力带来的模型可解释性益处。",
+          "shard_ids": ["SH030", "SH033"]
+        },
+        "uncertainties": []
+      },
+      "ontology_specific": {
+        "focus": {
+          "text": "关注用于对比分析的核心网络层类型及其性能指标。重点识别‘self attention layer’（自注意力层）、‘recurrent layer’（循环层）和‘convolutional layer’（卷积层）作为比较对象；识别‘computational complexity’（计算复杂度）和‘parallelized computation’（并行化计算）作为评估标准；识别‘separable convolution’（分离卷积）作为降低复杂度的特定卷积变体；识别‘attention head’（注意力头）和‘interpretable models’（可解释模型）作为自注意力的特性描述。",
+          "shard_ids": ["SH030", "SH033"]
+        },
+        "uncertainties": [
+          "候选提示中的'model'、'task'等词过于泛化，缺乏具体专业定义语境，故未抽取。'point wise feed forward layer'虽被提及为组合的一部分，但本节核心在于层间对比，故主要聚焦于前文提到的三类层及分离卷积。"
+        ]
+      }
+    }
+  },
+  "reading_association": {
+    "kind": "updates",
+    "sources": [
+      {
+        "shard_id": "SH026",
+        "document_start": 14148,
+        "document_end": 14811
+      }
+    ],
+    "source_binding": "current_reading_context",
+    "understanding": "作为标题及正文中'Feed Forward Networks'（前馈网络）的一部分，指代该特定网络结构类型。",
+    "id": "5bbbcb0f7ce2ddd7d44d52516a46616152300309d489db2b63ac9da3bb249b3f"
+  },
+  "final_candidates": [
+    {
+      "id": "J0016",
+      "route": "repaired",
+      "noise_types": ["duplicate"],
+      "reason": "J0005 ('attention mechanism') 和 J0016 ('attention') 均指代Transformer的核心机制。SH003和SH006明确指出Transformer基于'attention mechanisms'，摒弃循环和卷积。SH014定义了'attention function'作为映射Query和Key-Value pairs到输出的函数。SH020和SH022进一步细化为Scaled Dot Product Attention和Multi Head Attention。虽然'attention'是一个广义概念，但在本文语境下，它特指这种基于Query/Key/Value的注意力机制实现。J0005和J0016在本文中指代同一核心架构组件。保留J0016，名称使用'Attention mechanism'以明确其机制属性。定义涵盖其基本形式和在Transformer中的具体实现。",
+      "name": "Attention mechanism",
+      "aliases": ["attention"],
+      "definition": "指Transformer架构中用于建模序列依赖关系的核心计算模块，完全替代了传统的循环和卷积结构。其基本形式是一种注意力函数，将查询（Query）和一组键值对（Key-Value pairs）映射到输出，其中查询、键、值和输出均为向量，输出是值的加权求和。在本文中，具体实现包括缩放点积注意力（Scaled Dot Product Attention）和多头注意力（Multi Head Attention）。",
+      "claims": [
+        {
+          "text": "We propose a new simple network architecture, the Transformer, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely.",
+          "shard_ids": ["SH003"]
+        },
+        {
+          "text": "An attention function can be described as mapping a query and a set of key value pairs to an output, where the query, keys, values, and output are all vectors. The output is computed as a weighted sum",
+          "shard_ids": ["SH014"]
+        },
+        {
+          "text": "The two most commonly used attention functions are additive attention [2], and dot product (multiplicative) attention.",
+          "shard_ids": ["SH020"]
+        },
+        {
+          "text": "Multi head attention allows the model to jointly attend to information from different representation subspaces at different positions.",
+          "shard_ids": ["SH022"]
+        }
+      ],
+      "changes": [
+        "合并J0005和J0016，统一名称为'Attention mechanism'",
+        "整合了SH003, SH014, SH020, SH022中的定义和应用描述"
+      ],
+      "uncertainties": [],
+      "review_note": "草稿合并逻辑正确。名称'Attention mechanism'符合SH003/SH006原文。定义准确引用了SH014的基本函数定义，并指出了在本文中的具体实现形式（Scaled Dot Product和Multi Head），未混淆父类与子类。",
+      "prior_ids": ["J0005", "J0016"],
+      "original_member_ids": ["J0005", "J0016"],
+      "field_changes": {
+        "name": {
+          "before": "attention mechanism",
+          "after": "Attention mechanism"
+        },
+        "aliases": {
+          "before": [],
+          "after": ["attention"]
+        },
+        "definition": {
+          "before": "指一种允许建模输入或输出序列中依赖关系的机制，而不考虑其在序列中的距离。在本文提出的Transformer架构中，该机制被完全依赖以替代传统的循环和卷积结构，用于绘制输入和输出之间的全局依赖关系。具体实现包括自注意力（self attention）和编码器-解码器注意力（encoder-decoder attention）。",
+          "after": "指Transformer架构中用于建模序列依赖关系的核心计算模块，完全替代了传统的循环和卷积结构。其基本形式是一种注意力函数，将查询（Query）和一组键值对（Key-Value pairs）映射到输出，其中查询、键、值和输出均为向量，输出是值的加权求和。在本文中，具体实现包括缩放点积注意力（Scaled Dot Product Attention）和多头注意力（Multi Head Attention）。"
+        },
+        "claims": {
+          "before": [
+            {
+              "text": "The dominant sequence transduction models are based on complex recurrent or convolutional neural networks that include an encoder and a decoder. The best performing models also connect the encoder and decoder through an attention mechanism.",
+              "shard_ids": ["SH003"]
+            },
+            {
+              "text": "We propose a new simple network architecture, the Transformer, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely.",
+              "shard_ids": ["SH003"]
+            },
+            {
+              "text": "Attention mechanisms have become an integral part of compelling sequence modeling and transduction models in various tasks, allowing modeling of dependencies without regard to their distance in the input or output sequences.",
+              "shard_ids": ["SH006"]
+            },
+            {
+              "text": "In this work we propose the Transformer, a model architecture eschewing recurrence and instead relying entirely on an attention mechanism to draw global dependencies between input and output.",
+              "shard_ids": ["SH006"]
+            },
+            {
+              "text": "Self attention, sometimes called intra attention is an attention mechanism relating different positions of a single sequence in order to compute a representation of the sequence.",
+              "shard_ids": ["SH008"]
+            },
+            {
+              "text": "To the best of our knowledge, however, the Transformer is the first transduction model relying entirely on self attention to compute representations of its input and output without using sequence-aligned RNNs or convolution.",
+              "shard_ids": ["SH008"]
+            }
+          ],
+          "after": [
+            {
+              "text": "We propose a new simple network architecture, the Transformer, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely.",
+              "shard_ids": ["SH003"]
+            },
+            {
+              "text": "An attention function can be described as mapping a query and a set of key value pairs to an output, where the query, keys, values, and output are all vectors. The output is computed as a weighted sum",
+              "shard_ids": ["SH014"]
+            },
+            {
+              "text": "The two most commonly used attention functions are additive attention [2], and dot product (multiplicative) attention.",
+              "shard_ids": ["SH020"]
+            },
+            {
+              "text": "Multi head attention allows the model to jointly attend to information from different representation subspaces at different positions.",
+              "shard_ids": ["SH022"]
+            }
+          ]
+        }
+      },
+      "review_status": "model_reviewed_pending_user_review",
+      "final_adoption": "not_performed"
+    },
+    {
+      "id": "J0055",
+      "route": "repaired",
+      "noise_types": ["duplicate"],
+      "reason": "J0125 ('first sequence transduction model') 和 J0055 ('transformer') 均指Transformer模型。SH008指出'Transformer is the first transduction model relying entirely on self attention'。两者指代同一模型架构。保留J0055，名称使用'Transformer'。定义需涵盖其核心特征（完全基于注意力，无循环/卷积）和应用领域。",
+      "name": "Transformer",
+      "aliases": [],
+      "definition": "指一种全新的简单网络架构，完全基于注意力机制，摒弃了传统的循环和卷积结构。它用于序列转导任务，允许更显著的并行化计算，并通过堆叠自注意力和点式全连接层构建编码器和解码器。它是第一个完全基于注意力的序列转导模型。",
+      "claims": [
+        {
+          "text": "We propose a new simple network architecture, the Transformer, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely.",
+          "shard_ids": ["SH003"]
+        },
+        {
+          "text": "To the best of our knowledge, however, the Transformer is the first transduction model relying entirely on self attention to compute representations of its input and output without using sequence-aligned RNNs or convolution.",
+          "shard_ids": ["SH008"]
+        },
+        {
+          "text": "The Transformer follows this overall architecture using stacked self attention and point wise, fully connected layers for both the encoder and decoder",
+          "shard_ids": ["SH011"]
+        }
+      ],
+      "changes": [
+        "合并J0125和J0055，统一名称为'Transformer'",
+        "整合了SH003, SH008, SH011中的架构定义",
+        "first sequence transduction model是描述性指代而非正式别名，移出别名字段。"
+      ],
+      "uncertainties": [],
+      "review_note": "草稿合并逻辑正确。名称'Transformer'符合全文核心术语。定义准确引用了SH003（基于注意力，无循环/卷积）、SH008（首个完全基于自注意力的转导模型）和SH011（堆叠自注意力和全连接层）的描述。 当前助手对照原文追加复核：first sequence transduction model是描述性指代而非正式别名，移出别名字段。",
+      "prior_ids": ["J0125", "J0055"],
+      "original_member_ids": ["J0125", "J0055"],
+      "field_changes": {
+        "name": {
+          "before": "first sequence transduction model",
+          "after": "Transformer"
+        },
+        "definition": {
+          "before": "指Transformer模型，它是第一个完全基于注意力机制的序列转导模型，用多头自注意力取代了编码器-解码器架构中常用的循环层。",
+          "after": "指一种全新的简单网络架构，完全基于注意力机制，摒弃了传统的循环和卷积结构。它用于序列转导任务，允许更显著的并行化计算，并通过堆叠自注意力和点式全连接层构建编码器和解码器。它是第一个完全基于注意力的序列转导模型。"
+        },
+        "claims": {
+          "before": [
+            {
+              "text": "Transformer是第一个完全基于注意力的序列转导模型（first sequence transduction model based entirely on attention）。",
+              "shard_ids": ["SH048"]
+            },
+            {
+              "text": "它用多头自注意力取代了编码器-解码器架构中最常用的循环层。",
+              "shard_ids": ["SH048"]
+            }
+          ],
+          "after": [
+            {
+              "text": "We propose a new simple network architecture, the Transformer, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely.",
+              "shard_ids": ["SH003"]
+            },
+            {
+              "text": "To the best of our knowledge, however, the Transformer is the first transduction model relying entirely on self attention to compute representations of its input and output without using sequence-aligned RNNs or convolution.",
+              "shard_ids": ["SH008"]
+            },
+            {
+              "text": "The Transformer follows this overall architecture using stacked self attention and point wise, fully connected layers for both the encoder and decoder",
+              "shard_ids": ["SH011"]
+            }
+          ]
+        }
+      },
+      "review_status": "model_reviewed_pending_user_review",
+      "final_adoption": "not_performed"
+    },
+    {
+      "id": "J0630",
+      "route": "repaired",
+      "noise_types": ["duplicate", "name_truncation"],
+      "reason": "该组包含5个候选对象（J0039, J0630, J0770, J0078, J0332），均指代Transformer架构中的位置全连接前馈网络。SH026明确定义了'fully connected feed forward network'及其公式FFN(x)，并指出其应用于每个位置且彼此相同。所有候选在本文语境下指向同一概念。保留J0630作为canonical_id，修复名称为原文标题及描述中更准确的'position-wise feed forward network'，并将其他变体名称放入别名。定义整合SH026的公式和结构描述。",
+      "name": "position-wise feed forward network",
+      "aliases": ["feed forward network", "FFN", "position-wise feed-forward network"],
+      "definition": "指Transformer编码器和解码器每一层中包含的全连接前馈网络，应用于每个位置且彼此独立相同。由两个线性变换组成，中间夹有一个ReLU激活函数。其数学表达为 FFN(x) = max(0, xW1 + b1)W2 + b2。输入和输出维度为d_model，内部层维度为d_ff。",
+      "claims": [
+        {
+          "text": "In addition to attention sub layers, each of the layers in our encoder and decoder contains a fully connected feed forward network, which is applied to each position separately and identically.",
+          "shard_ids": ["SH026"]
+        },
+        {
+          "text": "This consists of two linear transformations with a ReLU activation in between. FFN(x) = max(0, xW1 + b1)W2 + b2",
+          "shard_ids": ["SH026"]
+        },
+        {
+          "text": "The dimensionality of input and output is dmodel = 512, and the inner-layer has dimensionality dff = 2048.",
+          "shard_ids": ["SH026"]
+        }
+      ],
+      "changes": [
+        "将名称从'feed-forward network'修正为更准确的'position-wise feed forward network'以匹配SH026标题和描述",
+        "合并了J0039, J0770, J0078, J0332的同义概念，将所有变体名称放入别名",
+        "更新了定义以包含SH026中具体的数学公式和维度信息",
+        "移除fully connected feed forward这一截断别名，保留完整名称及明确缩写。"
+      ],
+      "uncertainties": [],
+      "review_note": "草稿合并逻辑正确。名称修正依据SH026标题'Position wise Feed Forward Networks'及正文'describing this as two convolutions with kernel size 1'隐含的位置独立性。定义准确引用了SH026的公式和维度参数。无外部知识引入。 当前助手对照原文追加复核：移除fully connected feed forward这一截断别名，保留完整名称及明确缩写。",
+      "prior_ids": ["J0039", "J0630", "J0770", "J0078", "J0332"],
+      "original_member_ids": ["J0039", "J0630", "J0770", "J0078", "J0332"],
+      "field_changes": {
+        "name": {
+          "before": "feed forward network",
+          "after": "position-wise feed forward network"
+        },
+        "aliases": {
+          "before": [],
+          "after": ["feed forward network", "FFN", "position-wise feed-forward network"]
+        },
+        "definition": {
+          "before": "指位置全连接前馈网络，应用于编码器和解码器各层的每个位置，由两个线性变换及中间的ReLU激活组成，公式为 FFN(x) = max(0, xW1 + b1)W2 + b2。",
+          "after": "指Transformer编码器和解码器每一层中包含的全连接前馈网络，应用于每个位置且彼此独立相同。由两个线性变换组成，中间夹有一个ReLU激活函数。其数学表达为 FFN(x) = max(0, xW1 + b1)W2 + b2。输入和输出维度为d_model，内部层维度为d_ff。"
+        },
+        "claims": {
+          "before": [
+            {
+              "text": "编码器和解码器的每层包含一个位置全连接前馈网络。",
+              "shard_ids": ["SH012"]
+            },
+            {
+              "text": "该网络分别且相同地应用于每个位置。",
+              "shard_ids": ["SH026"]
+            },
+            {
+              "text": "该网络由两个线性变换组成，中间带有ReLU激活。",
+              "shard_ids": ["SH026"]
+            },
+            {
+              "text": "其数学表达为 FFN(x) = max(0, xW1 + b1)W2 + b2。",
+              "shard_ids": ["SH026"]
+            }
+          ],
+          "after": [
+            {
+              "text": "In addition to attention sub layers, each of the layers in our encoder and decoder contains a fully connected feed forward network, which is applied to each position separately and identically.",
+              "shard_ids": ["SH026"]
+            },
+            {
+              "text": "This consists of two linear transformations with a ReLU activation in between. FFN(x) = max(0, xW1 + b1)W2 + b2",
+              "shard_ids": ["SH026"]
+            },
+            {
+              "text": "The dimensionality of input and output is dmodel = 512, and the inner-layer has dimensionality dff = 2048.",
+              "shard_ids": ["SH026"]
+            }
+          ]
+        }
+      },
+      "review_status": "model_reviewed_pending_user_review",
+      "final_adoption": "not_performed"
+    }
+  ]
+}
