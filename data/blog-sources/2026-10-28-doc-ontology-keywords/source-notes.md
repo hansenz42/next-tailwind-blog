@@ -9,3 +9,7 @@
 正文 Meta 按句节选并明确标记；候选 JSON 为字段投影，仅保留第一处 mentions；定义保留原文。未使用新模型生成或人为补造实验结果。此为历史测试产物，非当前生产版本或最终知识库采纳。模型 Meta 中的范围判断及最终定义仍属待评审输出，不作准确率承诺。
 
 论文使用 arXiv 稳定链接，未将内部文档哈希推断为 arXiv 版本号。原始字符偏移已对照 shards.json 中实际文本检查。
+
+## 算法与流程说明核对
+
+新增算法说明依据原项目 `agent_work/20261021-jate-comparison/run.py`、其 vendor 内 `jate/nlp/spacy_backend.py`、`jate/extractors/patterns/default.txt` 和 `jate/algorithms/cvalue.py`；初始池及参数依据 `20261022-jate-extraction/prepare.py`、`tables/manifest.json`；回查匹配依据 `20261019-generic-preselection/term_matching.py`。分片边界依据 `20261021-structural-shards.md`。模型配置核对 `20261020-langgraph-lifecycle-run/config.json` 的 model 与 request_options 字段，未复制连接地址或凭据。粗读复用依据 `workflow-v8-20261024-reading-run01/reading-only-manifest.json` 及回执。本文说明历史测试配置，不将后来更新的 workflow.py 默认策略冒充本轮参数。
