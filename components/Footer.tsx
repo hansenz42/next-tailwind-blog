@@ -3,13 +3,9 @@ import siteMetadata from '@/data/siteMetadata'
 import SocialIcon from '@/components/social-icons'
 import SocialTooltip from '@/components/social-icons/tooltip'
 import Image from '@/components/Image'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEye } from '@fortawesome/free-solid-svg-icons'
+import ViewCounter from './ViewCounter'
 
-export default async function Footer() {
-  // const homeView= await kv.get<number>('home_view')
-  // const pageView = await kv.get<number>('page_view')
-
+export default function Footer() {
   return (
     <footer>
       <div className="mt-16 flex flex-col items-center">
@@ -51,17 +47,7 @@ export default async function Footer() {
             </Link>
           </div>
         </div>
-        <div className="mb-2 flex space-x-2 text-sm text-gray-500 dark:text-gray-400">
-          <div
-            className="flex"
-            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-          >
-            <FontAwesomeIcon icon={faEye} size="1x" style={{ height: '1em', width: '1em' }} />
-          </div>
-          <span id="busuanzi_container_site_pv">
-            <span id="busuanzi_value_site_pv"></span>
-          </span>
-        </div>
+        <ViewCounter />
         <div className="mb-8 text-sm text-gray-500 dark:text-gray-400">
           <Link href="https://github.com/timlrx/tailwind-nextjs-starter-blog">
             Tailwind Nextjs Theme
