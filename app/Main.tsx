@@ -37,17 +37,15 @@ export default function Home({ posts }) {
               {siteMetadata.description}
             </h2>
             <h2 className="prose text-lg text-gray-600 dark:text-gray-400">
-              系统架构师，FDE 工程师。从事后端系统开发 5 年，项目为文化行业 SaaS
-              平台。对行业数字化应用有深入理解。对 AI Agent
+              系统架构师，FDE 工程师。文化行业平台。对文化数字化应用有深入理解。对 AI Agent
               的工程化、知识图谱的构建与应用、数据系统的设计与优化、云原生技术的实践有深入研究。
               <br />
             </h2>
             <h2 className="prose text-lg text-gray-600 dark:text-gray-400">
-              System Architect, FDE Engineer. Engaged in backend system development for 5 years,
-              with projects in the cultural industry SaaS platform. Has an in-depth understanding of
-              digital applications in the industry. Has in-depth research on the engineering of AI
-              Agents, the construction and application of knowledge graphs, the design and
-              optimization of data systems, and the practice of cloud-native technologies.
+              System Architect, FDE Engineer. Cultural industry platform. In-depth understanding of
+              cultural digital applications. In-depth research on the engineering of AI Agents,
+              construction and application of knowledge graphs, design and optimization of data
+              systems, and practice of cloud-native technologies.
               <br />
             </h2>
           </div>
