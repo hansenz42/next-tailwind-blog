@@ -2,7 +2,6 @@ import Link from './Link'
 import siteMetadata from '@/data/siteMetadata'
 import SocialIcon from '@/components/social-icons'
 import SocialTooltip from '@/components/social-icons/tooltip'
-import Image from '@/components/Image'
 import ViewCounter from './ViewCounter'
 
 export default function Footer() {
@@ -32,20 +31,6 @@ export default function Footer() {
           <div>{`© ${new Date().getFullYear()}`}</div>
           <div>{` • `}</div>
           <Link href="/">{siteMetadata.title}</Link>
-        </div>
-        <div className="mb-2 flex space-x-2 text-sm text-gray-500 dark:text-gray-400">
-          <div>
-            <Link href="https://beian.miit.gov.cn/">浙ICP备2023051173号-2</Link>
-          </div>
-          <div>{` • `}</div>
-          <div>
-            <Image src="/static/images/beian_icon.png" width={16} height={16} alt="beian"></Image>
-          </div>
-          <div>
-            <Link href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=33010202004742">
-              浙公网安备33010202004742号
-            </Link>
-          </div>
         </div>
         <ViewCounter />
         <div className="mb-8 text-sm text-gray-500 dark:text-gray-400">
