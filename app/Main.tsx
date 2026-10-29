@@ -37,21 +37,18 @@ export default function Home({ posts }) {
               {siteMetadata.description}
             </h2>
             <h2 className="prose text-lg text-gray-600 dark:text-gray-400">
-              全栈开发者。从事后端系统开发 3 年，技术负责人 5 年，项目为行业 SaaS 平台。
+              系统架构师，FDE 工程师。从事后端系统开发 5 年，项目为文化行业 SaaS
+              平台。对行业数字化应用有深入理解。对 AI Agent
+              的工程化、知识图谱的构建与应用、数据系统的设计与优化、云原生技术的实践有深入研究。
               <br />
-              目前正在开发
-              <span className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
-                <Link href="https://www.miremoapp.com">🤔 Agentic 知识管理工具</Link>
-              </span>
             </h2>
             <h2 className="prose text-lg text-gray-600 dark:text-gray-400">
-              Full-stack developer. Backend system development for 3 years, technical lead for 5
-              years, projects in the industry SaaS platform.
+              System Architect, FDE Engineer. Engaged in backend system development for 5 years,
+              with projects in the cultural industry SaaS platform. Has an in-depth understanding of
+              digital applications in the industry. Has in-depth research on the engineering of AI
+              Agents, the construction and application of knowledge graphs, the design and
+              optimization of data systems, and the practice of cloud-native technologies.
               <br />
-              Currently developing the
-              <span className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
-                <Link href="https://www.miremoapp.com">🤔 Agentic knowledge management tool</Link>
-              </span>
             </h2>
           </div>
         </div>
