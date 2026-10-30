@@ -6,7 +6,7 @@ const siteMetadata = {
   description: '',
   language: 'zh-cn',
   theme: 'system', // system, dark or light
-  siteUrl: 'https://www.assen.top',
+  siteUrl: 'https://www.imassen.com',
   siteRepo: 'https://github.com/hansenz42/next-blog',
   siteLogo: '/static/images/logo.png',
   socialBanner: '/static/images/twitter-card.png',
@@ -18,7 +18,7 @@ const siteMetadata = {
   wechat_qr: '/static/images/qrcode-for-gh.png',
   // jianshu: 'https://www.jianshu.com/u/093df07ec856',
   // xiaohongshu: 'https://www.xiaohongshu.com/user/profile/5ccdb237000000001200d736',
-  // wechat: 'https://www.assen.top/blog/0_navigate_wechat',
+  // wechat: 'https://www.imassen.com/blog/0_navigate_wechat',
   // x: 'https://twitter.com/x',
   // twitter: 'https://twitter.com/Twitter',
   // facebook: 'https://facebook.com',

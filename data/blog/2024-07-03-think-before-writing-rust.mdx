@@ -11,7 +11,7 @@ draft: false
 # 初步感受
 
 从第一次接触 Rust 到现在，已经快两年了。总体来讲，这是一个严谨，值得反复玩味的语言。越写越觉得有意思。
-ok 
+ok
 用编程语言解决问题本身就是挺有挑战的工作，而 Rust 有自己的一套严谨的规则，所以写代码的时候，除了要保证能正常运行，还必须遵守 Rust 的独特规则。
 
 这就让写代码这件事情做起来像是在玩游戏。Rust 编译器给你出题，而你必须解题。
@@ -60,7 +60,7 @@ Rust 没有垃圾回收，所以它必须知道什么时候应该分配内存，
 
 这个有点像在并发编程中用锁来解决竞争条件，如果有高并发编程经验的同学可能更好理解一些。
 
-需要进一步了解，可看：[🦀 简单讲讲 Rust 多线程中的引用安全 | 阿森的知识图谱](https://www.assen.top/blog/2024-03-08-rust-multi-threading)
+需要进一步了解，可看：[🦀 简单讲讲 Rust 多线程中的引用安全 | 阿森的知识图谱](https://www.imassen.com/blog/2024-03-08-rust-multi-threading)
 
 **第三，使用多线程之前，考虑线程间的数据使用关系。**
 
@@ -70,7 +70,7 @@ Rust 没有垃圾回收，所以它必须知道什么时候应该分配内存，
 
 对于需要共享的数据，一般要用 Arc 和 Mutex 组合做带引用计数的互斥锁。对于不能共享的数据，则要在线程启动之前拷贝，并传递到线程内。
 
-之前有篇文章就写了关于此的内容：[🦀 Rust 多线程报错：error[E0521] borrowed data escapes outside of method | 阿森的知识图谱](https://www.assen.top/blog/2024-05-23-rust-threading-error)
+之前有篇文章就写了关于此的内容：[🦀 Rust 多线程报错：error[E0521] borrowed data escapes outside of method | 阿森的知识图谱](https://www.imassen.com/blog/2024-05-23-rust-threading-error)
 
 # 总结：这一切值得吗
 

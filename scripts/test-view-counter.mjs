@@ -52,7 +52,7 @@ const bundle = await build({
             args.path === 'contentlayer/generated'
               ? 'export const allBlogs = [{slug:"example",tags:[],draft:false},{slug:"draft",tags:[],draft:true}]'
               : args.path === '@/data/siteMetadata'
-                ? 'export default {siteUrl:"https://www.assen.top"}'
+                ? 'export default {siteUrl:"https://www.imassen.com"}'
                 : 'export class Redis { async eval() { return [7,2] } }',
         }))
       },
@@ -64,9 +64,9 @@ const { POST } = await import(
 )
 const savedEnv = { ...process.env }
 const request = (body, headers = {}) =>
-  new Request('https://www.assen.top/api/views', {
+  new Request('https://www.imassen.com/api/views', {
     method: 'POST',
-    headers: { origin: 'https://www.assen.top', 'content-type': 'application/json', ...headers },
+    headers: { origin: 'https://www.imassen.com', 'content-type': 'application/json', ...headers },
     body: JSON.stringify(body),
   })
 try {
