@@ -11,7 +11,7 @@ const projectsData: Project[] = [
     description:
       '轻松记录，AI 整理，知识图谱索引，高效管理知识。Easy notetaking, AI organization, knowledge graph indexing, efficient knowledge management.',
     imgSrc: '/static/images/miremo.png',
-    href: 'https://www.miremoapp.com',
+    href: 'https://miremo.imassen.com',
   },
 ]
 
