@@ -1,0 +1,1323 @@
+---
+title: '【翻译】如何为本体开发设计能力问题（Competency Questions）'
+date: 2026-11-02
+tags:
+  - 本体论
+  - 知识图谱
+  - 人工智能
+  - 翻译
+summary: 翻译 GSA 的本体能力问题指南，介绍五类 Competency Questions、从需求到形式化测试的开发流程，以及 AI 辅助生成、覆盖率评估与常见误区。
+draft: false
+---
+
+> 本文译自 GSA/guides_4_AIagents 仓库中的 **Forming Competency Questions for Ontology Development**。  
+> [阅读英文原文](https://github.com/GSA/guides_4_AIagents/blob/master/guide_ontology_CompetancyQuestions.md) · [原仓库](https://github.com/GSA/guides_4_AIagents) · [许可说明（CC0 1.0）](https://github.com/GSA/guides_4_AIagents/blob/master/LICENSE.md)  
+> 翻译日期：2026 年 11 月 2 日。本文保留原文的章节、示例和引文编号；文中的研究数据、工具能力及评价阈值均为原文表述，未逐项独立复核。原文末尾仅在隐藏元素中引用的补充资料另列于文末。本译文不代表 GSA 对本博客的认可。
+
+能力问题（Competency Questions，简称 CQ）是用自然语言表达的问题，用来界定本体的功能需求，并检验其完整性与范围。这一方法源自 Gruninger 与 Fox 在 TOVE 项目中的开创性工作，后来由 Noy 与 McGuinness 的经典指南《Ontology Development 101》推广。CQ 在领域专家的理解与形式化本体表示之间搭起了桥梁。本指南提供一套全面且不依赖特定领域的框架，用于设计有效的能力问题，适用于医疗、网络安全、智慧城市、科学研究等不同领域。[^1][^2][^3][^4][^5][^6]
+
+## 理解能力问题：基础与目的
+
+### 什么是能力问题？
+
+能力问题是本体必须能够利用自身的公理、概念、属性和关系回答的问题。它们在本体开发的整个生命周期中承担多种关键作用：[^7][^2]
+
+**需求规约**：CQ 帮助界定本体范围，识别必要的概念和关系，确定恰当的细化程度。借助 CQ，可以核对本体是否符合既定需求、是否恰当地表示了目标知识领域。[^2][^8]
+
+**评估工具**：CQ 可以作为验证标准，判断本体是否包含足够的知识来回答领域相关问题。它们有助于发现领域建模缺陷、评估质量，但不应成为唯一的评价标准。[^9][^10][^2]
+
+**沟通工具**：CQ 为领域专家（理解问题空间）、本体工程师（创建形式化表示）和利益相关者（使用本体）建立共同语言，使抽象的本体承诺变得具体且可检验。[^4]
+
+**范围管理**：明确本体应该回答哪些问题，可以防止范围不断膨胀，并在迭代开发中保持重点。CQ 划定了哪些内容属于本体、哪些内容不属于本体。[^10]
+
+### 历史背景与方法演进
+
+能力问题的概念诞生于 20 世纪 90 年代中期的 **TOVE（TOronto Virtual Enterprise，多伦多虚拟企业）项目**。Gruninger 与 Fox 为企业建模中的本体工程提出了一套严谨的方法，CQ 在其中居于核心地位。他们强调，CQ 不应只是简单的查找查询，而应要求跨多个公理进行推理，从而反映现实问题的复杂性。[^6][^11]
+
+Noy 与 McGuinness 随后通过广为引用的《Ontology Development 101》推广了 CQ，使实践者更容易采用这种方法。他们建议将 CQ 作为本体开发最初的步骤之一：确定领域与目的之后，就应初步列出能力问题，以界定范围和需求。[^3]
+
+近期研究进一步拓展了人们对 CQ 类型与作用的理解。Keet 等人（2024）识别出五类不同的 CQ，它们的作用超出了简单的需求规约。调查还发现，63.5% 的本体开发者采用迭代方式开发 CQ，承认 CQ 在整个开发过程中会动态变化。[^12][^13][^14][^2]
+
+## 五类能力问题
+
+根据近期对 CQ 使用模式的研究，能力问题可以分为五类，每一类在本体开发中都有不同用途。[^13][^14][^12]
+
+### 1. 范围界定型能力问题（SCQ）
+
+**目的**：确定本体领域的边界与覆盖范围。
+
+**特点**：
+
+- 确定哪些概念、实体和关系属于本体的关注范围。
+- 识别“横向”范围（领域边界）与“纵向”范围（细节层次）。[^15]
+- 帮助防止开发过程中范围膨胀。
+
+**问题示例**：
+
+- “本体将覆盖哪个领域？”[^3]
+- “与该领域相关的关键组成部分和基础设施要素有哪些？”[^16]
+- “哪些监管框架和标准适用于该领域？”
+- “超出哪些边界后，本体就不再适用？”
+- “哪些利益相关者将使用本体，分别出于什么目的？”
+
+**跨领域应用**：
+
+- **网络安全**：“应表示哪些类型的威胁、漏洞和控制措施？”
+- **医疗**：“本体应仅涵盖临床工作流，还是也包括行政与计费流程？”
+- **智慧城市**：“智慧城市情境中涉及哪些领域和部门，如能源、交通、治理？”[^16]
+
+### 2. 验证型能力问题（VCQ）
+
+**目的**：评估本体的概念化是否正确表示了领域知识，以及能否回答预期查询。
+
+**特点**：
+
+- 检验本体是否具备必要的概念、属性和关系。
+- 验证关系建模是否正确。
+- 可以转换为 SPARQL 查询或描述逻辑查询，以开展自动化测试。[^17][^9]
+
+**问题示例**：
+
+- “哪些 AI 技术容易受到哪些类型的对抗攻击？”
+- “针对某项合规要求，哪些控制措施可以缓解哪些具体风险？”
+- “X 有哪些组成部分，它们之间有什么关系？”
+- “哪些实体的属性 Y 具有值 Z？”
+- “在条件 Z 下，实体 X 与实体 Y 之间有什么关系？”
+
+**实现方式**：验证型 CQ 通常会被形式化为可在本体上执行的查询。有研究记录了 234 个 CQ 及其对应的 SPARQL-OWL 查询译法，表明一种 CQ 模式可能对应多种查询模式，反之亦然。[^18][^19][^17]
+
+### 3. 基础本体型能力问题（FCQ）
+
+**目的**：将领域实体对齐到基础本体（或顶层本体）中的适当类别。
+
+**特点**：
+
+- 确保与顶层本体承诺保持一致。
+- 帮助将领域实体归类为过程、对象、性质、角色等。
+- 支持共享同一基础本体的不同领域本体之间互操作。
+
+**问题示例**：
+
+- “该实体是持续体（continuant，随时间持续存在），还是发生体（occurrent，在时间中发生）？”[^20]
+- “该实体由物质构成，还是承载信息？”
+- “该实体的存在是否依赖其他实体？”
+- “该实体能否在不同承载者之间被复制？”[^20]
+- “该实体是角色、功能，还是内在属性？”
+
+**基础本体对齐**：主要基础本体，如 **BFO（Basic Formal Ontology，基本形式本体）**、**DOLCE（Descriptive Ontology for Linguistic and Cognitive Engineering，面向语言与认知工程的描述性本体）** 和 **GFO（General Formal Ontology，通用形式本体）**，提供了不同的顶层结构。已有决策树和工具可以帮助本体工程师系统地回答基础本体型 CQ，确保恰当对齐，并支持跨本体的一致性检查。[^21][^22][^20]
+
+### 4. 元属性型能力问题
+
+**目的**：考察实体的本体论特征，例如刚性、同一性判据和统一性。
+
+**特点**：
+
+- 检验分类是否遵循合理的本体论原则。
+- 识别实体所属类别是刚性的（对其所有实例而言都是本质性的），还是反刚性的（具有偶然性）。
+- 澄清同一性条件及部分与整体的关系。
+
+**问题示例**：
+
+- “某个事物可以是它自身的一部分吗？”[^23]
+- “两个实体拥有相同的部分，就意味着它们是同一个实体吗？”[^23]
+- “X 的每个实例在其整个存在期间，都必然具有属性 Y 吗？”
+- “X 类型实体的同一性判据是什么？”
+- “部分、组件和成员之间有什么区别？”[^23]
+
+**本体论深度**：这些问题往往揭示深层概念问题。例如，在包含 Braai（南非烧烤）的本体中，元属性型 CQ 可以问：“‘加热方式’是 Braai 的内在属性，还是不同对象能够承担的角色？”这类问题促使开发者超越表层建模，思考基本的本体承诺。[^10]
+
+### 5. 关系特征型能力问题
+
+**目的**：检验关系的自反性、对称性、传递性和函数性等性质。
+
+**特点**：
+
+- 确保关系具有恰当的逻辑特征。
+- 支持自动推理和一致性检查。
+- 澄清定义域和值域约束。
+
+**问题示例**：
+
+- “关系 R 是否具有自反性，即每个实体与自身都满足 R？”[^12]
+- “如果 X 与 Y 具有关系 R，Y 是否必然也与 X 具有 R（对称性）？”
+- “如果 X 与 Y、Y 与 Z 都具有关系 R，X 与 Z 是否也具有 R（传递性）？”
+- “一个实体能否通过 R 关联多个其他实体（函数性）？”
+- “关系 R 的定义域和值域有哪些限制？”
+
+**应用示例**：对于“爱”这一关系，“自恋者爱自己吗？”涉及自反性的支持；对于“是……的一部分”，“如果 A 是 B 的一部分，B 是 C 的一部分，那么 A 是 C 的一部分吗？”检验传递性；对于“吃”，“烧烤设备能吃东西吗？”检验定义域限制。[^12][^10]
+
+> 译注：某个个体与自身具有关系，并不等于应将整个关系声明为自反关系。上面的“爱”示例沿用原文，建模时仍须区分个体断言与关系的全局逻辑特征。
+
+## 能力问题的开发流程
+
+### 阶段一：准备与范围界定
+
+#### 1.1 明确目的与背景
+
+设计 CQ 前，先确定基本参数：[^3]
+
+**识别领域**：
+
+- 本体覆盖哪个主题领域？
+- 核心现象、实体和过程是什么？
+- 有哪些相关的现行标准、法规或框架？
+
+**阐明目的**：
+
+- 为什么要构建这个本体？
+- 它将解决什么问题？
+- 它将支持哪些应用？
+
+**使用背景**：
+
+- 谁会使用本体？
+- 他们将如何使用它：查询、推理、集成，还是可视化？
+- 它将在什么技术基础设施中运行？
+
+**示例：AI 网络安全本体**：
+
+- 领域：AI 系统、对抗攻击、防御机制、标准（MITRE ATLAS、FedRAMP）。
+- 目的：在 AI 风险、攻击、控制措施和合规要求之间建立系统化映射。
+- 用途：风险评估、控制措施选择、审计支持、威胁情报集成。
+- 用户：安全架构师、合规人员、AI 开发者、审计人员。
+
+#### 1.2 分析利益相关者
+
+有效的 CQ 开发需要不同利益相关者的参与。[^24]
+
+**利益相关者类别**：
+
+- **领域专家**：提供概念、关系和约束的深入知识。
+- **最终用户**：描述实际场景与信息需求。
+- **主题专家**：验证术语与概念的准确性。
+- **技术专家**：识别实现约束和互操作要求。
+- **决策者**：确定战略优先级和成功标准。
+
+**权力—利益分析**：[^25] 根据影响力（权力）和切身利益（关注程度）建立矩阵：
+
+- 高权力、高关注：密切协作、深入参与。
+- 高权力、低关注：定期提供摘要，保持其满意。
+- 低权力、高关注：通过更新使其知情。
+- 低权力、低关注：定期观察。
+
+**参与方式**：[^24]
+
+- 通过一对一访谈深入探索复杂需求。
+- 通过引导式工作坊共同构思并解决冲突。
+- 通过现场观察捕捉隐性知识和未明说的需求。
+- 通过问卷收集大规模利益相关者群体的意见。
+- 通过原型体验获取对本体设计的反馈。
+
+#### 1.3 收集领域知识
+
+系统地获取知识，是有效设计 CQ 的前提。[^24]
+
+**领域研究**：
+
+- 研究现有文档、标准和法规。
+- 查阅学术文献与技术规范。
+- 分析相邻领域已有的本体和知识库。
+- 理解领域术语、缩写和行话。
+- 识别领域内的关键挑战与反复出现的问题。
+
+**理解背景**：
+
+- 组织目标和战略目的。
+- 业务工作流与决策过程。
+- 竞争格局和行业趋势。
+- 监管环境和合规要求。
+- 技术架构与系统约束。
+
+**知识来源**：
+
+- 科学论文与研究出版物。
+- 技术规范和 API 文档。
+- 行业标准与最佳实践指南。
+- 现有数据库和信息系统。
+- 专家访谈与民族志研究。
+
+### 阶段二：场景开发
+
+#### 2.1 创建动机场景
+
+遵循 Gruninger 与 Fox 的方法，构造具体场景，说明本体将如何被使用。[^5][^6]
+
+**场景结构**：
+
+- **背景**：描述情境和相关参与者。
+- **问题**：说明信息需求或需要做出的决策。
+- **现状**：解释现有信息系统的局限。
+- **期望状态**：说明本体应该支持什么能力。
+
+**示例场景：AI 安全**：
+
+_背景_：一家云服务提供商正在准备 FedRAMP 认证，需要证明其具备全面的 AI 安全控制措施。
+
+_问题_：安全团队需要识别 MITRE ATLAS 中哪些 AI 特有攻击向量与其服务相关、哪些控制措施能够应对各个向量，并将它们映射到具体的 FedRAMP 关键安全指标（KSI）。
+
+_现状_：信息分散在多个文档中，攻击模式、防御控制措施和合规要求之间没有系统映射。
+
+_期望状态_：本体支持查询，根据给定 AI 服务自动返回相关攻击模式，推荐适当的控制措施，展示各控制措施如何满足具体的 FedRAMP KSI，并提供研究文献的证据引用。
+
+#### 2.2 从场景提取信息需求
+
+把场景转换成具体的信息需求，再将这些需求发展为 CQ。
+
+**问题推导步骤**：
+
+1. 识别关键参与者及其角色。
+2. 列出他们需要做出的决策或采取的行动。
+3. 枚举每项决策所需的信息。
+4. 设计能够获取这些信息的问题。
+5. 根据关键程度和发生频率排序。
+
+**基于上述场景的推导示例**：
+
+- “哪些 AI 攻击模式适用于［某种具体 AI 服务类型］？”
+- “哪些防御控制措施能够缓解［某种具体攻击模式］？”
+- “［控制措施 X］如何映射到 FedRAMP KSI［Y］？”
+- “哪些研究证据支持［控制措施 X］对［攻击 Y］的有效性？”
+- “哪些云环境支持实现［控制措施 X］？”
+
+### 阶段三：能力问题设计
+
+#### 3.1 应用问题设计原则
+
+**清晰而具体**：
+
+- 使用符合领域语言的准确术语。
+- 避免有歧义的用语，除非明确解释一词多义。
+- 明确时间、空间和情境等范围约束。
+- 明确写出假设。
+
+**不佳示例**：“最好的 AI 控制措施是什么？”
+
+- “最好”是主观判断，依赖具体情境。
+- 没有指定威胁模型或环境。
+- 缺少可衡量标准。
+
+**改进示例**：“截至 2025 年，在生产云环境中，哪些 AI 防御控制措施有同行评审证据表明，其对对抗性规避攻击的有效率超过 90%？”
+
+- 指定证据类型：同行评审。
+- 规定阈值：超过 90%。
+- 明确攻击类型：对抗性规避。
+- 限定环境：生产云环境。
+- 设置时间边界：截至 2025 年。
+
+**可回答性**：确保能够利用本体内容回答问题：
+
+- 问题能否拆解为概念、属性和关系？
+- 回答是否需要超出本体范围的信息？
+- 预期答案类型是否与本体结构兼容？
+
+**复杂度平衡**：混合使用简单和复杂问题：[^6]
+
+- **简单查询**：检验基本概念检索和属性访问。
+- **复杂查询**：需要跨多个关系和公理进行推理。
+- **层次化查询**：复杂问题的答案依赖更简单的子问题。
+
+Gruninger 与 Fox 强调，如果所有 CQ 都只是简单查找，就不能说明本体设计良好。复杂问题能够展示本体支持真正的推理，而不仅是数据检索。[^6]
+
+#### 3.2 按类型组织问题
+
+按照五类框架组织 CQ。
+
+**类型一：范围界定（边界）**：
+
+- “X 是什么？”（定义）
+- “X 是否在范围内？”（纳入或排除）
+- “X 应细化到什么程度？”（粒度）
+- “X 与相邻领域如何关联？”（边界接口）
+
+**类型二：验证（正确性）**：
+
+- “哪些 X 具有属性 Y？”（属性查询）
+- “X 有哪些组成部分？”（部分与整体查询）
+- “X 与 Y 如何关联？”（关系查询）
+- “Z 在什么条件下发生？”（情境查询）
+
+**类型三：基础本体（顶层对齐）**：
+
+- “X 是过程还是对象？”（基本类别）
+- “X 的存在是否依赖 Y？”（依赖性）
+- “X 是实例还是类？”（分类层级）
+
+**类型四：元属性（本体论特征）**：
+
+- “属性 P 对 X 是本质性的还是偶然性的？”（刚性）
+- “X 的同一性判据是什么？”（个体化）
+- “X 能独立存在吗？”（依赖性）
+
+**类型五：关系特征（逻辑性质）**：
+
+- “关系 R 是否具有传递性？”（性质检验）
+- “关系 R 的定义域是什么？”（约束规约）
+- “一个实体能否通过 R 关联多个实体？”（基数）
+
+#### 3.3 在多种粒度上设计问题
+
+覆盖不同抽象层次：[^26]
+
+**高层问题（战略、范围）**：
+
+- “AI 威胁主要有哪些类别？”
+- “哪些国际标准规范 AI 安全？”
+
+**中层问题（战术、运营）**：
+
+- “模型反演攻击有哪些子类型？”
+- “中等影响级别的 FedRAMP 系统必须具备哪些控制措施？”
+
+**底层问题（细节、实例）**：
+
+- “漏洞 X 的通用漏洞与披露（CVE）编号是什么？”
+- “控制措施 Y 在云平台 Z 中的实现代码是什么？”
+
+合适的粒度取决于预期应用。如果本体要支持自动推理以选择控制措施，中低层 CQ 就十分关键；如果主要用于指导人类决策，高中层问题可能已经足够。[^26]
+
+#### 3.4 纳入否定问题和约束问题
+
+否定问题在传统 CQ 方法中不算常见，但有助于澄清边界和约束。
+
+**排除问题**：
+
+- “哪些实体**不应**被归类为 X？”
+- “X 与 Y 之间明确禁止哪些关系？”
+- “在什么条件下**不应**启动过程 P？”
+
+**约束问题**：
+
+- “关系 R 的最大基数限制是什么？”
+- “哪些属性组合在逻辑上不一致？”
+- “过程 P 适用哪些时间约束？”
+
+**应用示例**：在医疗本体中，“药品过期后还能被开具处方吗？”用于澄清约束；“诊断设备也能被归类为治疗设备吗？”用于检验可能存在问题的类别重叠，或必要的互斥关系。
+
+### 阶段四：验证与细化
+
+#### 4.1 利益相关者评审
+
+**评审流程**：[^24]
+
+- 向领域专家展示 CQ，检查准确性和完整性。
+- 与最终用户核对术语是否易懂。
+- 与本体工程师确认技术可行性。
+- 与决策者核对是否符合战略目标。
+
+**评审工作坊**：组织结构化讨论，让参与者：
+
+- 按 1—5 分评价每个 CQ 的相关性。
+- 识别歧义或不清晰的术语。
+- 根据遗漏场景提出更多 CQ。
+- 按重要性和使用频率确定优先级。
+
+**德尔菲法**：[^27] 对于复杂领域，以多轮专家评审形成共识：
+
+1. 第一轮：专家独立评审 CQ。
+2. 汇总：收集反馈并匿名化。
+3. 第二轮：分享汇总结果，专家修正评价。
+4. 迭代：重复上述过程，直到对优先 CQ 达成一致。
+
+#### 4.2 质量评估
+
+依据质量标准评估每个 CQ。
+
+**语法质量**：
+
+- 语法是否正确？
+- 术语是否一致？
+- 是否没有拼写错误？
+- 专有名词的大小写是否正确？
+
+**语义质量**：
+
+- 含义是否无歧义？
+- 是否避免使用未经说明的同义词？
+- 概念是否定义清楚？
+- 隐含假设是否明确写出？
+
+一项研究分析了 53 个存在问题的 CQ，发现以下常见情况：[^12]
+
+- **17 个存在语法问题**，相对容易修复。
+- **9 个问题不适当**，例如本体无法回答的“我能否……”或“如何……”式问题。
+- **其余问题存在歧义、含糊，或需要超出本体语言能力的功能**。
+
+**可回答性评估**：
+
+- 问题中的概念能否映射到本体实体？
+- 所需推理能力是否在目标本体语言的支持范围内？
+- 基数约束或时间约束能否用该形式体系表达？
+
+问题示例：“人有几条腿？”[^12]
+
+- 需要限定基数约束。
+- 只有本体语言支持数量限制时才能回答。
+- 在某些情境中，作为公理可能比作为 CQ 更合适。
+
+#### 4.3 迭代细化
+
+**细化策略**：[^2]
+
+**自顶向下细化**：
+
+- 从高层、抽象的 CQ 开始。
+- 分解为更具体的子问题。
+- 持续具体化，直到达到期望粒度。
+- 确保从一般到具体的全面覆盖。
+
+**自底向上细化**：
+
+- 从具体场景中的详细 CQ 开始。
+- 识别共同模式并进行概括。
+- 抽象为更宽泛的问题。
+- 确保始终以真实用例为基础。
+
+**从中间向两端细化（最常见）**：[^28][^2]
+
+- 从中等抽象程度的 CQ 开始。
+- 同时进行概括和具体化。
+- 平衡理论一致性与实际适用性。
+- 沿两个方向迭代调整范围。
+
+调查数据显示，63.5% 的本体开发者采用迭代方法，在多个开发周期中细化 CQ。这反映出对 CQ 的理解会随本体成熟而变化。[^2]
+
+**触发细化的情况**：
+
+- 本体实现暴露出 CQ 的歧义。
+- 出现新的利益相关者需求。
+- 与其他本体集成，需要调整范围。
+- 评估发现 CQ 无法回答或过于简单。
+- 领域知识演进，例如新研究或标准更新。
+
+#### 4.4 确定优先级
+
+并非所有 CQ 都同样关键，应设置优先级层次。
+
+**高优先级（必须有）**：
+
+- 对本体主要目的至关重要。
+- 关键用例必需。
+- 主要用户群体频繁提出。
+- 外部要求明确规定，例如法规或标准。
+
+**中优先级（应该有）**：
+
+- 支持重要但非关键的场景。
+- 改善次要用户群体的使用体验。
+- 提供有价值但非必需的信息。
+
+**低优先级（有则更好）**：
+
+- 处理边缘情况。
+- 支持未来可能的应用。
+- 提供便利，但存在替代办法。
+
+**排序标准**：
+
+- 使用频率：这个问题会多久被问一次？
+- 影响：答案对决策有多关键？
+- 复杂度：没有本体时，回答有多难？
+- 依赖关系：该 CQ 是否是其他 CQ 的前提？
+
+### 阶段五：形式化与实现
+
+#### 5.1 将 CQ 转换为形式化查询
+
+**转换为 SPARQL**：[^19][^9][^17]
+
+自然语言 CQ：“哪些 AI 模型能够生成基于轨迹的解释？”
+
+SPARQL 查询：
+
+```sparql
+PREFIX ai: <http://example.org/ai#>
+PREFIX exp: <http://example.org/explanation#>
+
+SELECT ?model
+WHERE {
+  ?model rdf:type ai:AIModel .
+  ?model exp:canGenerate ?explanation .
+  ?explanation rdf:type exp:TraceBasedExplanation .
+}
+```
+
+> 译注：以上代码保留原文。独立执行时还应声明 `PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>`，或将 `rdf:type` 写成 SPARQL 的 `a`。
+
+研究记录了 234 个 CQ 及其对应的 131 条 SPARQL-OWL 查询，显示：[^17][^18]
+
+- 一种 CQ 模式可以映射到多种查询模式。
+- 一种查询模式可以满足多种 CQ 模式。
+- 在不同本体中已识别出 106 种不同的 CQ 模式。[^19]
+
+**描述逻辑形式化**：[^9]
+
+CQ：“职业路径 C 对技能 S 要求什么熟练程度？”
+
+DL 查询：
+
+```text
+CareerPath(?c) ∧ RequiresSkill(?c, ?s) ∧ hasProficiencyLevel(?s, ?level)
+```
+
+> 译注：原文将其称为 DL 查询；这里保留原式，它更接近带变量的合取查询表示，并非所有工具都可直接执行的描述逻辑语法。
+
+#### 5.2 TBox 问题与 ABox 问题
+
+区分针对本体不同组成部分的问题：[^29][^17]
+
+**TBox（术语层）问题**：关注模式、类定义和概念结构：
+
+- “攻击 X 有哪些子类型？”
+- “控制措施 Y 是控制措施 Z 的子类吗？”
+- “X 类型的实体可以具备哪些属性？”
+
+**ABox（断言层）问题**：关注个体、实例和具体数据：
+
+- “生产环境中部署的哪些具体系统具有漏洞 V？”
+- “这个特定漏洞实例的 CVE 编号是什么？”
+- “哪些组织已经实施控制措施 C？”
+
+数据集分析显示，关注概念的 CQ 有助于识别本体结构，关注实例的 CQ 则对数据驱动的应用很有价值。[^2]
+
+#### 5.3 建立测试基础设施
+
+**单元测试框架**：[^9]
+
+- 将每个 CQ 变成一个测试用例。
+- 预先指定期望答案。
+- 自动执行查询并比较结果。
+- 通过或失败的标准用于判断本体的完整性。
+
+**CQChecker 工具**：[^9] 通过以下步骤自动测试 CQ：
+
+1. 分析 CQ 结构。
+2. 划分问题类型。
+3. 生成适当的 SPARQL 查询。
+4. 在本体上执行查询。
+5. 对照期望答案验证结果。
+
+**持续验证**：将 CQ 测试纳入本体开发流程：
+
+- 每次修改后运行测试。
+- 跟踪各个 CQ 随时间的通过或失败情况。
+- 识别回归，即原本可回答的问题变得无法回答。
+- 监测覆盖率，即获得满意回答的 CQ 比例。
+
+#### 5.4 系统记录 CQ
+
+**必要文档字段**：[^30]
+
+- **CQ 标识符**：唯一引用编号，例如 CQ-001。
+- **自然语言表述**：准确的问题文本。
+- **类别**：范围界定型、验证型等。
+- **优先级**：高、中、低。
+- **场景**：提出问题的用例。
+- **期望答案类型**：实体、布尔值、计数等。
+- **形式化查询**：SPARQL 或 DL 译法。
+- **期望结果**：正确答案示例。
+- **状态**：草稿、已验证、已实现、已弃用。
+- **依赖关系**：相关 CQ 或前置条件。
+- **理由**：该 CQ 为什么重要。
+- **版本历史**：历次变更。
+
+**文档格式**：
+
+- 使用 CSV 文件进行轻量跟踪。[^9]
+- 使用基于本体的表示，支持语义查询。
+- 使用 Markdown 或 LaTeX 编写供人阅读的规约。
+- 与 Git 等版本控制系统集成，跟踪变更。
+
+## 能力问题开发的进阶主题
+
+### 使用 AI 自动生成 CQ
+
+大语言模型（LLM）的近期进展使半自动生成 CQ 成为可能。[^31][^32][^33]
+
+**基于 RAG 的方法**：[^32]
+
+1. 向 LLM 提供科学论文，作为领域知识库。
+2. 使用检索增强生成，使 CQ 以权威来源为依据。
+3. 针对特定本体需求生成问题。
+4. 过滤并验证生成的 CQ。
+
+**与知识图谱集成**：[^31]
+
+- 从领域文档提取实体与关系。
+- 转换为结构化图表示。
+- 使用面向特定实体和图中社区的检索。
+- 使用 GPT-4o、Mistral 或类似模型生成 CQ。
+- 对复杂问题应用思维链推理。
+- 使用 Reflexion 技术进行迭代自我改进。
+
+**评估指标**：[^31]
+
+- 余弦相似度得分（定量）。
+- LLM-as-a-Judge，即由 LLM 充当评审者（定性）。
+- 领域专家验证（人参与的闭环）。
+
+**局限**：[^33][^31]
+
+- 即使表现最好的系统，接受率也只有 50%。[^33]
+- 不同模型和领域之间表现不一。
+- 需要专家监督以保证质量。
+- 表现取决于具体情境。
+
+**现状**：自动生成适合帮助启动 CQ 开发，但不足以作为唯一方法。将自动生成与专家筛选结合的混合流程最有效。
+
+### 跨领域的 CQ 模式
+
+CQ 必须针对具体领域，但不同领域中仍会反复出现一些模式。
+
+**结构模式**：[^19]
+
+- “X 有哪些组件或部分？”
+- “X 是什么的成员或组件？”
+- “X 与 Y 如何关联？”
+- “哪些实体的属性 P 具有值 V？”
+
+**时间模式**：
+
+- “X 在什么时间范围内有效？”
+- “事件 E 的时间顺序是什么？”
+- “状态 S 何时转变为状态 S′？”
+
+**因果模式**：
+
+- “什么导致 X 发生？”
+- “行动 A 有什么影响？”
+- “X 产生 Y 的机制是什么？”
+
+**分类模式**：
+
+- “X 属于什么类型或类别？”
+- “Y 有哪些子类型？”
+- “X 是 Y 的特化吗？”
+
+**资格与约束模式**：
+
+- “哪些类型的 X 有资格获得 Y？”
+- “Z 能在什么条件下发生？”
+- “过程 P 受到哪些约束？”
+
+**领域适配**：
+
+**医疗**：[^34][^35]
+
+- “干预 X 影响哪些临床工作流？”
+- “哪些监管要求（HIPAA、FDA）适用于设备 D？”
+- “系统 S 如何确保患者数据隐私？”
+- “支持哪些互操作标准（HL7、FHIR）？”
+
+**智慧城市**：[^16]
+
+- “基础设施要素 I 之间如何相互依赖？”
+- “服务 S 面临哪些网络安全风险？”
+- “如何跨领域管理、保护和共享数据？”
+- “技术 T 有哪些环境影响？”
+
+**金融**：
+
+- “哪些监管框架约束交易 T？”
+- “如何计算投资组合 P 的风险 R？”
+- “合规要求 C 对应哪些审计轨迹？”
+
+### 如何引导 CQ 开发工作坊
+
+协作式 CQ 开发工作坊通常比单独收集需求得到更丰富的结果。[^36]
+
+**工作坊结构**：
+
+**会前（提前 1—2 周）**：
+
+- 分发领域概览、CQ 示例等背景材料。
+- 分享初步 CQ 草稿供审阅。
+- 布置准备任务，例如构思场景、整理术语表。
+- 确认参会者和角色。
+
+**开场（30 分钟）**：
+
+- 欢迎与议程介绍。
+- 解释 CQ 的目的与使用方式。
+- 回顾本体范围和目标。
+- 如果参与者彼此不熟悉，安排破冰活动。
+
+**发散阶段（60—90 分钟）**：
+
+- 个人头脑风暴：参与者独立编写 CQ。
+- 小组分享：每组 3—4 人讨论并细化。
+- 展示活动：将所有 CQ 贴在墙上或虚拟白板上。
+- 静默审阅：参与者阅读全部展示的问题。
+
+**收敛阶段（60—90 分钟）**：
+
+- 亲和图归类：按主题聚合相似 CQ。
+- 优先级排序：通过贴点投票或强制排序判断重要性。
+- 细化：重写有歧义或重复的 CQ。
+- 缺口分析：识别遗漏的场景或问题类型。
+
+**结束（30 分钟）**：
+
+- 回顾已排序的 CQ 清单。
+- 分配会后细化工作的负责人。
+- 明确后续步骤和时间表。
+- 收集对工作坊流程的反馈。
+
+**引导原则**：[^36]
+
+- **中立**：引导者只负责流程，不提出 CQ。
+- **平等参与**：采用适当方法，避免健谈的参与者主导讨论。
+- **心理安全**：鼓励所有想法，避免过早批评。
+- **先发散后收敛**：将创意生成与评价分开。
+- **可视化记录**：让小组看见每个人的贡献。
+
+**线上适配**：
+
+- 使用 Miro、Mural、Figma 等协作工具。
+- 使用分组讨论室开展小组活动。
+- 为较少发言者提供匿名提交选项。
+- 加入异步环节，例如会前调查和会后细化。
+
+### 本体复用与 CQ 映射
+
+**逆向生成 CQ**：[^37] **RevOnt** 方法从已有本体生成 CQ：
+
+1. 分析本体公理和注释。
+2. 生成该本体能够回答的 CQ。
+3. 比较不同本体的 CQ 集合，评估复用潜力。
+4. 对照需求 CQ 与本体 CQ，识别覆盖缺口。
+
+**收益**：
+
+- 支持有意义地比较本体范围。
+- 通过匹配 CQ 与能力，辅助复用决策。
+- 提供全面的问题集，增强测试。
+- 促进本体文档编写。
+
+**模式库**：[^38][^39] 本体模式语言（Ontology Pattern Languages，OPL）将模式与 CQ 关联：
+
+- 为每个模式标注它能解决的 CQ。
+- 在开发工具中以 CQ 驱动模式选择。
+- 通过依赖检查保证完整性。
+- 在保持质量的同时通过复用加快开发。
+
+**工作流示例**：
+
+1. 开发者为新本体设计 CQ。
+2. 工具在 OPL 中搜索能够解决这些 CQ 的模式。
+3. 根据 CQ 覆盖情况推荐模式。
+4. 开发者选择并实例化模式。
+5. 工具检查依赖关系，对缺口发出提醒。
+
+### 完整性与覆盖率评估
+
+**覆盖率指标**：
+
+**CQ 覆盖率**：本体能够回答的高优先级 CQ 所占百分比：
+
+- **超过 90%**：覆盖优秀。
+- **70%—90%**：覆盖良好，存在少量缺口。
+- **50%—70%**：基本足够，但仍需改进。
+- **低于 50%**：覆盖不足，需要大幅修订。
+
+**概念覆盖率**：CQ 提及的领域概念中，在本体中出现的比例：
+
+```text
+概念覆盖率 = |本体中的概念 ∩ CQ 中的概念| / |CQ 中的概念|
+```
+
+**关系覆盖率**：CQ 隐含的关系中，已经形式化的比例：
+
+```text
+关系覆盖率 = |本体中的关系 ∩ CQ 隐含的关系| / |CQ 隐含的关系|
+```
+
+**完整性定理**：[^5][^6] 遵循 Gruninger 与 Fox 的方法：
+
+1. 用一阶逻辑形式化 CQ。
+2. 利用本体公理定义 CQ 的解。
+3. 指定完整性条件：什么情况下解是完整的？
+4. 证明相应定理以展示完整性。
+
+**示例**：
+
+CQ：“实现目标 G 所需的全部活动有哪些？”
+
+完整性条件：一个解若包含 G 直接要求的所有活动、这些活动通过使能关系传递地要求的所有活动，并且不包含该链中任何活动都不需要的活动，那么它就是完整的。
+
+完整性定理：如果本体对使能关系以及目标与活动的关联进行了穷尽的公理化，那么查询 Q 将返回完整答案。
+
+### 演进与生命周期管理
+
+**版本控制**：
+
+- 在 Git 或类似系统中，将 CQ 与本体版本一同跟踪。
+- 对 CQ 集合的重大变化采用语义化版本号。
+- 在变更日志中记录 CQ 的增加、修改和删除。
+
+**变更管理**：
+
+**新增 CQ**：
+
+- 触发因素：新用例、利益相关者请求、领域演进。
+- 流程：起草 → 评审 → 形式化转换 → 测试 → 文档记录。
+- 影响：可能需要扩展本体。
+
+**修改 CQ**：
+
+- 触发因素：发现歧义、术语变化、范围细化。
+- 流程：为原 CQ 留存版本 → 创建修改版 → 与利益相关者验证 → 更新查询和测试。
+- 影响：可能使之前的测试结果失效。
+
+**弃用 CQ**：
+
+- 触发因素：超出范围、被替代、不再相关。
+- 流程：标记弃用 → 记录原因 → 保留以供历史查阅。
+- 影响：从活跃测试套件移除，但保留文档。
+
+**评审周期**：
+
+- **每季度**：针对小幅更新进行轻量评审。
+- **每半年**：吸纳利益相关者意见，进行全面评审。
+- **重大版本发布时**：全面审计 CQ 并重新对齐。
+
+## 常见误区及避免方法
+
+### 误区一：质量评估过度依赖 CQ
+
+**问题**：认为本体只要能回答所有 CQ，就一定是高质量的。[^10]
+
+**实际情况**：CQ 检验功能需求，但不检验：
+
+- 逻辑一致性与协调性。
+- 本体论严谨性，例如互斥性、恰当的包含关系。
+- 属性的定义域和值域约束。
+- 对设计模式及最佳实践的遵循程度。
+- 结构质量和可维护性。
+
+**解决方法**：将基于 CQ 的评估与以下方法结合：
+
+- 自动检测建模陷阱，例如 OOPS! 扫描器。[^10]
+- 基础本体对齐检查。
+- 结构指标，例如深度、宽度和交织程度。
+- 本体论专家评审。
+- 利用推理器进行一致性检查。
+
+### 误区二：问题类型不恰当
+
+**问题**：设计本体无法回答的问题：[^12]
+
+- “如果供应商倒闭了，我还能渲染这个吗？”（操作流程问题，而非本体问题）
+- “如何配置系统 X？”（操作说明，而非知识表示）
+- “我们应该优先处理什么？”（需要本体范围之外偏好的决策问题）
+
+**解决方法**：关注知识表示问题：
+
+- “系统 X 有哪些组成部分？”
+- “X 与 Y 之间有什么关系？”
+- “Z 在什么条件下适用？”
+
+### 误区三：歧义与含糊
+
+**问题**：CQ 使用有歧义的术语，或缺少情境：
+
+- “主要的数据类型有哪些？”（谁认定的“主要”？出于什么目的分类？）
+- “这样的散装物应该归到哪里？”（“这样的”指什么？采用哪种分类体系？）
+
+**解决方法**：明确情境和标准：
+
+- “根据 ISO 27001，数据分类等级有哪些？”
+- “在制药领域本体中，散装化学品 X 应归入哪个 Material 类？”
+
+### 误区四：问题需求与语言表达能力不匹配
+
+**问题**：CQ 需要本体语言不支持的推理能力：[^12]
+
+- 自反性：“自恋者爱自己吗？”需要支持自反关系。
+- 基数：“人有几条腿？”需要限定基数。
+- 时间：“事件 E 之前哪些事实成立？”需要时间逻辑或具体化表示。
+
+**解决方法**：
+
+- 评估目标本体语言的能力，如 OWL 2 DL、OWL Full 等。
+- 在表达能力的约束内重写 CQ；或者，
+- 根据 CQ 需求论证语言选择。
+- 记录哪些 CQ 需要外部推理。
+
+> 译注：“自反性”示例的适用范围见前文译注；具体个体的自我关系也可由个体断言表达。
+
+### 误区五：全部都是简单查找查询
+
+**问题**：只设计无需推理的简单问题：[^6]
+
+- “X 的定义是什么？”
+- “列出类 Y 的全部实例。”
+
+**解决方法**：加入复杂、层次化、需要多步推理的 CQ：
+
+- “在给定约束 C1—C3 下，哪些控制措施满足全部要求，且有证据表明有效率超过 80%？”
+- “能够覆盖 S 类型系统全部攻击向量的最小控制措施集合是什么？”
+
+### 误区六：忽视否定情况与边界
+
+**问题**：只问应该纳入什么，不问应该排除什么。
+
+**解决方法**：加入测试边界的 CQ：
+
+- “在什么条件下，X **不应**被归类为 Y？”
+- “哪些属性组合无效？”
+- “哪些实体明确不在本体范围内？”
+
+### 误区七：将 CQ 集合视为静态内容
+
+**问题**：把 CQ 当作固定需求，而非不断演进的产物。
+
+**解决方法**：采用迭代细化：[^2]
+
+- 在每轮开发迭代中评审 CQ。
+- 随着理解深入，弃用过时 CQ 并新增问题。
+- 记录变更理由。
+- 维护版本历史。
+
+### 误区八：利益相关者不够多样
+
+**问题**：CQ 只反映单一视角，例如仅有技术用户或领域专家的观点。
+
+**解决方法**：让不同群体参与：[^24]
+
+- 领域专家：保障概念准确性。
+- 最终用户：保障实际效用。
+- 技术实施者：保障可行性。
+- 决策者：保障战略一致性。
+- 相邻领域专家：保障互操作性。
+
+## 跨领域实践示例
+
+### 示例一：医疗临床决策支持
+
+**范围界定型 CQ**：
+
+- “涵盖哪些临床专科，如心脏病学、肿瘤学等？”
+- “纳入哪些组织的诊断指南，如 AHA、ACS、WHO？”
+- “细化到什么层次：疾病类别、具体病症，还是基因变异？”
+
+**验证型 CQ**：
+
+- “患者出现症状 S1、S2、S3 时，应考虑哪些鉴别诊断？”
+- “怀疑病症 C 时，适合开展哪些实验室检查？”
+- “对于患者资料 P，药物 M 有哪些禁忌证？”
+- “患者同时患有 C1、C2 时，适用哪些治疗指南？”
+
+**基础本体型 CQ**：
+
+- “‘诊断’是过程，还是依赖性实体？”
+- “‘症状’是性质，还是倾向？”
+- “‘治疗方案’是计划，还是规约？”
+
+**元属性型 CQ**：
+
+- “患者能否同时拥有同一种病症的多个有效诊断？”
+- “‘患有糖尿病’是刚性属性还是反刚性属性？”
+- “区分两次症状发生的同一性判据是什么？”
+
+**关系特征型 CQ**：
+
+- “药物之间的‘禁忌’关系是否对称？”
+- “如果药物 M1 与 M2 相互作用，M2 与 M3 相互作用，M1 是否与 M3 相互作用？”
+- “一种症状能否由多种病症引起（函数性与逆函数性）？”
+
+### 示例二：供应链与物流
+
+**范围界定型 CQ**：
+
+- “本体涵盖原材料、零部件、成品，还是全部涵盖？”
+- “空运、海运、公路、铁路等运输方式是否都在范围内？”
+- “地理粒度是国家、地区，还是具体设施？”
+
+**验证型 CQ**：
+
+- “供应商 S 向设施 F 提供零部件 C 的交付周期是多久？”
+- “哪些供应商能提供具有质量认证 Q 的材料 M？”
+- “生产步骤 P1 与 P2 之间有哪些依赖？”
+- “供应商 S 的中断会影响哪些产品？”
+
+**基础本体型 CQ**：
+
+- “‘采购订单’是文档，还是社会承诺？”
+- “‘库存’是物质实体，还是物料承担的角色？”
+- “‘装运’是过程，还是事件？”
+
+**元属性型 CQ**：
+
+- “一个零部件能否同时是多个装配体的一部分？”
+- “跟踪单件物品与批次时，分别用什么判定同一性？”
+- “‘作为供应商’是本质属性，还是偶然承担的角色？”
+
+**关系特征型 CQ**：
+
+- “‘是……的一部分’关系在不同装配体之间是否具有传递性？”
+- “如果设施 F1 向 F2 供货，F2 向 F3 供货，F1 是否传递地向 F3 供货？”
+- “‘装运包含’关系的定义域是什么，是否只限于集装箱货物？”
+
+### 示例三：法律与监管合规
+
+**范围界定型 CQ**：
+
+- “涵盖哪些司法管辖区的法律，如美国联邦、欧盟或特定州？”
+- “涉及哪些法律领域：合同法、隐私法、知识产权，还是全部？”
+- “时间范围仅含现行法律，还是也包括历史版本？”
+
+**验证型 CQ**：
+
+- “框架 F 中哪些监管要求适用于 T 类型组织？”
+- “违反法规 R 会受到什么处罚？”
+- “哪些控制措施满足司法管辖区 J 的要求 R1？”
+- “证明符合 C 时，可以接受哪些 E 类型证据？”
+
+**基础本体型 CQ**：
+
+- “‘法规’是规约、计划，还是一般依赖持续体？”
+- “‘合规’是状态、过程，还是性质？”
+- “‘法律义务’是社会对象，还是依赖性实体？”
+
+**元属性型 CQ**：
+
+- “一个控制措施能否满足多项监管要求？”
+- “跨司法管辖区判断法规同一性的标准是什么？”
+- “‘合规’一旦达成，是否就是刚性属性？”
+
+**关系特征型 CQ**：
+
+- “如果法规 R1 取代 R2，这种关系是否具有传递性？”
+- “要求与子要求之间的‘派生自’关系是否具有传递性？”
+- “‘由……执法’关系的值域是什么，是否仅限政府机构？”
+
+## 能力问题与 AI 系统：新兴前沿
+
+随着 AI 系统日益复杂，CQ 的作用也在演变。
+
+**AI 生成的 CQ**：LLM 可以辅助生成 CQ，但需要：
+
+- 人工验证准确性与相关性。
+- 领域专家监督覆盖程度。
+- 与知识图谱集成，提供依据。
+- 使用 Reflexion 技术迭代细化。[^31]
+
+**面向 AI 可解释性的 CQ**：支持 AI 可解释性的本体需要此类问题：
+
+- “哪些输入特征对决策 D 的影响最大？”
+- “哪些反事实变化会改变结果 O？”
+- “哪些训练样例与实例 I 最相似？”
+- “预测 P 的溯源链是什么？”
+
+**面向 AI 安全与伦理的 CQ**：新兴 AI 治理本体需要回答：
+
+- “模型 M 中检测到了哪些偏差？”
+- “哪些公平性指标适用于用例 U？”
+- “针对失效模式 F，有哪些防护措施？”
+- “如何确保训练集 T 的数据隐私？”
+
+**驱动智能体 AI 的 CQ**：当 AI 智能体利用本体进行推理时：
+
+- CQ 成为智能体自主执行的查询。
+- CQ 的复杂度决定智能体的推理深度。
+- CQ 的覆盖范围界定智能体的能力边界。
+- CQ 验证保障智能体行为对齐。
+
+## 实用工具与资源
+
+**本体开发平台**：
+
+- **Protégé**：行业标准编辑器，拥有插件生态。
+- **WebProtégé**：基于 Web 的协作开发平台。
+- **TopBraid Composer**：具有治理功能的企业级工具。
+
+**CQ 管理工具**：
+
+- **CQChecker**：自动验证和测试 CQ。[^9]
+- **BFO Classifier**：辅助基础本体对齐。[^20]
+- **OOPS!**：检测本体建模陷阱。[^10]
+
+**CQ 资料库**：
+
+- **ROCQS（Repository of Competency Questions）**：收录跨领域的 438 个 CQ。[^12]
+- **CQ-BEN**：用于 CQ 评估的基准语料库。[^4]
+- **Mendeley CQ Dataset**：包含 234 个 CQ 及其 SPARQL 译法。[^18][^17]
+
+**查询工具**：
+
+- **Blazegraph Workbench**：执行 SPARQL 查询并可视化结果。
+- **SPARQL 端点**：直接查询本体的接口。
+- **语义推理器**：HermiT、Pellet、FaCT++ 等，用于推理。
+
+**文档框架**：
+
+- **Markdown**：轻量，适合版本控制。
+- **OntoDoc**：自动生成本体文档。
+- **Widoco**：辅助编写本体文档的向导工具。
+
+## 结论：能力问题的战略作用
+
+能力问题的价值远超需求收集技术：它们在人类理解与形式化本体承诺之间建立概念桥梁。明确本体必须表示哪些知识、支持哪些推理，可以将抽象的本体开发转化为具体、可测试的工程实践。
+
+**关键要点**：
+
+1. **CQ 是迭代演进的，而非静态的**：63.5% 的开发工作会在多个周期中细化 CQ，这种动态变化反映了对领域理解的加深。[^2]
+2. **五类 CQ 各有用途**：范围界定型、验证型、基础本体型、元属性型和关系特征型问题分别关注本体质量的不同方面。[^13][^12]
+3. **利益相关者多样性能够丰富 CQ**：让领域专家、最终用户、技术专家和决策者共同参与，收集全面需求。[^24]
+4. **形式化使自动化成为可能**：将 CQ 转换为 SPARQL 或描述逻辑，有助于持续测试和检测回归。[^17][^9]
+5. **仅有 CQ 还不够**：应结合结构分析、陷阱检测和基础本体对齐，进行全面的质量保障。[^10]
+6. **AI 增强而不替代人类专业知识**：LLM 生成 CQ 的接受率约为 50%，仍需专家筛选。[^33]
+7. **跨领域模式存在，但需要适配**：结构、时间、因果和分类模式会在不同领域重复出现，但必须结合具体情境实例化。[^19]
+8. **文档和版本控制至关重要**：系统记录 CQ 的理由、依赖与版本历史，有助于长期维护。[^30]
+9. **否定问题与约束问题澄清边界**：明确本体**不应**表示什么，可以防止范围膨胀和建模错误。
+10. **CQ 的复杂度很重要**：设计良好的本体应能回答层次化、多步骤的问题，支持真正的推理，而不仅是数据检索。[^6]
+
+应用本指南所述原则、方法和最佳实践，本体开发者可以借助能力问题，创建范围恰当、符合利益相关者需求、技术上可靠，并对目标应用有用的知识表示。这些应用可以是网络安全、医疗、供应链、法律合规，或任何需要结构化、机器可处理知识的领域。
+
+## 参考资料
+
+以下脚注保留原文的编号和链接。原文仅在隐藏元素中引用的第 40—102 项资料，单独列在后面的补充资料中；相对路径均指向原仓库。
+
+[^1]: https://person.dibris.unige.it/mascardi-viviana/Download/questionnaire101.pdf
+
+[^2]: https://nemo.inf.ufes.br/wp-content/papercite-data/pdf/use_of_competency_questions_in_ontology_engineering__a_survey_2023.pdf
+
+[^3]: https://protege.stanford.edu/publications/ontology_development/ontology101.pdf
+
+[^4]: https://ceur-ws.org/Vol-3953/369.pdf
+
+[^5]: https://oa.upm.es/5480/1/Overview_Of_Methodologies.pdf
+
+[^6]: http://www.eil.utoronto.ca/wp-content/uploads/enterprise-modelling/papers/gruninger-mmei96.pdf
+
+[^7]: https://ceur-ws.org/Vol-1041/ontobras-2013_paper45.pdf
+
+[^8]: http://ketrc.com/wp-content/uploads/2020/04/Evaluation-Competency-Questions-2020-4-30.pdf
+
+[^9]: https://ceur-ws.org/Vol-1908/paper16.pdf
+
+[^10]: https://keet.wordpress.com/2022/06/08/only-answering-competency-questions-is-not-enough-to-evaluate-your-ontology/
+
+[^11]: https://www.academia.edu/70546830/The_Role_of_Competency_Questions_in_Enterprise_Engineering
+
+[^12]: https://keet.wordpress.com/2024/11/07/different-roles-for-various-competency-questions-for-ontologies/
+
+[^13]: https://arxiv.org/abs/2412.13688
+
+[^14]: https://arxiv.org/html/2412.13688v1
+
+[^15]: https://cacm.acm.org/research/a-lightweight-methodology-for-rapid-ontology-engineering/
+
+[^16]: https://smartcitysecurity.net/2023/06/13/competence-questions-for-a-smart-city-domain-ontology/
+
+[^17]: https://data.mendeley.com/datasets/pp6hmfxgfg/1
+
+[^18]: https://pubmed.ncbi.nlm.nih.gov/31989008/
+
+[^19]: https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3490821
+
+[^20]: https://ceur-ws.org/Vol-3249/paper3-FOUST.pdf
+
+[^21]: https://pmc.ncbi.nlm.nih.gov/articles/PMC10712036/
+
+[^22]: https://keet.wordpress.com/tag/ontology-alignment/
+
+[^23]: http://ontolog.cim3.net/file/work/OntologySummit2012/2012-02-23_Ontology-Quality-in-Big-Systems/Ontology-Quality_Design-patterns_Competency--NicolaGuarino_20120223.pdf
+
+[^24]: https://plprojects.co.uk/eliciting-requirements-from-stakeholders/
+
+[^25]: https://www.izenbridge.com/kb/pmp-exam-content-outline/process-task4-engage-stakeholders/
+
+[^26]: https://protege.stanford.edu/publications/ontology_development/ontology101-noy-mcguinness.html
+
+[^27]: https://www.cambridgeassessment.org.uk/Images/research-matters-35-a-conceptual-approach-to-validating-competence-frameworks.pdf
+
+[^28]: https://www.mecs-press.org/ijieeb/ijieeb-v12-n2/IJIEEB-V12-N2-5.pdf
+
+[^29]: https://www.imrpress.com/journal/KO/52/8/10.31083/KO42705
+
+[^30]: https://www.finalroundai.com/blog/documentation-interview-questions
+
+[^31]: https://ceur-ws.org/Vol-3874/paper10.pdf
+
+[^32]: https://arxiv.org/abs/2409.08820
+
+[^33]: https://aclanthology.org/2025.ldk-1.15.pdf
+
+[^34]: https://testrigor.com/blog/healthcare-domain-software-testing-interview-questions/
+
+[^35]: https://www.invensislearning.com/blog/healthcare-project-manager-interview-questions-answers/
+
+[^36]: https://www.nngroup.com/articles/workshop-facilitation-101/
+
+[^37]: https://www.sciencedirect.com/science/article/pii/S1570826824000088
+
+[^38]: https://ceur-ws.org/Vol-3905/master2.pdf
+
+[^39]: https://www.inf.ufes.br/~monalessa/wp-content/papercite-data/pdf/using_competency_questions_to_enhance_patterns_selection_in_ontology_patterns_languages_2024.pdf
+
+## 原文补充资料
+
+- **[40]** [github.com/GSA/guides_4_AIagents/blob/master/Guide_Engineering_Basic_SchemaDesign.md](https://github.com/GSA/guides_4_AIagents/blob/master/Guide_Engineering_Basic_SchemaDesign.md)
+- **[41]** [github.com/GSA/guides_4_AIagents/blob/master/prompt_context.txt](https://github.com/GSA/guides_4_AIagents/blob/master/prompt_context.txt)
+- **[42]** [github.com/GSA/guides_4_AIagents/blob/master/2008.07863v1_metadata.json](https://github.com/GSA/guides_4_AIagents/blob/master/2008.07863v1_metadata.json)
+- **[43]** [github.com/GSA/guides_4_AIagents/blob/master/2504.00441_metadata.txt](https://github.com/GSA/guides_4_AIagents/blob/master/2504.00441_metadata.txt)
+- **[44]** [github.com/GSA/guides_4_AIagents/blob/master/README.md](https://github.com/GSA/guides_4_AIagents/blob/master/README.md)
+- **[45]** [tetherless-world.github.io/sciv-ontology/competencyquestions/](https://tetherless-world.github.io/sciv-ontology/competencyquestions/)
+- **[46]** [cgi.csc.liv.ac.uk/~tbc/publications/itknows.pdf](https://cgi.csc.liv.ac.uk/~tbc/publications/itknows.pdf)
+- **[47]** [ceur-ws.org/Vol-3249/paper2-Ensusto.pdf](https://ceur-ws.org/Vol-3249/paper2-Ensusto.pdf)
+- **[48]** [inass.org/2019/2019043017.pdf](https://inass.org/2019/2019043017.pdf)
+- **[49]** [iacis.org/iis/2025/4_iis_2025_476-496.pdf](https://iacis.org/iis/2025/4_iis_2025_476-496.pdf)
+- **[50]** [fairplus.github.io/the-fair-cookbook/content/recipes/interoperability/ontology-robot-recipe/competency-questions.html](https://fairplus.github.io/the-fair-cookbook/content/recipes/interoperability/ontology-robot-recipe/competency-questions.html)
+- **[51]** [www.designsociety.org/download-publication/25547/a_methodology_of_engineering_ontology_development_for_information_retrieval](https://www.designsociety.org/download-publication/25547/a_methodology_of_engineering_ontology_development_for_information_retrieval)
+- **[52]** [www.sciencedirect.com/science/article/abs/pii/S1570826819300617](https://www.sciencedirect.com/science/article/abs/pii/S1570826819300617)
+- **[53]** [eng.libretexts.org/Bookshelves/Computer*Science/Programming_and_Computation_Fundamentals/An_Introduction_to_Ontology_Engineering*(Keet)/06:\_Methods_and_Methodologies/6.01:\_Methodologies_for_Ontology_Development](<https://eng.libretexts.org/Bookshelves/Computer_Science/Programming_and_Computation_Fundamentals/An_Introduction_to_Ontology_Engineering_(Keet)/06:_Methods_and_Methodologies/6.01:_Methodologies_for_Ontology_Development>)
+- **[54]** [livrepository.liverpool.ac.uk/3190379/1/201315064_Feb2025.pdf](https://livrepository.liverpool.ac.uk/3190379/1/201315064_Feb2025.pdf)
+- **[55]** [www.semanticscholar.org/paper/The-Role-of-Competency-Questions-in-Enterprise-Gruninger-Fox/e84846b45565ffc2108246fe20713529e6f63ba7](https://www.semanticscholar.org/paper/The-Role-of-Competency-Questions-in-Enterprise-Gruninger-Fox/e84846b45565ffc2108246fe20713529e6f63ba7)
+- **[56]** [arxiv.org/html/2409.08820v1](https://arxiv.org/html/2409.08820v1)
+- **[57]** [www.eil.utoronto.ca/wp-content/uploads/enterprise-modelling/papers/fox-eimt97.pdf](http://www.eil.utoronto.ca/wp-content/uploads/enterprise-modelling/papers/fox-eimt97.pdf)
+- **[58]** [tetherless-world.github.io/explanation-ontology/competencyquestions/](https://tetherless-world.github.io/explanation-ontology/competencyquestions/)
+- **[59]** [jatit.org/volumes/Vol103No19/2Vol103No19.pdf](https://jatit.org/volumes/Vol103No19/2Vol103No19.pdf)
+- **[60]** [arxiv.org/abs/2507.02989](https://arxiv.org/abs/2507.02989)
+- **[61]** [www.sciencedirect.com/science/article/pii/S2352340919314544](https://www.sciencedirect.com/science/article/pii/S2352340919314544)
+- **[62]** [vidcruiter.com/interview/questions/competency-based/](https://vidcruiter.com/interview/questions/competency-based/)
+- **[63]** [www.prospects.ac.uk/careers-advice/interview-tips/competency-based-interviews](https://www.prospects.ac.uk/careers-advice/interview-tips/competency-based-interviews)
+- **[64]** [livrepository.liverpool.ac.uk/3184940/1/EKAW2024-2.pdf](https://livrepository.liverpool.ac.uk/3184940/1/EKAW2024-2.pdf)
+- **[65]** [info.lse.ac.uk/staff/divisions/Human-Resources/Assets/Documents/Recruitment-Toolkit/Interview-and-Assessment/4.2-A-Guide-to-Competency-Based-Interviews.pdf](https://info.lse.ac.uk/staff/divisions/Human-Resources/Assets/Documents/Recruitment-Toolkit/Interview-and-Assessment/4.2-A-Guide-to-Competency-Based-Interviews.pdf)
+- **[66]** [2014.eswc-conferences.org/sites/default/files/papers/paper_145.pdf](https://2014.eswc-conferences.org/sites/default/files/papers/paper_145.pdf)
+- **[67]** [www.thecorporatelawacademy.com/forum/threads/a-complete-guide-for-competency-interview-preparation.9380/](https://www.thecorporatelawacademy.com/forum/threads/a-complete-guide-for-competency-interview-preparation.9380/)
+- **[68]** [www.sciencedirect.com/science/article/pii/S1071581914001013](https://www.sciencedirect.com/science/article/pii/S1071581914001013)
+- **[69]** [www.stlawu.edu/offices/human-resources/competency-values-based-interview-questions](https://www.stlawu.edu/offices/human-resources/competency-values-based-interview-questions)
+- **[70]** [ceur-ws.org/Vol-3603/workshopOIIDDS1.pdf](https://ceur-ws.org/Vol-3603/workshopOIIDDS1.pdf)
+- **[71]** [uxknowledgebase.com/domain-expert-interview-90c8db4cbaa](https://uxknowledgebase.com/domain-expert-interview-90c8db4cbaa)
+- **[72]** [www.frontiersin.org/journals/education/articles/10.3389/feduc.2024.1397027/full](https://www.frontiersin.org/journals/education/articles/10.3389/feduc.2024.1397027/full)
+- **[73]** [www.roberthalf.com/au/en/insights/hiring-help/stakeholder-management-interview-questions-ask-and-how-ideal-candidate-would-answer](https://www.roberthalf.com/au/en/insights/hiring-help/stakeholder-management-interview-questions-ask-and-how-ideal-candidate-would-answer)
+- **[74]** [www.finalroundai.com/blog/stakeholder-management-interview-questions](https://www.finalroundai.com/blog/stakeholder-management-interview-questions)
+- **[75]** [www.unipamplona.edu.co/unipamplona/portalIG/home_23/recursos/general/06032011/onto_parte2.pdf](https://www.unipamplona.edu.co/unipamplona/portalIG/home_23/recursos/general/06032011/onto_parte2.pdf)
+- **[76]** [timespro.com/blog/most-asked-stakeholder-management-interview-questions-and-tips-to-answer-them](https://timespro.com/blog/most-asked-stakeholder-management-interview-questions-and-tips-to-answer-them)
+- **[77]** [www.bridging-the-gap.com/what-questions-do-i-ask-during-requirements-elicitation/](https://www.bridging-the-gap.com/what-questions-do-i-ask-during-requirements-elicitation/)
+- **[78]** [www.linkedin.com/pulse/six-effective-elicitation-questions-ask-your-angela](https://www.linkedin.com/pulse/six-effective-elicitation-questions-ask-your-angela)
+- **[79]** [yardstick.team/interview-questions/requirements-elicitation](https://yardstick.team/interview-questions/requirements-elicitation)
+- **[80]** [www.diva-portal.org/smash/get/diva2:747226/FULLTEXT01.pdf](https://www.diva-portal.org/smash/get/diva2:747226/FULLTEXT01.pdf)
+- **[81]** [gitlab.esrf.fr/dau/ontology/esrf-ontology/-/wikis/Competency-questions/diff?version_id=9e1eef3091302c20ad1a19fd2150ff4dc42508ca&w=0](https://gitlab.esrf.fr/dau/ontology/esrf-ontology/-/wikis/Competency-questions/diff?version_id=9e1eef3091302c20ad1a19fd2150ff4dc42508ca&w=0)
+- **[82]** [www.reddit.com/r/salesforce/comments/1dnctxu/what_are_your_go_to_questions_when_doing/](https://www.reddit.com/r/salesforce/comments/1dnctxu/what_are_your_go_to_questions_when_doing/)
+- **[83]** [ontologydesignpatterns.org/wiki/images/1/11/WOP2016_paper_01.pdf](http://ontologydesignpatterns.org/wiki/images/1/11/WOP2016_paper_01.pdf)
+- **[84]** [www.cmx1.com/blog/questions-product-lifecycle-management](https://www.cmx1.com/blog/questions-product-lifecycle-management)
+- **[85]** [www.intelligentpeople.co.uk/employer-advice/product-management-interview-questions/](https://www.intelligentpeople.co.uk/employer-advice/product-management-interview-questions/)
+- **[86]** [tsapps.nist.gov/publication/get_pdf.cfm?pub_id=822618](https://tsapps.nist.gov/publication/get_pdf.cfm?pub_id=822618)
+- **[87]** [www.interviewbit.com/sdlc-interview-questions/](https://www.interviewbit.com/sdlc-interview-questions/)
+- **[88]** [binary.pensoft.net/file/259027](https://binary.pensoft.net/file/259027)
+- **[89]** [yardstick.team/interview-questions/customer-lifecycle-management](https://yardstick.team/interview-questions/customer-lifecycle-management)
+- **[90]** [www.micro1.ai/interview-prep/customer-lifecycle-manager-interview-questions](https://www.micro1.ai/interview-prep/customer-lifecycle-manager-interview-questions)
+- **[91]** [www.reddit.com/r/UXDesign/comments/1lc5ias/how_do_you_learn_to_facilitate_workshops_and/](https://www.reddit.com/r/UXDesign/comments/1lc5ias/how_do_you_learn_to_facilitate_workshops_and/)
+- **[92]** [voltagecontrol.com/articles/top-interview-questions-to-assess-meeting-facilitation-skills-what-you-should-know/](https://voltagecontrol.com/articles/top-interview-questions-to-assess-meeting-facilitation-skills-what-you-should-know/)
+- **[93]** [www.upgrad.com/blog/healthcare-interview-questions-for-freshers/](https://www.upgrad.com/blog/healthcare-interview-questions-for-freshers/)
+- **[94]** [www.youtube.com/watch?v=RCa8WDx9QEw](https://www.youtube.com/watch?v=RCa8WDx9QEw)
+- **[95]** [arxiv.org/abs/2505.24554](https://arxiv.org/abs/2505.24554)
+- **[96]** [insightglobal.com/blog/20-interview-questions-for-healthcare-it-candidates/](https://insightglobal.com/blog/20-interview-questions-for-healthcare-it-candidates/)
+- **[97]** [www.workshopper.com/post/the-ultimate-guide-to-facilitation](https://www.workshopper.com/post/the-ultimate-guide-to-facilitation)
+- **[98]** [research.ibm.com/publications/automated-generation-of-competency-questions-using-large-language-models-and-knowledge-graphs](https://research.ibm.com/publications/automated-generation-of-competency-questions-using-large-language-models-and-knowledge-graphs)
+- **[99]** [www.scribd.com/document/563569680/BA-Healthcare-Domain-Interview-questions](https://www.scribd.com/document/563569680/BA-Healthcare-Domain-Interview-questions)
+- **[100]** [knowledge.insead.edu/leadership-organisations/competencies-and-constraints-determine-leadership-success](https://knowledge.insead.edu/leadership-organisations/competencies-and-constraints-determine-leadership-success)
+- **[101]** [www.finalroundai.com/blog/competency-based-interview-questions](https://www.finalroundai.com/blog/competency-based-interview-questions)
+- **[102]** [huntr.co/interview-questions/documentation](https://huntr.co/interview-questions/documentation)
