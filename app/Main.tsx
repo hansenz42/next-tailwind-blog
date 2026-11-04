@@ -37,14 +37,14 @@ export default function Home({ posts }) {
               {siteMetadata.description}
             </h2>
             <h2 className="prose text-lg text-gray-600 dark:text-gray-400">
-              🏗️ 系统架构师，🛠️ FDE 工程师。文化产业平台。AI Agents
-              工程、知识图谱构建与应用、数据系统设计与优化、云原生技术。
+              🏗️ 系统架构师，🛠️ FDE 工程师。文化产业平台。Agents
+              工程、知识工程、算法工程、数据系统设计、云原生技术。
               <br />
             </h2>
             <h2 className="prose text-lg text-gray-600 dark:text-gray-400">
-              🏗️ System architect, 🛠️ FDE engineer. Cultural industry platform. AI Agents
-              engineering, knowledge graph construction and application, data system design and
-              optimization, cloud-native technology.
+              🏗️ System architect, 🛠️ FDE engineer. Cultural industry platform. Agents engineering,
+              knowledge engineering, algorithm engineering, data system design, cloud-native
+              technology.
               <br />
             </h2>
           </div>
