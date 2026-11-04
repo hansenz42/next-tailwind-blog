@@ -1,0 +1,1519 @@
+---
+title: '【翻译】用能力问题驱动本体的类、属性与约束设计'
+date: 2026-11-04
+tags:
+  - 本体论
+  - 知识图谱
+  - 人工智能
+  - 翻译
+summary: 翻译 GSA 的 CQ2Onto 指南，介绍如何从能力问题出发，通过语言分析、预设提取和形式化转换，设计本体的类、属性、公理与约束，并开展测试驱动开发。
+draft: false
+---
+
+> 本文译自 GSA/guides_4_AIagents 仓库中的 **Using Competency Questions to Drive Ontology Classes, Properties, and Constraints**。  
+> [阅读英文原文](https://github.com/GSA/guides_4_AIagents/blob/master/guide_ontology_CQ2Onto.md) · [原仓库](https://github.com/GSA/guides_4_AIagents) · [许可说明（CC0 1.0）](https://github.com/GSA/guides_4_AIagents/blob/master/LICENSE.md)  
+> 翻译日期：2026 年 11 月 4 日。本文保留原文章节、代码示例和引文编号，对部分形式化表述另加译注；工具能力和评价目标沿用原文。原文仅在隐藏元素中引用的资料单列于文末。本译文不代表 GSA 对本博客的认可。
+
+上一篇：[【翻译】如何为本体开发设计能力问题（Competency Questions）](/blog/2026-11-02-ontology-competency-questions-translation/)。
+
+能力问题（Competency Questions，CQ）一旦形成，就成为本体设计的主要蓝图，直接决定需要实现哪些类、属性、公理和约束。本指南介绍一套系统方法，通过语言分析、预设识别、模式匹配，以及向 OWL 构造的形式化转换，从 CQ 中提取本体需求。这个过程以规范、迭代的方式，将自然语言问题转化为可测试、可执行的本体规约，确保最终本体准确回应利益相关者的需要。[^1][^2][^3]
+
+## 基本原则：从问题到本体承诺
+
+### 预设范式
+
+每个能力问题都带有**语言预设**：关于领域结构的隐含假设。只有这些假设得到满足，问题才有意义。这些预设可以直接转化为本体需求。[^2]
+
+**分析示例**：[^1]
+
+**能力问题**：“学生在整个学期中的平均表现如何？”
+
+**提取出的预设**：
+
+1. **“学生表现”必须存在** → 需要类 `StudentPerformance` 或数据属性 `hasPerformance`。
+2. **表现必须可度量** → 需要值域为数值类型（`xsd:float`、`xsd:integer`）的数据属性。
+3. **“整个学期”这一时间维度** → 需要时间属性或带限定信息的关系。
+4. **“平均值”这一聚合能力** → 意味着存在多个表现实例，需要考虑基数。
+5. **学生作为独立实体存在** → 需要类 `Student`。
+
+每个预设都会成为一项**不可缺少的本体需求**。如果其中任何一项缺失，就无法有意义地回答 CQ，说明本体不完整。
+
+> 译注：语言预设首先用于发现候选需求，仍须结合领域知识确认；例如“平均值”通常由查询引擎计算，不能据此认为 OWL 推理器本身支持数值聚合。
+
+### 三层转换框架
+
+**第一层：句法分析**  
+解析自然语言结构，识别名词、动词、形容词、修饰语等语法成分。
+
+**第二层：语义映射**  
+将语言成分映射为类、属性、个体和限制等本体基本构件。
+
+**第三层：逻辑形式化**  
+将需求表达为 OWL 公理、描述逻辑约束或 SPARQL 查询。
+
+这种分层方法从表层语言系统地覆盖到形式逻辑，尽量缩小利益相关者意图与已实现本体之间的差距。
+
+## 阶段一：语言分析与成分提取
+
+### 名词短语提取 → 类与实例
+
+#### 语法树分析
+
+现代本体工程利用**成分句法分析**系统提取名词短语。[^4]
+
+**过程**：
+
+1. 将 CQ 句子解析为成分树。
+2. 识别树中的名词短语（NP）节点。
+3. 提取中心名词（核心概念）与修饰语（属性、限定条件）。
+4. 递归处理嵌套名词短语。
+
+**示例**：[^4] 短语 “finishes which may radiate noise”（可能辐射噪声的饰面）：
+
+- 解析识别出名词短语 “finishes”，其中心词受到关系从句修饰。
+- 中心名词 → 候选类 `Finish`。
+- 修饰语 “radiate noise”（辐射噪声）→ 候选属性或约束。
+
+**词性标注模式**：[^4]
+
+模式：`DT? JJ* NN+`，即可选的限定词、零个或多个形容词、一个或多个名词。
+
+示例：
+
+- “a stringent requirement”（严格要求，DT JJ NN）→ 类 `Requirement`，具有 `stringent` 属性。
+- “braai equipment”（南非烧烤设备，NN NN）→ 类 `BraaiEquipment`，属于复合名词。
+- “AI security control”（AI 安全控制措施，NN NN NN）→ 类 `AISecurityControl`。
+
+**多词概念**：[^4] 领域术语经常以多词表达出现，需要专门处理：
+
+- “natural language processing”（自然语言处理）→ 单个类 `NaturalLanguageProcessing`，而非三个类。
+- “cloud service provider”（云服务提供商）→ 单个类 `CloudServiceProvider`。
+- 利用领域术语表和专家验证，区分不可再分的术语与组合术语。
+
+#### 分类规则
+
+**普通名词 → OWL 类**：[^5]
+
+- “学生”“课程”“考核”→ 类 `Student`、`Course`、`Assessment`。
+- 表示可以拥有多个实例的类别或类型。
+
+**专有名词 → 个体**：[^5]
+
+- “FedRAMP”“MITRE ATLAS”“GPT-4”→ 个体，即具体实体。
+- 这些命名实体是某个类的特定实例。
+
+**抽象概念 → 类**：
+
+- “表现”“风险”“合规”→ 在适当抽象层次上建立类。
+- 往往需要谨慎确定其在层次结构中的位置。
+
+**如何判断是类还是个体**：
+
+- 能否存在多个具有不同属性的实例？→ 类。
+- 是否是唯一、具体且不会拥有实例的实体？→ 个体。
+- 领域是否需要对这个类别进行推理？→ 类。
+
+### 动词短语提取 → 属性与关系
+
+#### 通过依存句法分析识别关系
+
+**主句模式（名词性主语）**：[^6] 主语（名词）+ 动词 + 宾语（名词）。
+
+示例：
+
+- “过程实现算法”→ 属性 `implements`，定义域 `Process`，值域 `Algorithm`。
+- “学生选修课程”→ 属性 `enrolledIn`，定义域 `Student`，值域 `Course`。
+- “控制措施缓解风险”→ 属性 `mitigates`，定义域 `Control`，值域 `Risk`。
+
+**被动句模式**：[^6] 主语 + “is/are” + 过去分词 + “by” + 施事。
+
+示例：
+
+- “风险被控制措施缓解”→ 仍是 `mitigates` 属性，只是视角相反。
+- “算法被过程实现”→ 提示可能需要逆属性。
+
+**关系从句模式**：[^6] 名词 + 关系代词 + 动词短语。
+
+示例：
+
+- “支持 AI 工作负载的系统”→ 属性 `supports`。
+- “利用漏洞的攻击”→ 属性 `exploits`。
+
+#### 判断属性类型
+
+**对象属性（类 → 类）**：[^7][^8]
+
+- **触发线索**：连接两个实体类型的动词。
+- **值域**：另一个类，而非字面值。
+- **示例**：“书有作者”→ `hasAuthor`，定义域 `Book`，值域 `Author`。
+
+**数据类型属性（类 → 字面值）**：[^8][^7]
+
+- **触发线索**：属性赋值、度量或简单值。
+- **值域**：XML Schema 数据类型，如 `xsd:string`、`xsd:integer`、`xsd:date`。
+- **示例**：“出版年份”→ `publicationYear`，定义域 `Book`，值域 `xsd:integer`。
+
+**判断标准**：
+
+- 宾语是否拥有自己的属性，并能独立存在？→ 对象属性。
+- 是否是数字、文本、日期等简单值？→ 数据类型属性。
+- 是否可以直接度量或计数？→ 通常是数据类型属性。
+
+> 译注：以上“类 → 类”是建模层面的简写。对象属性实际连接个体与个体，数据属性连接个体与字面值；定义域和值域用于约束或推断其类型。
+
+#### 动词模式类别
+
+**及物动词**：[^6] 直接映射为具有明确域和值域的属性：
+
+- “作者写书”→ `writes`。
+- “讲师教授课程”→ `teaches`。
+
+**系词 “is/are” 模式**：[^6] 表示分类或等价：
+
+- “X 是 Y 的一种类型”→ `rdfs:subClassOf`，即包含关系。
+- “X 是 Y”→ 可能是类等价 `owl:equivalentClass`，也可能是类型断言 `rdf:type`。
+
+**所有格结构**：[^6] 名词 + 所有格 + 名词：
+
+- “系统的组件”→ `hasComponent`。
+- “攻击的目标”→ `hasTarget`。
+- 通常转化为 “has-X” 或 “of-X” 属性。
+
+**比较结构**：[^6] 形容词比较：
+
+- “X 比 Y 大”→ `largerThan`。
+- “X 比 Y 严重”→ `moreSevereThan`。
+- 可能需要排序或等级机制。
+
+### 形容词与修饰语提取 → 特征与限制
+
+#### 识别特征
+
+**简单形容词 → 数据类型属性或类的特化**：
+
+- “严格要求”→ 布尔数据属性 `isStringent`，或子类 `StringentRequirement`。
+- “高风险”→ 子类 `HighRisk`，或带值域约束的数据属性 `riskLevel`。
+
+**数量形容词 → 基数约束**：
+
+- “多个控制措施”→ 不设置最大基数限制。
+- “单点故障”→ `cardinality 1` 限制。
+- “至少三个验证者”→ `minCardinality 3`。
+
+**限定修饰语 → 属性限制**：
+
+- “AI 专用控制措施”→ `Control AND (appliesTo some AISystem)`。
+- “持证评估员”→ `Assessor AND (hasCertification some Certification)`。
+
+#### 布尔值与枚举值
+
+**布尔特征**：CQ：“哪些系统已获认证？”
+
+- 属性：`isCertified`，值域 `xsd:boolean`。
+- 替代方法：创建互斥类 `CertifiedSystem` 和 `UncertifiedSystem`。
+
+**枚举值**：CQ：“影响级别是什么（低、中、高）？”
+
+- 定义类 `ImpactLevel`，包含个体 `Low`、`Moderate`、`High`。
+- 属性 `hasImpactLevel` 的值域为 `ImpactLevel`。
+- 添加公理：`ImpactLevel owl:oneOf (Low Moderate High)`。
+
+## 阶段二：构建类层次结构
+
+### 识别包含关系
+
+#### 识别层次结构的语言模式
+
+**“……的类型”或“……的一种”模式**：[^6]
+
+CQ：“存在哪些类型的 AI 攻击？”
+
+- 暗示层次结构：`Attack` 为超类。
+- 子类型：`AdversarialAttack`、`DataPoisoningAttack`、`ModelInversionAttack`。
+- 公理：`AdversarialAttack rdfs:subClassOf Attack`。
+
+**“例如”或“包括”模式**：[^4]
+
+CQ：“哪些安全框架适用，例如 FedRAMP 和 NIST？”
+
+- `FedRAMP` 和 `NIST` 是 `SecurityFramework` 的示例，可作为实例或子类。
+- 词汇句法模式：“NPList1 such as NPList2”→ NPList2 是 NPList1 的实例或子类。
+
+> 译注：上述 NIST 示例沿用原文；实际建模应区分机构 NIST 与其发布的具体框架，不能仅凭列举句式确定实体类型。
+
+**分类问题**：
+
+CQ：“X 是 Y 的一种特化形式吗？”
+
+- 直接包含关系：`X rdfs:subClassOf Y`。
+
+CQ：“X 有哪些组成部分？”
+
+- 这是部分与整体层次，而非类的包含关系。
+- 应使用 `hasPart`、`isPartOf` 等属性。
+
+#### 层次设计原则
+
+**单继承与多继承**：
+
+- **单继承**：每个类只有一个直接超类，更简单清晰。
+- **多继承**：一个类可以拥有多个超类，表达力更强，但可能增加复杂性。
+- OWL 支持多继承；当实体确实属于多个类别时，应审慎使用。
+
+**深度与宽度**：
+
+- **深层结构**：如 5—7 层，可提供细粒度分类。
+- **浅层结构**：如 2—3 层，更容易理解，但可能过粗。
+- 根据领域复杂度和 CQ 粒度需求权衡。
+
+**自顶向下与自底向上构建**：
+
+- **自顶向下**：先定义 `Entity`、`Process`、`Resource` 等高层类，再逐步特化。
+- **自底向上**：从 CQ 识别具体类，再概括出共同父类。
+- **从中间向两端扩展（推荐）**：从中等抽象层次出发，向上下两个方向延伸。
+
+### 互斥性与覆盖
+
+#### 互斥公理
+
+**无法自动从 CQ 推导**：[^9] CQ 通常说明哪些内容*应当*关联，而非哪些类别*不应*重叠。互斥性需要借助领域知识判断，并与专家验证。
+
+**对质量至关重要**：[^9]
+
+例如，在南非烧烤本体中：
+
+- `Site`（场地）与 `BraaiEquipment`（烧烤设备，物理对象）应互斥。
+- 缺少互斥公理，推理器就可能推导出一个场地也是设备。
+- 风险在于产生违背领域语义的非预期模型。
+
+**添加互斥性**：
+
+```owl
+DisjointClasses: Site, BraaiEquipment, FoodItem, Person
+```
+
+**工具支持**：
+
+- **Advocatus Diaboli / PEW（Possible World Explorer，可能世界探索器）**：识别应补充互斥公理的位置。[^9]
+- **OOPS! Pitfall Scanner**：把缺少互斥性识别为本体建模陷阱。[^9]
+
+#### 覆盖公理
+
+**覆盖公理（原文称为闭世界假设）**：
+
+CQ：“*全部*影响级别有哪些？”
+
+- 公理：`ImpactLevel equivalentClass {Low, Moderate, High}`。
+- 确保不存在其他影响级别。
+
+**划分**：
+
+CQ：“系统是否属于开发、预发布或生产环境之一？”
+
+- 不交并：`System = DevelopmentSystem ⊔ StagingSystem ⊔ ProductionSystem`。
+- 每个系统实例恰好属于一个类别。
+
+> 译注：枚举与覆盖公理不会把 OWL 整体变成闭世界系统。普通并集也不保证互斥，需额外声明互斥，或使用 `DisjointUnion`；枚举的个体若须彼此不同，还应声明其差异。
+
+## 阶段三：定义属性及其特征
+
+### 指定定义域和值域
+
+#### 从 CQ 提取定义域和值域
+
+**一般模式**：“哪些［定义域］通过［属性］关联［值域］？”
+
+CQ：“哪些**学生\*\***选修**了**课程\*\*？”
+
+- 定义域：`Student`。
+- 属性：`enrolledIn`。
+- 值域：`Course`。
+
+CQ：“哪些**控制措施\*\***缓解\***\*风险**？”
+
+- 定义域：`Control`。
+- 属性：`mitigates`。
+- 值域：`Risk`。
+
+**形式化 OWL 规约**：[^10][^7]
+
+```owl
+ObjectProperty: enrolledIn
+  Domain: Student
+  Range: Course
+
+ObjectProperty: mitigates
+  Domain: Control
+  Range: Risk
+```
+
+**OWL 2 DL 约束（原文表述）**：每个属性恰好有一个 `rdfs:domain` 和一个 `rdfs:range`，但可通过交集指定多个类别。[^10]
+
+> 译注：OWL 2 并无“每个属性必须恰好有一个定义域和值域”的要求。可以省略或声明多个；多个声明同时生效，具有交集效果。定义域和值域主要用于类型推断，不能当作数据库式的输入校验规则。参见 [W3C OWL 2 属性公理](https://www.w3.org/TR/owl2-syntax/#Object_Property_Axioms)。
+
+#### 多个定义域或值域
+
+**交集语义**：
+
+```owl
+Domain: Student ⊓ Employee
+```
+
+含义：该属性适用于*同时*属于 `Student` 与 `Employee` 的实体。
+
+**并集语义（通过独立属性或推理）**：
+
+使用多个属性：
+
+- `teacherEnrolledIn`：定义域 `Teacher`，值域 `Course`。
+- `studentEnrolledIn`：定义域 `Student`，值域 `Course`。
+
+或者创建超类：
+
+- 原文写作 `Person ⊔ {Student, Teacher}`。
+- 将 `enrolledIn` 的定义域设为 `Person`。
+
+> 译注：原文上一行不是规范的超类定义。可以分别声明 `Student` 和 `Teacher` 是 `Person` 的子类，再将定义域设为 `Person`；也可以直接用 `Student or Teacher` 作为并集定义域，具体取决于需求。
+
+### 从 CQ 确定属性特征
+
+#### 传递性
+
+**CQ 模式**：“如果 X 与 Y、Y 与 Z 都满足［关系］，X 与 Z 也满足吗？”
+
+示例：[^11]
+
+CQ：“如果组件 A 是装配体 B 的一部分，B 是系统 C 的一部分，A 是 C 的一部分吗？”
+
+- 回答“是”→ `partOf` 具有**传递性**。
+- OWL：`owl:TransitiveProperty`。
+
+CQ：“如果活动 A 先于 B，B 先于 C，A 是否先于 C？”
+
+- 回答“是”→ `precedes` 具有**传递性**。
+
+**实现**：[^11]
+
+```owl
+ObjectProperty: hasSubStage
+  Characteristics: Transitive
+
+ObjectProperty: hasNextStage
+  Characteristics: Transitive
+```
+
+**推理收益**：推理器自动计算传递闭包。如果 A 是 B 的一部分、B 是 C 的一部分，无需显式断言即可推出 A 是 C 的一部分。
+
+> 译注：`hasNextStage` 若表示“紧接的下一阶段”，通常不具有传递性；若表示广义后续阶段，才可能适合上述声明。应以领域语义为准。
+
+#### 对称性
+
+**CQ 模式**：“如果 X 与 Y 满足［关系］，Y 与 X 也满足吗？”
+
+示例：
+
+CQ：“如果 A 是 B 的兄弟姐妹，B 是否也是 A 的兄弟姐妹？”
+
+- 回答“是”→ `siblingOf` 具有**对称性**。
+
+CQ：“如果系统 X 与 Y 集成，Y 是否也与 X 集成？”
+
+- 回答“是”→ `integratesWith` 具有**对称性**。
+
+**实现**：
+
+```owl
+ObjectProperty: siblingOf
+  Characteristics: Symmetric
+```
+
+#### 自反性
+
+**CQ 模式**：“X 能与自身满足［关系］吗？”
+
+示例：[^12]
+
+CQ：“自恋者爱自己吗？”
+
+- 回答“是”→ `loves` 可以是**自反的**。
+- 需要本体语言支持自反性。
+
+CQ：“系统能依赖自身吗？”
+
+- 回答取决于领域；通常为“否”→ `dependsOn` **非自反**。
+
+**实现**：
+
+```owl
+ObjectProperty: loves
+  Characteristics: Reflexive
+
+ObjectProperty: dependsOn
+  Characteristics: Irreflexive
+```
+
+> 译注：某个个体爱自己，不能推出整个 `loves` 关系是自反的。全局自反声明意味着每个个体都与自身具有该关系；表达特定个体或某类实体的自我关系，应使用个体断言或自我限制。
+
+#### 函数性与逆函数性
+
+**函数属性**：每个定义域个体最多关联一个值域值。
+
+**CQ 模式**：“X 能拥有多个 Y 值吗？”
+
+示例：
+
+CQ：“一个人能有多个出生日期吗？”
+
+- 回答“否”→ `hasBirthDate` 具有**函数性**。
+
+CQ：“一个系统能有多个所有者吗？”
+
+- 回答“是”→ `hasOwner` **不具有函数性**。
+
+**实现**：[^8]
+
+```owl
+DataProperty: hasBirthDate
+  Characteristics: Functional
+  Domain: Person
+  Range: xsd:date
+```
+
+**逆函数性**：每个值域个体最多关联一个定义域个体。
+
+CQ：“多个人能共享同一个社会保障号码吗？”
+
+- 回答“否”→ `hasSSN` 具有**逆函数性**。
+
+> 译注：OWL 2 的逆函数属性属于对象属性。若社会保障号码用字符串字面值表示，不能直接把数据属性声明为逆函数属性，可根据标识语义考虑 `HasKey` 等方式；这仍不等同于数据库唯一性校验。
+
+#### 逆属性
+
+**CQ 模式**：从不同视角描述双向关系。[^11]
+
+示例：
+
+CQ：“如果活动 A 是 B 的子阶段，B 是否是 A 的上级阶段？”
+
+- 属性：`hasSubStage` ↔ `hasSuperStage`。
+
+CQ：“如果组件 C 是系统 S 的一部分，S 是否包含 C？”
+
+- 属性：`partOf` ↔ `hasPart`。
+
+**实现**：[^11]
+
+```owl
+ObjectProperty: hasSubStage
+  InverseOf: hasSuperStage
+
+ObjectProperty: hasNextStage
+  InverseOf: hasPreviousStage
+```
+
+**推理收益**：断言一个方向后，可自动推断反向关系。
+
+## 阶段四：提取约束与限制
+
+### 从 CQ 提取基数约束
+
+#### 量词分析
+
+**最小基数**：
+
+CQ：“每个班级都必须有**至少一次**考核吗？”
+
+- 限制：`Class ⊑ ≥1 hasAssessment.Assessment`。
+- OWL：在 `hasAssessment` 上设置 `minCardinality 1`。
+
+**最大基数**：
+
+CQ：“一个学生能否拥有**不超过两项**有效选课记录？”
+
+- 限制：`Student ⊑ ≤2 enrolledIn.Course`。
+- OWL：在 `enrolledIn` 上设置 `maxCardinality 2`。
+
+**精确基数**：
+
+CQ：“每辆车是否都有**恰好四个**车轮？”
+
+- 限制：`Vehicle ⊑ =4 hasWheel.Wheel`。
+- OWL：在 `hasWheel` 上设置 `cardinality 4`。
+
+**限定基数（限定具体类）**：
+
+CQ：“每次安全评估是否必须包含**至少一位**持证评估员？”
+
+- 限制：`SecurityAssessment ⊑ ≥1 includes.CertifiedAssessor`。
+- 原文 OWL 简写：`minQualifiedCardinality 1 hasAssessor someValuesFrom CertifiedAssessor`。
+
+> 译注：此处 OWL 条目为原文示意，并非完整语法；限定基数必须保留对象的类型条件。例如最后一例可写为 Manchester 语法 `SecurityAssessment SubClassOf hasAssessor min 1 CertifiedAssessor`，同时统一 `includes` 与 `hasAssessor` 的命名。
+
+#### 语义中隐含的基数
+
+**隐含的“至少一个”**：
+
+CQ：“系统 X 实现了哪些控制措施？”
+
+- 预设系统*具有*控制措施 → `minCardinality 1 implementsControl`。
+
+**隐含的“恰好一个”（来自唯一性）**：
+
+CQ：“漏洞 V 的风险级别是什么？”
+
+- 预设风险级别唯一 → `cardinality 1 hasRiskLevel`。
+
+**开放基数（默认）**：
+
+CQ：“哪些漏洞影响系统 S？”
+
+- 不设约束 → 允许零个或多个漏洞。
+
+> 译注：问句本身通常不足以确立最小或精确基数。是否要求每个系统至少有一项控制措施、风险等级是否随时间或评估者变化，都须经领域需求确认后再形成公理。
+
+### 值限制
+
+#### 存在量化（∃ / someValuesFrom）
+
+**CQ 模式**：“哪些 X 拥有*至少一个* Y？”
+
+示例：[^13]
+
+CQ：“哪些 AI 系统能生成基于轨迹的解释？”
+
+- 限制：`AISystem AND (canGenerate some TraceBasedExplanation)`。
+
+CQ：“哪些课程有先修课程？”
+
+- 限制：`Course AND (hasPrerequisite some Course)`。
+
+**OWL 实现**：[^7]
+
+```owl
+Class: AISystemWithExplanations
+  EquivalentTo: AISystem AND (canGenerate some TraceBasedExplanation)
+```
+
+#### 全称量化（∀ / allValuesFrom）
+
+**CQ 模式**：“哪些 X 的取值*仅限于* Y？”
+
+示例：[^13]
+
+CQ：“哪些学生只选修研究生课程？”
+
+- 限制：`Student AND (enrolledIn only GraduateCourse)`。
+
+CQ：“哪些控制措施只缓解高严重性风险？”
+
+- 限制：`Control AND (mitigates only HighSeverityRisk)`。
+
+**OWL 实现**：[^7]
+
+```owl
+Class: GraduateStudent
+  EquivalentTo: Student AND (enrolledIn only GraduateCourse)
+```
+
+**关键区别**：
+
+- `someValuesFrom`：至少有一个关系指向指定类的实例，即存在量化。
+- `allValuesFrom`：所有关系（如果存在）都必须指向指定类的实例，即全称量化。
+- 实践中 `someValuesFrom` 更常见；`allValuesFrom` 经常被误解。
+
+> 译注：`only GraduateCourse` 不保证学生实际选修过课程，未选任何课的学生也可能满足限制。若要求至少选一门研究生课程，需再加入存在限制。
+
+#### 特定值限制（hasValue）
+
+**CQ 模式**：“哪些 X 的属性 P 具有特定值 V？”
+
+示例：[^13]
+
+CQ：“哪些课程由 Smith 教授讲授？”
+
+- 限制：`Course AND (taughtBy hasValue ProfessorSmith)`。
+
+CQ：“哪些漏洞的 CVSS 得分为 9.0？”
+
+- 限制：`Vulnerability AND (hasCVSSScore hasValue "9.0"^^xsd:float)`。
+
+**OWL 实现**：[^7]
+
+```owl
+Class: SmithCourses
+  EquivalentTo: Course AND (taughtBy hasValue ProfessorSmith)
+```
+
+### 从布尔型 CQ 提取复杂限制
+
+#### 交集（AND / ⊓）
+
+**CQ 模式**：“哪些 X *同时*具有属性 P 和 Q？”
+
+示例：[^13]
+
+CQ：“哪些控制措施同时应对机密性和完整性问题？”
+
+- 限制：`Control AND (addresses some Confidentiality) AND (addresses some Integrity)`。
+
+**OWL**：
+
+```owl
+Class: ComprehensiveControl
+  EquivalentTo: Control AND (addresses some Confidentiality) AND (addresses some Integrity)
+```
+
+#### 并集（OR / ⊔）
+
+**CQ 模式**：“哪些 X 具有属性 P _或_ Q？”
+
+示例：[^13]
+
+CQ：“哪些系统是基于云的或采用混合部署？”
+
+- 并集：`CloudBasedSystem ⊔ HybridSystem`。
+
+**OWL**：[^7]
+
+```owl
+Class: FlexibleDeployment
+  EquivalentTo: CloudBasedSystem OR HybridSystem
+```
+
+#### 补集（NOT）
+
+**CQ 模式**：“哪些 X *不*具有属性 P？”
+
+示例：
+
+CQ：“哪些漏洞尚未修补？”
+
+- 限制：`Vulnerability AND (NOT (hasStatus hasValue "Patched"))`。
+
+**OWL**：[^7]
+
+```owl
+Class: UnpatchedVulnerability
+  EquivalentTo: Vulnerability AND (NOT PatchedVulnerability)
+```
+
+> 译注：在开放世界语义下，缺少“已修补”的记录，不等于可以推出“未修补”。补集分类需要足够的否定或互斥知识；若要查询“数据中未记录修补状态”的对象，应另行明确查询语义。
+
+### 时间与情境约束
+
+#### 从 CQ 提取时间属性
+
+**CQ 中的时间线索**：[^1]
+
+CQ：“学生**整个学期**的平均表现如何？”
+
+- 需要 `hasSemester` 属性或时间索引。
+
+CQ：“哪些控制措施**在评估期间**有效？”
+
+- 需要 `validFrom`、`validTo` 属性或时间限定。
+
+**实现方式**：
+
+**直接时间属性**：
+
+```owl
+DataProperty: validFrom
+  Domain: Control
+  Range: xsd:dateTime
+
+DataProperty: validTo
+  Domain: Control
+  Range: xsd:dateTime
+```
+
+**带限定信息的关系（四维本体方法）**：
+
+```owl
+Class: ControlEffectivenessEvent
+  SubClassOf: Event
+
+ObjectProperty: controlInvolved
+  Domain: ControlEffectivenessEvent
+  Range: Control
+
+ObjectProperty: occursDuring
+  Domain: ControlEffectivenessEvent
+  Range: TemporalInterval
+```
+
+#### 情境约束
+
+**CQ 模式**：“X 在什么*条件*下适用？”
+
+示例：
+
+CQ：“哪些控制措施适用于中等影响级别的系统？”
+
+- 限制：`Control AND (appliesTo some ModerateImpactSystem)`。
+
+CQ：“_在已获 FedRAMP 授权的条件下_，缓解措施有什么要求？”
+
+- 情境类：`FedRAMPAuthorizedSystem`。
+- 限制：`FedRAMPAuthorizedSystem ⊑ ≥3 implements.Control`。
+
+> 译注：这里“至少三项”是原文的建模示例，不能视为 FedRAMP 的实际合规要求。
+
+## 阶段五：向 OWL 与 SPARQL 进行形式化转换
+
+### 从 CQ 到描述逻辑查询
+
+#### 构造 DL 查询[^14][^13]
+
+**CQ**：“职业路径 C 对技能 S 要求什么熟练程度？”
+
+**DL 查询**：
+
+```text
+CareerPath(?c) ∧ RequiresSkill(?c, ?s) ∧ hasProficiencyLevel(?s, ?level)
+```
+
+**过程**：
+
+1. 识别变量：`?c`（职业路径）、`?s`（技能）、`?level`（熟练程度）。
+2. 将名词映射到类：`CareerPath`、`Skill`（后者隐含在属性的定义域或值域中）。
+3. 将动词映射到属性：`RequiresSkill`、`hasProficiencyLevel`。
+4. 构造逻辑合取。
+
+> 译注：原文称其为 DL 查询；上式更接近带变量的合取查询表示，并非可在任意 DL 查询工具中直接执行的语法。
+
+### 从 CQ 到 SPARQL 查询
+
+#### 系统生成 SPARQL[^15][^16][^17]
+
+**逐步转换**：
+
+**CQ**：“哪些 AI 模型能生成基于轨迹的解释？”
+
+**分析**：
+
+1. 目标（SELECT）：“AI 模型”→ 变量 `?model`。
+2. 类约束：“AI 模型”→ `?model rdf:type ai:AIModel`。
+3. 属性：“能生成”→ `?model exp:canGenerate ?explanation`。
+4. 值约束：“基于轨迹的解释”→ `?explanation rdf:type exp:TraceBasedExplanation`。
+
+**SPARQL 查询**：[^15]
+
+```sparql
+PREFIX ai: <http://example.org/ai#>
+PREFIX exp: <http://example.org/explanation#>
+
+SELECT ?model
+WHERE {
+  ?model rdf:type ai:AIModel .
+  ?model exp:canGenerate ?explanation .
+  ?explanation rdf:type exp:TraceBasedExplanation .
+}
+```
+
+> 译注：本文查询代码保留原文。独立执行时，需要补齐所用前缀，例如 `PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>`；后续示例还需声明 `exp:`、`sec:` 和默认前缀 `:` 等。
+
+#### 复杂 SPARQL 模式
+
+**通过属性路径处理传递关系**：[^15]
+
+CQ：“活动 A 在任意深度上的全部子阶段有哪些？”
+
+```sparql
+SELECT ?substage
+WHERE {
+  :ActivityA :hasSubStage+ ?substage .
+}
+```
+
+- `+` 运算符：沿属性经过一步或多步。
+- `*` 运算符：零步或多步，即自反传递闭包。
+
+**使用 UNION 表达备选条件**：
+
+CQ：“哪些系统基于系统推荐，或包含统计证据？”
+
+```sparql
+SELECT ?explanation
+WHERE {
+  {
+    ?explanation exp:isBasedOn exp:SystemRecommendation .
+  }
+  UNION
+  {
+    ?explanation exp:includes exp:StatisticalEvidence .
+  }
+}
+```
+
+> 译注：原文问句使用“系统”，查询变量却是 `?explanation`（解释）；实际使用时应统一目标实体，并根据需要加入类型限制。
+
+**使用 OPTIONAL 表达非必需条件**：
+
+CQ：“有哪些控制措施，以及在已知的情况下，它们的有效性评级是什么？”
+
+```sparql
+SELECT ?control ?rating
+WHERE {
+  ?control rdf:type sec:Control .
+  OPTIONAL { ?control sec:hasEffectivenessRating ?rating . }
+}
+```
+
+**为定量 CQ 使用聚合**：
+
+CQ：“课程 C 中学生的平均表现如何？”
+
+```sparql
+SELECT (AVG(?performance) AS ?avgPerformance)
+WHERE {
+  ?student rdf:type :Student .
+  ?student :enrolledIn :CourseC .
+  ?student :hasPerformance ?performance .
+}
+```
+
+#### 自动生成 SPARQL 的工具
+
+**思维链提示**：[^17]
+
+近期基于 LLM 的方法使用 CoT 推理：
+
+1. 解析输入问题。
+2. 提取实体和关系。
+3. 映射到本体模式。
+4. 逐步生成 SPARQL。
+5. 验证语法和语义。
+
+**提示结构示例**：[^17]
+
+```text
+任务：为问题生成 SPARQL 查询。
+本体模式：[类和属性]
+问题：“哪些 AI 模型能生成解释？”
+让我们逐步思考：
+1. 识别目标：AI 模型（变量 ?model）
+2. 识别类：AIModel
+3. 识别属性：canGenerate
+4. 生成查询：……
+```
+
+**FrODO：基于框架的本体设计**：[^18]
+
+这是一种直接从 CQ 生成 OWL 本体的自动化工具：
+
+- 利用框架语义解析 CQ。
+- 提取领域术语。
+- 生成类、属性和限制。
+- 输出 Manchester 语法的 OWL。
+
+CQ“谁委托了系统中某个组件的工作？”的**输出示例**：[^18]
+
+```owl
+ObjectProperty: involvesComponent
+  Annotations: rdfs:label "involves component"
+  Range: Component
+  InverseOf: isComponentInvolvedIn
+
+ObjectProperty: involvesPerson
+  Annotations: rdfs:label "involves person"
+  Range: Person
+  InverseOf: isPersonInvolvedIn
+
+Class: Component
+Class: Person
+Class: System
+```
+
+## 阶段六：根据 CQ 选择本体模式
+
+### CQ 驱动的模式复用
+
+#### 模式库与 CQ 映射[^19][^20]
+
+**流程**：
+
+1. 本体工程师为新领域本体设计 CQ。
+2. 工具在**本体模式语言（Ontology Pattern Language，OPL）**中搜索能够解决这些 CQ 的模式。
+3. 每个模式都标注它能回答的 CQ。
+4. 根据 CQ 覆盖情况选择模式。
+5. 工具检查依赖关系，例如模式 A 需要模式 B。
+6. 如果依赖未解决，发出提醒。
+7. 实例化并集成选中的模式。
+
+**收益**：[^20]
+
+- 通过经过验证的方案加快开发。
+- 确保采用设计最佳实践。
+- 保持一致性。
+- 减少概念错误。
+
+#### 解决模式依赖
+
+**示例场景**：[^19]
+
+CQ 需要以下模式：
+
+- CQ1：“系统 X 有哪些组件？”→ **部分—整体模式**。
+- CQ2：“人员承担哪些角色？”→ **主体—角色模式**。
+- CQ3：“组件 C 是何时安装的？”→ **带时间索引的情境模式**。
+
+依赖关系：
+
+- 带时间索引的情境模式**依赖**主体—角色模式，因为情境涉及主体。
+- 即使只有一个 CQ 明确提到角色，也必须包含两个模式。
+
+工具提醒：“CQ3 需要主体—角色模式，请将其纳入或修订需求。”
+
+#### 模式特化
+
+**通用模式 → 特定领域的实例化**：
+
+**模式**：部分—整体（通用）。
+
+- 类：`Whole`、`Part`。
+- 属性：`hasPart`。
+
+**领域特化（AI 安全本体）**：
+
+- `Whole` → `AISystem`。
+- `Part` → `AIComponent`。
+- `hasPart` → `hasAIComponent`。
+
+**额外的领域约束**：
+
+- 增加子类：`ModelComponent`、`DataComponent`、`InterfaceComponent`。
+- 增加基数限制：AI 系统必须至少有一个模型组件。
+
+## 阶段七：测试驱动开发与验证
+
+### 本体工程的 TDD 工作流
+
+#### 红—绿—重构循环[^21][^22]
+
+**红色阶段（测试失败）**：
+
+1. 将 CQ 写成带期望答案的测试用例。
+2. 形式化为 SPARQL 或 DL 查询。
+3. 在当前本体上执行。
+4. 测试失败：CQ 无法回答，或答案错误。
+
+**绿色阶段（使测试通过）**：
+
+1. 添加或修改类，以满足 CQ 需求。
+2. 添加或修改属性和公理。
+3. 重新运行测试。
+4. 迭代直到测试通过。
+
+**重构阶段**：
+
+1. 在不改变行为的前提下改善本体结构。
+2. 优化类层次。
+3. 添加互斥公理及定义域、值域公理。
+4. 确保所有测试仍通过。
+
+#### Themis 工具框架[^21]
+
+**三项活动（测试设计由人工完成，其余由工具自动化）**：
+
+**1. 测试设计（人工）**：
+
+- 根据每个 CQ 定义期望行为。
+- 若涉及实例数据，指定测试输入。
+- 指定期望输出。
+
+**2. 测试实现（Themis 自动化）**：
+
+- 将 CQ 转换为可执行的 SPARQL 或 DL 查询。
+- 搭建测试框架。
+- 关联被测本体。
+
+**3. 测试执行（Themis 自动化）**：
+
+- 通过 Pellet、HermiT 等推理器执行查询。
+- 比较实际结果与期望结果。
+- 生成通过或失败报告。
+- 维护可追踪关系：CQ → 测试 → 本体元素。
+
+**收益**：[^21]
+
+- 在开发期间持续验证。
+- 检测回归，即之前通过的 CQ 现在失败。
+- 需求可追踪。
+- 自动检查一致性。
+
+### 验证维度
+
+#### 一致性检查[^1]
+
+**逻辑一致性**：
+
+- 公理之间没有矛盾。
+- 所有类都可满足，即不等价于 `owl:Nothing`。
+- 属性约束彼此兼容。
+
+**推理器输出**：
+
+```text
+✓ 本体在逻辑上是一致的
+✓ 所有类都可满足
+✗ 类 X 不可满足（请检查公理）
+```
+
+> 译注：本体整体一致与所有命名类可满足是不同检查。某个类不可满足但没有实例时，本体整体仍可能一致；以上输出是不同检查结果的示意。
+
+#### CQ 可回答性[^1]
+
+**指标**：
+
+- **覆盖率**：本体能回答的 CQ 比例。高优先级 CQ 的目标是超过 90%，全部 CQ 的目标是超过 70%。
+- **正确率**：已回答 CQ 中，结果经领域专家确认正确的比例。
+
+**评估流程**：[^1]
+
+1. 执行全部 CQ 查询。
+2. 将结果分为：正确回答、错误回答、无法回答。
+3. 对于无法回答的 CQ，识别缺失的本体元素。
+4. 对于错误回答的 CQ，识别建模错误。
+
+#### 将能力问题映射到公理[^1]
+
+**可追踪矩阵**：
+
+| CQ 编号 | CQ 文本              | 所需类               | 所需属性        | 支持公理        | 状态 |
+| :------ | :------------------- | :------------------- | :-------------- | :-------------- | :--- |
+| CQ-001  | 哪些学生选修课程？   | Student、Course      | enrolledIn      | 定义域/值域公理 | 通过 |
+| CQ-002  | 学生平均表现如何？   | Student、Performance | hasPerformance  | 数据类型属性    | 通过 |
+| CQ-003  | 哪些课程有先修课程？ | Course               | hasPrerequisite | 传递属性        | 失败 |
+
+**对每个失败的 CQ**：记录缺失内容，并确定补充的优先级。
+
+### 迭代细化
+
+#### 触发细化的情况
+
+**CQ 无法回答 → 添加元素**：
+
+**场景**：CQ“控制措施 C 应对了哪些 MITRE ATLAS 技术？”测试失败。
+
+**诊断**：缺少连接 `Control` 与 `ATLASTechnique` 的 `addresses` 属性。
+
+**行动**：
+
+1. 添加属性 `addresses`，定义域 `Control`，值域 `ATLASTechnique`。
+2. 添加公理：所有控制措施必须至少应对一种技术。
+3. 重新运行测试 → 通过。
+
+> 译注：第二步属于需要另行确认的领域要求，并非仅凭该 CQ 就能推出。补上属性或存在公理也不保证查询立即返回具体技术，还需要相应实例数据或可推出的命名答案。
+
+**CQ 答案错误 → 修正建模**：
+
+**场景**：CQ“哪些漏洞具有高严重性？”返回错误结果。
+
+**诊断**：`hasHighSeverity` 是布尔属性，但严重性应该使用枚举值。
+
+**行动**：
+
+1. 用 `hasSeverity` 替代 `hasHighSeverity`，值域为 `SeverityLevel`。
+2. 定义 `SeverityLevel`，包括个体 `Low`、`Moderate`、`High`、`Critical`。
+3. 更新测试查询，按 `hasSeverity value High` 过滤。
+4. 重新运行测试 → 通过。
+
+**CQ 答案范围过宽 → 添加约束**：
+
+**场景**：CQ“哪些控制措施缓解风险 R？”返回的是*能够*缓解风险、但尚未实际实施的措施。
+
+**诊断**：缺少潜在缓解与实际缓解的区分。
+
+**行动**：
+
+1. 添加属性 `actuallyMitigates`，作为 `canMitigate` 的子属性。
+2. 更新 CQ 查询，使用 `actuallyMitigates`。
+3. 重新运行测试 → 通过。
+
+## 阶段八：与数据源集成
+
+### 本体与数据对齐
+
+#### 模式映射流程[^1]
+
+**步骤一：识别数据源**
+
+例如：
+
+- 学习管理系统（LMS）数据库。
+- 威胁情报数据流。
+- 合规审计报告。
+- 云服务 API。
+
+**步骤二：映射概念**
+
+| 数据源     | 字段或列               | 本体类  | 本体属性                 |
+| :--------- | :--------------------- | :------ | :----------------------- |
+| LMS 数据库 | students 表            | Student | 实例                     |
+| LMS 数据库 | courses 表             | Course  | 实例                     |
+| LMS 数据库 | enrollments.student_id | Student | enrolledIn 的主语        |
+| LMS 数据库 | enrollments.course_id  | Course  | enrolledIn 的宾语        |
+| LMS 数据库 | grades.score           | Student | hasGrade（数据类型属性） |
+
+**步骤三：数据转换**
+
+将源数据格式转换为本体结构：
+
+```turtle
+# LMS 的 score 字段中记录了成绩 "85.5"
+# 转换为：
+:Student_001 :hasGrade "85.5"^^xsd:float .
+```
+
+**步骤四：验证**
+
+检查集成数据是否满足本体约束：
+
+- 基数约束，例如学生所选课程必须有成绩。
+- 定义域和值域约束，例如成绩值必须为数值。
+- 互斥性，例如同一课程中的教师与学生角色不同。
+
+> 译注：OWL 的开放世界语义不会把缺失字段直接判为数据错误，也不能直接用全局互斥类表达“同一门课中角色不可兼任”。实际数据校验应明确缺失值、角色情境和闭世界要求，再选择相应的校验机制。
+
+#### 溯源跟踪
+
+**为本体元素添加注释**：[^1]
+
+```owl
+Class: Student
+  Annotations:
+    rdfs:comment "Derived from LMS students table"
+    dc:source "LMS Database v2.3"
+    prov:wasDerivedFrom <http://lms.example.org/schema/students>
+```
+
+**收益**：
+
+- 将本体设计决策追溯到数据源。
+- 记录建模选择的理由。
+- 支持审计和治理。
+
+## 阶段九：进阶技术
+
+### 处理歧义与一词多义
+
+#### 消解多种含义
+
+**问题**：同一术语在不同情境中具有不同含义。
+
+例如 “Control” 可以指：
+
+- 安全控制措施：缓解风险的措施。
+- 实验对照：基线条件。
+- 运营控制：管理权限。
+
+**解决方法**：
+
+**1. 使用不同的类**：
+
+```owl
+Class: SecurityControl
+Class: ExperimentControl
+Class: OperationalControl
+```
+
+**2. 使用限定名称**：
+
+```owl
+Class: sec:Control
+Class: exp:Control
+Class: ops:Control
+```
+
+**3. 使用情境属性**：
+
+```owl
+Class: Control
+  SubClassOf: hasContext some SecurityContext
+```
+
+### 时间建模策略
+
+#### Allen 区间代数模式
+
+对于涉及时间关系的 CQ：
+
+**之前/之后**：
+
+```owl
+ObjectProperty: occursBefore
+  Domain: Event
+  Range: Event
+  Characteristics: Transitive, Irreflexive, Asymmetric
+```
+
+> 译注：以上保留原文，但该组合不符合 OWL 2 DL 的全局限制。传递属性属于非简单属性，而非自反和非对称公理要求简单对象属性，不能将三者直接组合在同一个属性上并仍声称符合 OWL 2 DL。参见 [W3C OWL 2 DL 全局限制](https://www.w3.org/TR/owl2-syntax/#Global_Restrictions_on_Axioms_in_OWL_2_DL)。
+
+**期间/包含**：
+
+```owl
+ObjectProperty: occursDuringInterval
+  Domain: Event
+  Range: TemporalInterval
+```
+
+**重叠**：
+
+```owl
+ObjectProperty: overlapsWithEvent
+  Domain: Event
+  Range: Event
+  Characteristics: Symmetric
+```
+
+### 模块化架构
+
+**按 CQ 聚类拆分本体**：
+
+**模块一：核心概念（基础本体型 CQ）**：
+
+- `Entity`、`Process`、`Resource`。
+- 通用属性。
+
+**模块二：AI 安全（AI 专用 CQ）**：
+
+- `AISystem`、`AIThreat`、`AIControl`。
+- 领域属性。
+
+**模块三：合规（合规相关 CQ）**：
+
+- `Requirement`、`Assessment`、`Evidence`。
+- 监管属性。
+
+**模块四：集成（跨领域 CQ）**：
+
+- 模块之间的映射。
+- 桥接属性。
+
+**收益**：
+
+- 管理复杂度。
+- 支持独立开发。
+- 支持选择性复用。
+- 便于维护。
+
+## 实践工作流汇总
+
+### 端到端流程
+
+**阶段一：收集 CQ**：
+
+- 从利益相关者处收集 CQ。
+- 按领域和优先级分类。
+- 以 Excel、CSV 或数据库等结构化格式保存。
+
+**阶段二：语言分析**：
+
+- 使用 NLP 工具解析 CQ。
+- 提取名词短语 → 类。
+- 提取动词短语 → 属性。
+- 识别修饰语 → 限制。
+
+**阶段三：提取预设**：
+
+- 对每个 CQ，列出使问题有意义所必需的内容。
+- 将预设转换为需求清单。
+
+**阶段四：规定本体元素**：
+
+- 根据名词聚类建立类层次。
+- 根据动词模式定义属性及其定义域和值域。
+- 根据量词添加基数约束。
+- 根据限定语指定值限制。
+
+**阶段五：公理形式化**：
+
+- 使用 Manchester 或函数式语法编写 OWL 公理。
+- 添加互斥、等价和包含公理。
+- 通过注释记录理由。
+
+**阶段六：查询转换**：
+
+- 将每个 CQ 转换为 SPARQL 或 DL 查询。
+- 验证查询语法。
+- 与 CQ 一起保存，以供测试。
+
+**阶段七：实现**：
+
+- 在 Protégé 中或以编程方式构建本体。
+- 运行推理器检查一致性。
+- 执行 CQ 查询。
+
+**阶段八：验证**：
+
+- 比较查询结果与期望答案。
+- 计算覆盖率指标。
+- 识别缺口，即无法回答的 CQ。
+
+**阶段九：迭代**：
+
+- 添加缺失元素。
+- 修正错误建模。
+- 重复测试，直到达到目标覆盖率。
+
+**阶段十：部署**：
+
+- 与数据源集成。
+- 编写包含 CQ 映射的本体文档。
+- 建立维护流程。
+
+## 常见误区与解决方法
+
+### 误区一：CQ 无法捕捉互斥性
+
+**问题**：CQ 规定哪些内容应当关联，却不说明哪些类别应当互斥。[^9]
+
+**解决方法**：
+
+- 通过领域专家访谈识别互斥概念。
+- 使用 Advocatus Diaboli/PEW 工具寻找缺失的互斥关系。
+- 主动添加互斥公理。
+
+### 误区二：过度依赖自动化工具
+
+**问题**：FrODO、基于 LLM 的方法等自动化 CQ 到本体工具所生成的草稿，仍需要大量细化。
+
+**解决方法**：
+
+- 用自动化帮助起步。
+- 始终与领域专家验证。
+- 根据测试结果迭代细化。
+
+### 误区三：忽略属性特征
+
+**问题**：缺少传递性、对称性声明，导致推理不完整。
+
+**解决方法**：
+
+- 对每个属性明确提问：“它是否具有传递性？对称性？函数性？”
+- 在注释中记录判断理由。
+- 使用示例数据测试，确认实际行为。
+
+### 误区四：粒度不足
+
+**问题**：CQ 过于高层，导致本体过度抽象。
+
+**解决方法**：
+
+- 将高层 CQ 拆解为具体子问题。
+- 确保 CQ 覆盖高、中、低不同抽象层次。
+- 添加实例级 CQ，开展具体测试。
+
+### 误区五：没有测试基础设施
+
+**问题**：收集了 CQ，却从未将其形式化为可执行测试。
+
+**解决方法**：
+
+- 使用 TDDOnto 或 Themis 工具自动化测试。
+- 在版本控制中维护 CQ 与查询的映射。
+- 每次本体变更都运行测试，即本体的 CI/CD。
+
+## 结论：从问题到形式化知识
+
+能力问题不仅是需求文档，也是本体的**可执行规约**。通过系统的语言分析、语义映射与形式化转换，CQ 驱动本体设计的各个方面：
+
+- **类**：来自表示领域概念的名词短语。
+- **属性**：来自连接实体的动词模式。
+- **层次结构**：来自分类以及部分与整体的语言结构。
+- **约束**：来自量词、限定语和预设。
+- **公理**：编码问题语义中隐含的领域规则。
+
+将 CQ 同时视为需求与测试，本体工程师就能确保模型**以目的为导向、与利益相关者需求一致，并经过实证验证**。最终得到的本体不再是抽象的知识表示练习，而是能够证明自身用途的实践产物：回答用户真正关心的问题。
+
+本文的方法涵盖语言分析、模式识别、形式化转换、测试驱动开发与迭代细化，为自然语言问题通向生产级 OWL 本体提供了一条规范路径。这些本体能够支持网络安全、医疗、供应链、监管合规等不同领域的智能系统。
+
+## 参考资料
+
+以下脚注保留原文的编号和链接。原文仅在隐藏元素中引用的第 23—60 项资料另列于“原文补充资料”；相对路径指向原仓库。
+
+[^1]: https://jatit.org/volumes/Vol103No19/2Vol103No19.pdf
+
+[^2]: https://2014.eswc-conferences.org/sites/default/files/papers/paper_145.pdf
+
+[^3]: https://research.manchester.ac.uk/en/publications/towards-competency-question-driven-ontology-authoring/
+
+[^4]: https://www.cs.ubc.ca/sites/default/files/tr/2012/TR-2012-04_0.pdf
+
+[^5]: https://arxiv.org/pdf/1709.08448.pdf
+
+[^6]: https://site.uottawa.ca/~azouaq/publications/Conferences,%20Workshops,%20Books/%5BC22%5D_WOP_2012.pdf
+
+[^7]: https://www.w3.org/TR/owl-ref/
+
+[^8]: https://www.youtube.com/watch?v=CXw-P7H2rOQ
+
+[^9]: https://keet.wordpress.com/2022/06/08/only-answering-competency-questions-is-not-enough-to-evaluate-your-ontology/
+
+[^10]: https://arxiv.org/html/2506.01232v1
+
+[^11]: https://digitalconstruction.github.io/Lifecycle/v/0.5/
+
+[^12]: https://keet.wordpress.com/2024/11/07/different-roles-for-various-competency-questions-for-ontologies/
+
+[^13]: https://ceur-ws.org/Vol-1908/paper16.pdf
+
+[^14]: https://ceur-ws.org/Vol-3249/paper2-Ensusto.pdf
+
+[^15]: https://tetherless-world.github.io/explanation-ontology/competencyquestions/
+
+[^16]: https://www.scitepress.org/Papers/2023/121800/121800.pdf
+
+[^17]: https://papers.dice-research.org/2024/SEMANTICS_Cot-SPARQL/public.pdf
+
+[^18]: https://ceur-ws.org/Vol-3235/paper13.pdf
+
+[^19]: https://ceur-ws.org/Vol-3905/master2.pdf
+
+[^20]: https://www.inf.ufes.br/~monalessa/wp-content/papercite-data/pdf/using_competency_questions_to_enhance_patterns_selection_in_ontology_patterns_languages_2024.pdf
+
+[^21]: https://ksiresearch.org/seke/seke19paper/seke19paper_117.pdf
+
+[^22]: http://www.jatit.org/volumes/Vol103No11/14Vol103No11.pdf
+
+## 原文补充资料
+
+- **[23]** [github.com/GSA/guides_4_AIagents/blob/master/Guide_Engineering_Basic_SchemaDesign.md](https://github.com/GSA/guides_4_AIagents/blob/master/Guide_Engineering_Basic_SchemaDesign.md)
+- **[24]** [github.com/GSA/guides_4_AIagents/blob/master/prompt_context.txt](https://github.com/GSA/guides_4_AIagents/blob/master/prompt_context.txt)
+- **[25]** [github.com/GSA/guides_4_AIagents/blob/master/2008.07863v1_metadata.json](https://github.com/GSA/guides_4_AIagents/blob/master/2008.07863v1_metadata.json)
+- **[26]** [github.com/GSA/guides_4_AIagents/blob/master/2504.00441_metadata.txt](https://github.com/GSA/guides_4_AIagents/blob/master/2504.00441_metadata.txt)
+- **[27]** [github.com/GSA/guides_4_AIagents/blob/master/README.md](https://github.com/GSA/guides_4_AIagents/blob/master/README.md)
+- **[28]** [stackoverflow.com/questions/52284921/mapping-class-and-properties-between-ontologies](https://stackoverflow.com/questions/52284921/mapping-class-and-properties-between-ontologies)
+- **[29]** [arxiv.org/html/2409.08820v1](https://arxiv.org/html/2409.08820v1)
+- **[30]** [www.sciencedirect.com/science/article/abs/pii/S1570826819300617](https://www.sciencedirect.com/science/article/abs/pii/S1570826819300617)
+- **[31]** [dl.acm.org/doi/fullHtml/10.1145/3184558.3186575](https://dl.acm.org/doi/fullHtml/10.1145/3184558.3186575)
+- **[32]** [arxiv.org/html/2412.13688v1](https://arxiv.org/html/2412.13688v1)
+- **[33]** [protege.stanford.edu/publications/ontology_development/ontology101.pdf](https://protege.stanford.edu/publications/ontology_development/ontology101.pdf)
+- **[34]** [nemo.inf.ufes.br/wp-content/papercite-data/pdf/use_of_competency_questions_in_ontology_engineering\_\_a_survey_2023.pdf](https://nemo.inf.ufes.br/wp-content/papercite-data/pdf/use_of_competency_questions_in_ontology_engineering__a_survey_2023.pdf)
+- **[35]** [kmi.open.ac.uk/events/sssw08/presentations/Gomez Perez-NeOn-Methodology-OntologySpecification-v3.pdf](https://kmi.open.ac.uk/events/sssw08/presentations/Gomez%20Perez-NeOn-Methodology-OntologySpecification-v3.pdf)
+- **[36]** [arxiv.org/abs/1811.09529](https://arxiv.org/abs/1811.09529)
+- **[37]** [dl.acm.org/doi/pdf/10.1145/3459637.3482387](https://dl.acm.org/doi/pdf/10.1145/3459637.3482387)
+- **[38]** [www.sciencedirect.com/science/article/pii/S1570826824000088](https://www.sciencedirect.com/science/article/pii/S1570826824000088)
+- **[39]** [docs.enslaved.org/competencyQuestions/](https://docs.enslaved.org/competencyQuestions/)
+- **[40]** [ask.qcloudimg.com/draft/8495412/dij423n5ar.pdf](https://ask.qcloudimg.com/draft/8495412/dij423n5ar.pdf)
+- **[41]** [etheses.bham.ac.uk/4620/1/Abdi13PhD.pdf](https://etheses.bham.ac.uk/4620/1/Abdi13PhD.pdf)
+- **[42]** [homepages.inf.ed.ac.uk/wenfei/papers/pods15.pdf](https://homepages.inf.ed.ac.uk/wenfei/papers/pods15.pdf)
+- **[43]** [www.cs.uleth.ca/~benkoczi/files/main-full-oneside.pdf](https://www.cs.uleth.ca/~benkoczi/files/main-full-oneside.pdf)
+- **[44]** [www.sciencedirect.com/science/article/pii/S2352340919314544](https://www.sciencedirect.com/science/article/pii/S2352340919314544)
+- **[45]** [dl.acm.org/doi/full/10.1145/3731443.3771350](https://dl.acm.org/doi/full/10.1145/3731443.3771350)
+- **[46]** [ieeexplore.ieee.org/iel8/6287639/10380310/10772211.pdf](https://ieeexplore.ieee.org/iel8/6287639/10380310/10772211.pdf)
+- **[47]** [files.core.ac.uk/download/pdf/232196593.pdf](https://files.core.ac.uk/download/pdf/232196593.pdf)
+- **[48]** [faculty.cc.gatech.edu/~harrold/6340/cs6340_fall2009/Slides/class16.pdf](https://faculty.cc.gatech.edu/~harrold/6340/cs6340_fall2009/Slides/class16.pdf)
+- **[49]** [www.ontologydesignpatterns.org/ont/training/foi/ODP.pdf](http://www.ontologydesignpatterns.org/ont/training/foi/ODP.pdf)
+- **[50]** [www.diva-portal.org/smash/get/diva2:747226/FULLTEXT01.pdf](https://www.diva-portal.org/smash/get/diva2:747226/FULLTEXT01.pdf)
+- **[51]** [www.artificialhumancompanions.com/robot-mind-robot-body-whatever-happened-subsumption-architecture/](https://www.artificialhumancompanions.com/robot-mind-robot-body-whatever-happened-subsumption-architecture/)
+- **[52]** [www.w3.org/2005/Incubator/decision/wiki/Decision_Incubator_Tools/ODP_Tour.html](https://www.w3.org/2005/Incubator/decision/wiki/Decision_Incubator_Tools/ODP_Tour.html)
+- **[53]** [www.reddit.com/r/cpp_questions/comments/10tqx63/class_hierarchy_design_question/](https://www.reddit.com/r/cpp_questions/comments/10tqx63/class_hierarchy_design_question/)
+- **[54]** [dl.acm.org/doi/10.1007/978-3-031-47262-6_3](https://dl.acm.org/doi/10.1007/978-3-031-47262-6_3)
+- **[55]** [pmc.ncbi.nlm.nih.gov/articles/PMC7581285/](https://pmc.ncbi.nlm.nih.gov/articles/PMC7581285/)
+- **[56]** [www.wisdomlib.org/concept/description-logic-query](https://www.wisdomlib.org/concept/description-logic-query)
+- **[57]** [www.ontotext.com/blog/natural-language-querying-of-graphdb-in-langchain/](https://www.ontotext.com/blog/natural-language-querying-of-graphdb-in-langchain/)
+- **[58]** [arxiv.org/pdf/2410.06062.pdf](https://arxiv.org/pdf/2410.06062.pdf)
+- **[59]** [github.com/frankj-rpi/fairness-metrics-ontology/blob/main/competency-questions.md](https://github.com/frankj-rpi/fairness-metrics-ontology/blob/main/competency-questions.md)
+- **[60]** [wellcomeopenresearch.org/articles/10-122](https://wellcomeopenresearch.org/articles/10-122)
