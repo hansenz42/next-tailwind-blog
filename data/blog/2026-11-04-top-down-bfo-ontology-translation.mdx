@@ -1,0 +1,1482 @@
+---
+title: '【翻译】以 BFO 为基础，自顶向下开发本体'
+date: 2026-11-04
+tags:
+  - 本体论
+  - 知识图谱
+  - 人工智能
+  - 翻译
+summary: 翻译 GSA 的 BFO 自顶向下本体开发指南，介绍持续体、发生体、依赖关系与可实现实体，并以 AI 网络安全证据系统演示从顶层对齐到领域建模、实例填充与验证的全过程。
+draft: false
+---
+
+> 本文译自 GSA/guides_4_AIagents 仓库中的 **Top-Down Ontology Development with Basic Formal Ontology (BFO)**。  
+> [阅读英文原文](https://github.com/GSA/guides_4_AIagents/blob/master/guide_ontology_TopDownBuild.md) · [原仓库](https://github.com/GSA/guides_4_AIagents) · [许可说明（CC0 1.0）](https://github.com/GSA/guides_4_AIagents/blob/master/LICENSE.md)  
+> 翻译日期：2026 年 11 月 4 日。本文保留原文章节、示例、代码和引文编号；“我们的项目”指原文设定的 AI 网络安全证据系统。开发周期、标准编号、映射及效果数据沿用原文示例，对部分概念与形式化写法另加译注。原文仅在隐藏元素中引用的资料另列于文末。本译文不代表 GSA 对本博客的认可。
+
+相关阅读：[如何为本体开发设计能力问题](/blog/2026-11-02-ontology-competency-questions-translation/) · [用能力问题驱动本体的类、属性与约束设计](/blog/2026-11-04-cq-to-ontology-translation/)。
+
+**自顶向下的方法**从最抽象、不依赖特定领域的概念出发，逐步特化为领域知识。以经过 ISO 标准化的顶层本体——**基本形式本体（Basic Formal Ontology，BFO）**为基础，这一方法致力于确保最大程度的互操作性、形式严谨性和长期语义一致性。BFO 提供了一个经过广泛实践的顶层框架，全球已有超过 550 个本体项目采用。原文将其基本分类概括为**持续体**（随时间持续存在的实体）、**发生体**（在时间中发生的过程），以及进一步的**依赖与独立持续体**、**可实现实体**（倾向、角色、功能）等区分。对于整合 FedRAMP 关键安全指标（KSI）、MITRE ATLAS 和研究文献的 AI 网络安全证据系统，以 BFO 开展自顶向下开发，可以获得与已有安全本体互操作的优势，以及合规推理所需的形式精度；但前期需要投入 2—4 周学习，并谨慎管理抽象层次带来的复杂性。[^1][^2][^3][^4]
+
+> 译注：原文开头称“三个基本顶层类别”，但 BFO 的 `Entity` 在此处首先分为 `Continuant` 和 `Occurrent` 两大类；依赖性与可实现实体属于进一步分类。“最大互操作性”等为原文的优势判断，采用相同顶层本体并不自动解决所有领域语义差异。
+
+## 理解基本形式本体（BFO）
+
+### 什么是 BFO？
+
+**基本形式本体（BFO）**是一个小型顶层本体，旨在为领域本体开发提供共同起点，以支持不同知识领域的一致性和互操作。[^2][^5][^6]
+
+**主要特点**：
+
+**领域中立**：BFO 不含任何领域专有术语，不包含生物、化学、物理、社会或技术领域的具体概念。它只提供适用于任何领域的最抽象类别：实体、对象、过程、性质，以及它们之间的基本关系。[^5][^1]
+
+**实在论立场**：不同于表示心智模型或语言结构的概念论本体，BFO 采用**实在论**，表示独立于人类认知而存在于时空中的实体。BFO 的类应由现实世界的具体事物实例化，而不是虚构或未来的实体。[^7]
+
+**小型且精简**：BFO 刻意保持较小规模，约有 35 个顶层类，以便在不同领域间达成尽可能多的共识，同时为下层本体开发提供足够的结构。[^6][^5]
+
+**ISO 国际标准**：ISO/IEC 21838-2:2021 将 BFO 规定为满足 ISO/IEC 21838-1 所定义的严格顶层本体要求的本体。这种标准化提供了稳定性、治理机制和国际认可。[^1][^2][^7]
+
+**广泛采用**：截至 2025 年，BFO 支持超过 550 个本体项目：[^5][^1]
+
+- **生物医学**：Gene Ontology（GO）、Ontology for Biomedical Investigations（OBI）、Disease Ontology。
+- **安全与国防**：情报本体、威胁分类体系。
+- **工业**：面向制造业的 Industrial Ontologies Foundry（IOF）。[^8][^1]
+- **科学**：化学、地理空间、环境本体。
+
+### BFO 在本体生态中的作用
+
+**中心与辐条架构**：[^8]
+
+BFO 作为中心的**枢纽**，领域本体作为向下延伸的**辐条**。这可以带来：
+
+1. **共同基础**：所有本体使用相同的顶层语言。
+2. **自动互操作**：原文认为，将两个本体对齐到 BFO 后，就能自动实现集成。
+3. **一致性**：下层开发受到继承的 BFO 公理约束。
+4. **可复用性**：安全、地理空间、时间等中层本体扩展 BFO，并服务多个领域。
+
+**生态示例**：[^8]
+
+```text
+              BFO (Hub)
+                 |
+    +------------+------------+
+    |            |            |
+Security     Industrial   Biomedical
+Ontology     Ontology     Ontologies
+    |            |            |
+   our       Factory    Disease
+  Project    Ontology    Ontology
+```
+
+图中文字依次表示：BFO 枢纽 → 安全、工业、生物医学本体 → 本文项目、工厂本体、疾病本体。
+
+> 译注：共同对齐可以减少顶层概念冲突，但集成仍需核对领域定义、关系方向、标识符、版本和公理兼容性，不能把“共享 BFO”直接视为自动完成集成。
+
+## BFO 的顶层结构：基本类别
+
+### 实体：共同根节点
+
+**一切都是实体**。BFO 的顶层类 `Entity` 涵盖所有存在，并根据实体与时间的关系，将其划分为两个基本且互斥的类别。[^1]
+
+### 持续体与发生体的区别
+
+这是 BFO **最基本的划分**：[^3][^4][^1]
+
+| 标准     | 持续体（Continuant）             | 发生体（Occurrent）            |
+| :------- | :------------------------------- | :----------------------------- |
+| 时间性质 | 随时间持续存在                   | 在时间中展开或发生             |
+| 时间部分 | 没有时间部分                     | 具有时间上的真部分             |
+| 存在方式 | 在任一时刻完整在场               | 延展于时间区间                 |
+| 维度     | 三维，空间性                     | 四维，时空性                   |
+| 变化     | 可以改变，例如获得或失去某种性质 | 不能改变，不同时间具有不同部分 |
+| 示例     | 猫、颜色、温度、功能             | 出生、战争、新陈代谢、行走     |
+
+**直观理解**：
+
+- **持续体**是能够在某个时刻指认的事物：“那只猫”“这种红色”“我们作为经理的角色”。
+- **发生体**需要一段时间来存在：不能只在一个瞬间指认“一场战争”；战争具有开端、中间和结尾，在时间中展开。
+
+> 译注：本表是原文的直观概括，不能机械应用于所有子类。BFO 的发生体还包括过程边界和时间区域，过程边界不具有时间真部分；持续体也包含低维边界等非三维物质对象。应以具体类别定义为准。参见 [BFO 官方 OWL 定义](https://github.com/BFO-ontology/BFO-2020/blob/master/21838-2/owl/bfo-core.ttl)。
+
+### 哲学基础
+
+**持续体的持存**：[^4][^3] 今天的猫与明天的猫是*同一只*猫，即使经历成长和衰老，也保持同一性。每个时刻存在的是整只猫，而非仅仅一个“时间切片”。
+
+**发生体的延展**：[^9][^3] “中途岛海战”这样的过程具有时间部分：侦察阶段、进攻阶段和后续阶段。整个战役不会在某一个时刻完整存在；各时刻存在的是其相应的时间部分。
+
+**关键理解**：在 BFO 中，过程并不“发生变化”。如果汽车运动“加速”，不是运动过程本身改变了，而是时间部分₁（t₁ 时）的速度为 v₁，时间部分₂（t₂ 时）的速度为 v₂。过程是这些部分的总和，每个部分具有确定的属性。[^9]
+
+## 持续体分类：持续存在的实体
+
+### 独立持续体
+
+**定义**：独立存在的持续体，既不一般依赖，也不特定依赖于其他实体。[^10][^3][^4]
+
+#### 物质实体
+
+**具有质量、占据空间的实体**：[^11][^3]
+
+**1. 对象（Object）**[^12][^3][^10][^11]
+
+**定义**：具有完整**自然边界（bona fide boundary）**、最大程度自连通的物质实体。[^12][^11]
+
+**自然边界**：以物理不连续或性质差异为依据的边界：[^12]
+
+- 细胞膜：化学组成的不连续。
+- 对象表面：对象与周围空气之间的边界。
+- 生物体皮肤：物理屏障。
+
+**示例**：
+
+- 生物：细胞、生物体、器官，如心脏和肝脏。
+- 人造物：汽车、计算机、建筑物、服务器。
+- 微观实体：分子、原子、电子。
+
+**关键性质**：**最大自连通性**——各部分通过连续物质相互连接，边界包围整个对象。[^12]
+
+**2. 对象聚合体（Object Aggregate）**[^3][^10][^11]
+
+**定义**：被视为一个整体的对象集合，但对象之间并非物质连通。[^11]
+
+**示例**：
+
+- 鸟群。
+- 三个苹果的集合。[^11]
+- 服务器集群，即多台机器。
+- 防卫力量，即军事单位的集合。
+
+**与对象的关键区别**：各部分之间不具物质连通性，成员之间存在间隙。原文把对象聚合体比作集合，称它除了成员以外没有其他部分。[^11]
+
+**3. 约定对象部分（Fiat Object Part）**[^10][^3][^12][^11]
+
+**定义**：至少由一条**约定边界（fiat boundary）**界定的物质实体部分。这类边界由人类决定，而非自然不连续性产生。[^12][^11]
+
+**约定边界**：物理连续之处的人为划分：[^12]
+
+- 手臂与躯干之间的边界：组织连续，没有自然断裂。
+- 穿过连续地形的州界。
+- 大脑左右半球之间约定的分割面。
+
+**示例**：
+
+- 我们的手臂、腿。[^11]
+- 法国北部，即以约定边界划定的法国的一部分。
+- 发动机缸体的某个区域，即对发动机的人为细分。
+
+**为什么重要**：许多具有科学或实践意义的实体，都是约定部分，例如解剖区域、地缘政治领土和功能区域。BFO 明确容纳这些实体。[^12]
+
+#### 非物质实体
+
+**没有质量、具有零至三维的实体**：[^13][^10][^11]
+
+**1. 场所（Site）**[^11]
+
+**定义**：能够被物质实体占据的三维非物质实体。
+
+**示例**：
+
+- 牙齿中的龋洞，即牙齿内部的空间。
+- 停车位，即指定的三维区域。
+- 房间，即墙壁围成的三维空间。
+
+**关键性质**：可以容纳物质实体。汽车占据停车位，填充物占据龋洞。
+
+**2. 持续体约定边界（Continuant Fiat Boundary）**[^13][^11][^12]
+
+**定义**：通过约定界定的零维、一维或二维非物质实体。[^13]
+
+**子类型**：
+
+- **约定点（0D）**：占据零维空间区域，例如房间角点、GPS 坐标。
+- **约定线（1D）**：占据一维空间区域，例如国界、桌子边缘。
+- **约定面（2D）**：占据二维空间区域，例如皮肤表面、空气与水的分界面。
+
+**示例**：[^13][^11]
+
+- 赤道：环绕地球的约定线。
+- 穿过田野的州界：约定线或约定面。
+- 对象表面：约定面，因为物理表面在原子尺度上并非完全连续。[^11]
+
+**重要说明**：原文指出，BFO 中的边界都是约定边界，因为在足够精细的原子、分子尺度上，不存在完美锐利的自然边界。[^13]
+
+**3. 空间区域（Spatial Region）**[^10][^11]
+
+**定义**：空间本身的一部分，不是占据空间的实体，而是空间。
+
+**子类型**：
+
+- 零维：点。
+- 一维：线段。
+- 二维：面区域。
+- 三维：体积区域。
+
+**用途**：物质实体占据三维空间区域，边界占据较低维空间区域。[^11]
+
+> 译注：原文关于自然边界、约定边界、对象聚合体及几何维度的说明包含简化和不同粒度下的讨论。不要把对象聚合体直接等同于数学集合，也不要把坐标值等同于其指示的位置；实际建模应固定 BFO 版本与观察粒度，再核对正式定义。
+
+### 依赖持续体
+
+**定义**：其存在依赖其他实体的持续体。[^14][^4][^3]
+
+BFO 区分两种根本不同的依赖方式。
+
+#### 特定依赖持续体（SDC）
+
+**定义**：存在依赖于某一个特定独立持续体，不能转移到另一个承载者。[^15][^14][^10]
+
+**典型示例**：[^4][^3][^10] **这个球的红色**。这一具体红色实例依赖这个特定的球而存在。球被毁坏，这个红色实例也就消失。它不能“移动”到另一个球上；另一个球的红色是另一个实例。
+
+**两大子类**：
+
+**1. 性质（Quality）**[^14][^15][^4][^10]
+
+**定义**：不需要通过过程显现的特定依赖持续体；它随其承载者而存在。
+
+**示例**：
+
+- 这个球的颜色，如红色、蓝色。
+- 这位患者的体温，98.6°F。
+- 这个对象的质量，50 千克。
+- 这个分子的形状。
+- 这个粒子的电荷。
+
+**关键性质**：
+
+- 原文概括为在同一时刻恰好依存于一个承载者。
+- 不能迁移到不同承载者。
+- 无需通过过程显现，与可实现实体不同。
+
+**子类型：关系性性质（Relational Quality）**[^15]
+
+**定义**：同时依存于多个承载者的性质。
+
+**示例**：对象 A 与 B 之间的空间距离，是同时依存于两者的性质。
+
+> 译注：原文的“恰好一个承载者”不能推广到所有特定依赖持续体或所有性质。BFO 官方定义明确容纳多个承载者，关系性性质就是这种情况；性质也并不必然在承载者整个生命期内持续不变。参见 [BFO 官方定义](https://github.com/BFO-ontology/BFO-2020/blob/master/21838-2/owl/bfo-core.ttl)。
+
+**2. 可实现实体（Realizable Entity）**[^16][^17][^18][^4]
+
+**定义**：满足以下条件的特定依赖持续体：
+
+1. 以独立持续体为承载者。
+2. 能在相关过程中被**实现**，即显现、实际发生或执行。
+3. 需要过程来显现。
+
+**核心理解**：性质始终“在场”，可实现实体则是一种**潜在性**，以能力或倾向的方式存在，可能被实现，也可能不被实现。[^16][^4]
+
+**三种可实现实体**：
+
+**A. 倾向（Disposition）**[^17][^19][^4][^16]
+
+**定义**：具有**内在基础**的可实现实体。如果倾向不再存在，其承载者的物理构成必然发生了改变。[^17][^16]
+
+**示例**：
+
+- 玻璃的**易碎性**：受击时破碎的倾向。
+- 盐的**可溶性**：溶于水的倾向。
+- 木材的**可燃性**：被点燃后燃烧的倾向。
+- 系统的**脆弱性**：遭受攻击而被攻破的倾向。
+
+**内在基础**：要消除玻璃的易碎性，必须改变其物理结构，例如钢化或加固；不能仅靠改变外部环境消除。[^16][^17]
+
+**实现**：倾向在过程中实现。易碎性在破碎过程中实现，可溶性在溶解过程中实现。
+
+**B. 角色（Role）**[^18][^4][^17][^16]
+
+**定义**：具有**外在基础**的可实现实体，其特点是：
+
+1. **可选择性**：承载者处在某种特殊情境中而拥有该角色，但它并非必须处在这种情境中。[^17][^16]
+2. **外部依赖**：只需情境变化，角色就可能终止，无需承载者发生物理变化。
+
+**示例**：
+
+- **医生**：处于医疗执照或雇佣关系中的人。
+- **学生**：在教育机构注册的人。
+- **总统**：被选举到该职位的人。
+- **配偶**：处于婚姻关系中的人。
+- **监护人**：承担监护职责的人。
+
+**外在基础**：一个人可以因退休或失去执照而失去“医生”角色，身体却没有发生物理变化。角色依赖身体构成之外的社会、制度或关系情境。[^17]
+
+**实现**：角色在过程中实现，例如医生角色在行医过程中实现，学生角色在上课过程中实现。
+
+**C. 功能（Function）**[^19][^18][^4][^16][^17]
+
+**定义**：带有预期目的或设计用途的可实现实体，即承载者“用来做什么”。
+
+**两种类型**：
+
+**生物功能**：[^18][^4]
+
+- 心脏**泵血**的功能。
+- 酶**催化反应**的功能。
+- 免疫系统**抵御病原体**的功能。
+
+**人造物功能（使用功能）**：[^17]
+
+- 钥匙**开锁**的功能。
+- 防火墙**过滤网络流量**的功能。
+- 制动器**使车辆停止**的功能。
+
+**实现**：功能在承载者履行功能的过程中实现，例如心脏泵血、钥匙开锁。
+
+**倾向与功能的区别**：二者都以承载者的内部结构为因果基础，但功能涉及**目的性**，即目的、设计或选择。易碎性是不带目的的倾向，心脏泵血则是进化选择形成的功能。[^19]
+
+> 译注：这里将倾向、角色、功能分别讲解，并不意味着三者在正式层次中彼此并列。BFO 将 `Function` 归为 `Disposition` 的子类，功能是一种特殊的倾向。
+
+#### 一般依赖持续体（GDC）
+
+**定义**：依赖某个独立持续体，但不依赖某一个固定承载者；它可以在承载者之间迁移，同时保持为同一个个体。[^20][^14][^15][^10]
+
+**典型示例：信息**[^14][^15][^10]
+
+**可复制的文件内容**：
+
+- 将文件保存到硬盘₁。
+- 将文件复制到硬盘₂。
+- 从硬盘₁删除。
+- **内容相同，承载者不同**。
+
+即使物理承载者发生变化，信息（GDC）仍然持续存在。特定依赖持续体不能这样转移。
+
+**其他示例**：
+
+- **软件代码**：多台机器上的相同代码。
+- **书籍内容**：多本实体书中的相同文本。
+- **音乐作品**：不同乐团演奏的同一作品。
+- **蓝图**：多个文档中的相同设计。
+
+**关键性质**：**可在承载者间转移**——可同时存在于多个承载者中，也可在不终止存在的情况下转移。[^20][^15]
+
+**主要子类型：信息内容实体（Information Content Entity，ICE）**[^15][^14]
+
+**定义**：具有“关于性”的 GDC，即它关于某些事物，具有语义内容。
+
+**示例**：
+
+- 文档内容。
+- 数据库记录。
+- 本体本身，即关于领域的信息。
+- 安全策略文本。
+- 标准规约。
+
+**与本文项目的关系**：FedRAMP 标准、MITRE ATLAS 技术描述、研究论文内容，都属于 GDC，即 ICE。
+
+> 译注：ICE 通常来自扩展 BFO 的信息本体，而非 BFO 核心自身的类。后文代码中的 `BFO:ICE` 是原文示意别名，不能直接当作正式 BFO 标识符；应明确导入来源与 IRI。
+
+## 发生体分类：发生的实体
+
+### 过程（Process）
+
+**定义**：具有时间真部分，并在某个时刻特定依赖某种物质实体的发生体。[^21][^22][^23][^3]
+
+**示例**：
+
+- **生物**：细胞分裂、新陈代谢、细胞凋亡、免疫反应。
+- **物理**：加热、冷却、运动、化学反应。
+- **社会**：会议、战争、选举、谈判。
+- **制造**：装配、质量控制、包装。
+- **网络安全**：攻击过程、监控过程、事件响应。
+
+**关键性质**：
+
+**时间部分**：[^24][^3][^9] 过程具有存在于不同时间的部分：
+
+- **青春期**是**人生**的时间部分。
+- **舒张期**与**收缩期**是**心搏**的时间部分。[^24]
+- **侦察**与**漏洞利用**是**网络攻击**的时间部分。
+
+**不依赖时间索引的部分关系**：[^24] “中途岛海战是第二次世界大战的一部分”是**恒常成立**的。发生体的部分关系是**二元关系** `A part_of B`，不需要像持续体部分关系那样附加时间索引。
+
+**不能改变**：[^9] 过程的属性不随之改变。“运动变快”指不同时间部分具有不同速度，而非过程本身变化。过程是全部时间部分的总和，每个部分具有确定的属性。
+
+**依赖持续体**：[^23] 每个过程都特定依赖某种物质实体，即参与者。攻击过程依赖攻击者和目标，新陈代谢依赖生物体。
+
+### 过程边界（Process Boundary）
+
+**定义**：占据零维时间区域，即瞬间的发生体。[^22][^21]
+
+**示例**：
+
+- **出生**：生命过程的开始。
+- **死亡**：生命过程的结束。
+- **会议开始**：会议过程的开端。
+- **发现入侵**：检测到攻击的瞬间。
+
+**关键性质**：瞬时、没有时间跨度，标记过程阶段之间，或存在与不存在之间的转换。
+
+### 时间区域（Temporal Region）
+
+**定义**：时间本身的一部分。[^1][^24]
+
+**子类型**：
+
+- **时间瞬间（0D）**：时间点。
+- **时间区间（1D）**：持续时长、时间跨度。
+
+**关系**：[^24][^11]
+
+- **过程占据时间区间**：攻击跨越数小时或数天。
+- **过程边界占据时间瞬间**：攻击开始于 t₀。
+
+## BFO 关系：连接实体
+
+### 部分关系
+
+#### 持续体部分关系（Continuant Part Of）
+
+**三元关系**：`A continuant_part_of B at time t`，即 A 在 t 时刻是 B 的持续体部分。[^24]
+
+**为什么需要时间索引？** 持续体可能随时间获得或失去部分：[^24]
+
+- t₁ 时刻，狗有尾巴。
+- 狗在事故中失去尾巴。
+- t₂ 时刻，狗没有尾巴。
+
+**传递性的挑战**：[^24] 时间索引处理不当，传递性可能不成立：
+
+- t₁ 时刻，第 11 骠骑兵团属于皇家骠骑兵团。
+- t₂ 时刻，皇家骠骑兵团属于第 12 装甲步兵旅。
+- 但不能据此推出第 11 骠骑兵团属于第 12 旅。
+
+**ISO BFO 的解决方式**：将其转化为两种二元关系：[^24]
+
+1. **A 始终是 B 的持续体部分**：只要两者存在，A 就是 B 的一部分。
+2. **A 曾在某时是 B 的持续体部分**：A 至少有一次是 B 的一部分。
+
+原文认为，这种方式既保留传递性，又容纳变化。
+
+> 译注：“曾在某时是部分”不能一般地声明为传递关系，因为两段关系可能发生在不同时间。BFO 核心 OWL 中的 `continuant part of` 使用“存在某个时间”的定义，也未声明为传递属性；涉及更细时间语义时应选用相应时间扩展。参见 [BFO 核心关系定义](https://github.com/BFO-ontology/BFO-2020/blob/master/21838-2/owl/bfo-core.ttl)。
+
+#### 发生体部分关系（Occurrent Part Of）
+
+**二元关系**：`A occurrent_part_of B`，不依赖时间索引。[^24]
+
+**为什么不需要时间索引？** 发生体部分关系一旦成立，就恒常成立，否则不成立：
+
+- “中途岛海战是第二次世界大战的一部分”恒常成立。[^24]
+- 对于某一次具体心搏，“舒张期是这次心搏的一部分”恒常成立。
+
+**始终具有传递性**：如果 A 是 B 的一部分，B 是 C 的一部分，那么 A 是 C 的一部分，没有时间依赖带来的复杂性。
+
+### 依赖关系
+
+#### 特定依赖（Specifically Depends On）
+
+`Quality specifically_depends_on Object`
+
+**示例**：这种红色特定依赖这个球。球不再存在，红色也随之消失。
+
+#### 一般依赖（Generically Depends On）
+
+`Information generically_depends_on some bearer`
+
+**示例**：文件内容一般依赖某种存储介质，可以是任意硬盘、U 盘或服务器。
+
+### 依存关系
+
+#### inheres_in / bearer_of[^14][^11]
+
+**连接依赖持续体与其承载者的一对逆关系**：
+
+- `Quality inheres_in Object`：性质依存于对象。
+- `Object bearer_of Quality`：对象承载性质。
+
+**示例**：
+
+- `Temperature_98.6F inheres_in Patient_Smith`。
+- `Patient_Smith bearer_of Temperature_98.6F`。
+
+**同样适用于可实现实体**：
+
+- `Vulnerability inheres_in System`。
+- `System bearer_of Vulnerability`。
+
+### 实现关系
+
+#### realizes[^4][^16]
+
+`Process realizes Realizable_Entity`
+
+**示例**：
+
+- `HeartPumping_process realizes PumpingFunction_of_heart`：心脏泵血过程实现心脏的泵血功能。
+- `AttackExecution_process realizes AttackCapability_of_adversary`：攻击执行过程实现对手的攻击能力。
+- `DissolvingProcess realizes Solubility_of_salt`：溶解过程实现盐的可溶性。
+
+**含义**：过程是可实现实体的显现或实际化。
+
+### 空间与时间关系
+
+#### occupies[^11]
+
+- `Material_Entity occupies Three_Dimensional_Spatial_Region`：物质实体占据三维空间区域。
+- `Process occupies Temporal_Interval`：过程占据时间区间。
+- `Fiat_Boundary occupies Lower_Dimensional_Spatial_Region`：约定边界占据较低维空间区域。
+
+#### participates_in[^4]
+
+`Continuant participates_in Process`
+
+**示例**：
+
+- `Enzyme participates_in Catalysis_process`：酶参与催化过程。
+- `Adversary participates_in Attack_process`：对手参与攻击过程。
+- `Analyst participates_in ThreatAssessment_process`：分析师参与威胁评估过程。
+
+## 基于 BFO 的自顶向下开发方法
+
+### 阶段一：获取基础知识（第 1—4 周）
+
+#### 深入学习 BFO
+
+**必读资料**：[^7][^5][^1]
+
+1. **BFO 规范**：ISO/IEC 21838-2，原文注明可免费获取。
+2. **指南书**：Arp、Smith 与 Spear 于 2015 年出版的 _Building Ontologies with Basic Formal Ontology_。
+3. **BFO 教程**：YouTube 视频系列。[^25][^7][^1]
+4. **BFO 案例研究**：特定领域的示例。[^3]
+
+**时间投入**：团队负责人集中学习 2—4 周，领域专家进行 1—2 周概览学习。
+
+**学习目标**：
+
+- 掌握持续体与发生体的区别。
+- 理解依赖持续体与独立持续体。
+- 理解可实现实体：倾向、角色和功能。
+- 识别自然边界与约定边界。
+- 学习 BFO 公理和约束。
+
+#### 关键概念练习
+
+**练习一：对领域实体分类**
+
+对于领域中的每个实体，依次判断：
+
+- 持续体还是发生体？
+- 若是持续体，是独立还是依赖？
+- 若是依赖，是特定依赖还是一般依赖？
+- 若是特定依赖，是性质还是可实现实体？
+- 若是可实现实体，是倾向、角色还是功能？
+
+**答案示例**：
+
+- **防火墙设备**：持续体 → 独立持续体 → 物质实体 → 对象。
+- **防火墙过滤能力**：持续体 → 依赖持续体 → 可实现实体 → 功能。
+- **过滤过程**：发生体 → 过程。
+- **脆弱性**：持续体 → 依赖持续体 → 可实现实体 → 倾向。
+- **安全策略文档**：持续体 → 一般依赖持续体 → ICE。
+
+**练习二：识别时间部分**
+
+识别领域内过程的时间部分：
+
+- **网络攻击**：侦察 → 初始访问 → 横向移动 → 数据外传。
+- **合规审计**：规划 → 评估 → 报告。
+
+**练习三：追踪实现链**
+
+把可实现实体映射到其实现过程：
+
+- **脆弱性**（倾向）→ **漏洞利用过程**（实现）。
+- **检测功能**（功能）→ **监控过程**（实现）。
+- **审计员角色**（角色）→ **执行审计的过程**（实现）。
+
+### 阶段二：收集与分析领域术语（第 5—6 周）
+
+#### 收集完整词表[^26]
+
+**本文项目的来源**：
+
+1. **FedRAMP**：全部 72 项 KSI 定义、控制族、评估程序。
+2. **MITRE ATLAS**：全部技术描述、战术和缓解措施。
+3. **标准**：NIST SP 800-53、ISO 27001/27002、CIS Controls。
+4. **研究文献**：AI 安全、对抗机器学习的核心论文。
+5. **威胁情报**：CVE 描述、攻击模式数据库。
+
+**收集方法**：
+
+- 提取名词，作为潜在的类。
+- 提取动词，作为潜在的属性或过程。
+- 提取形容词，作为潜在的性质或特征。
+- 记录“……的一种”“类型”“子类”等层次性语言。
+
+**部分术语示例**：
+
+- 名词：攻击、控制措施、KSI、脆弱性、风险、证据、主张、机制、标准、要求。
+- 动词：缓解、利用、应对、支持、实现、验证。
+- 形容词：对抗性的、已认证的、合规的、脆弱的、有效的。
+
+#### 区分实体类型[^26]
+
+**类与个体**：
+
+- **类**：拥有多个实例的类型。例如 `Control`，原文将 MFA、防火墙、加密列为其实例。
+- **个体**：具体的命名实体。例如 `FedRAMP`（原文作为特定标准）、`MITRE_ATLAS`（特定框架）。
+
+**数据中的类型与实例**：
+
+- **类型**：`AttackPattern`，类。
+- **实例**：`T0043_Craft_Adversarial_Data`，单个攻击模式。
+
+**关系与性质**：
+
+- **关系**：连接两个实体，例如 `mitigates`，控制措施缓解攻击。
+- **性质**：单个实体的特征，例如脆弱性的严重性 `severity`。
+
+### 阶段三：借助决策图对齐 BFO（第 7—10 周）
+
+#### 使用 BFO Classifier 工具[^27][^28]
+
+**工具功能**：通过一系列是非问题引导对齐。[^27]
+
+**“风险”的决策路径示例**：
+
+**问题一**：“该实体是在时间中发生、具有时间部分，还是随时间持续存在？”
+
+- **回答**：持续存在 → **持续体**。
+
+**问题二**：“它能独立存在，还是依赖其他实体？”
+
+- **回答**：依赖 → **依赖持续体**。
+
+**问题三**：“它依赖一个特定承载者，还是可以在承载者间转移？”
+
+- **回答**：特定承载者，即这个系统的风险 → **特定依赖持续体**。
+
+**问题四**：“它需要通过过程才能显现，还是始终显现？”
+
+- **回答**：需要过程，风险在伤害事件中实现 → **可实现实体**。
+
+**问题五**：“消除它是否需要改变承载者的物理构成？”
+
+- **回答**：需要，例如通过加固系统降低风险 → **倾向**。
+
+**结果**：`Risk SubClassOf BFO:Disposition`。
+
+#### 应用于核心概念
+
+**本文项目中的对齐**：
+
+**1. 控制措施（Control）**
+
+**多个方面，应建立不同类**：
+
+- **ControlSpecification**：`BFO:Generically_Dependent_Continuant > ICE`。理由：控制措施的描述属于信息，可存在于标准、策略和数据库中。
+- **ControlImplementation**：`BFO:Independent_Continuant > Material_Entity > Object`，或 `BFO:Realizable > Function`。理由：可能指物理设备，即对象，也可能指保护能力，即功能。
+- **ControlExecution**：`BFO:Occurrent > Process`。理由：控制措施随时间实际运行。
+
+**2. 攻击模式（AttackPattern）**
+
+**多个方面**：
+
+- **AttackPatternSpecification**：`BFO:Generically_Dependent_Continuant > ICE`。理由：MITRE ATLAS 描述是一种信息制品。
+- **AttackProcess**：`BFO:Occurrent > Process`。理由：攻击的实际执行。
+- **AttackCapability**：`BFO:Realizable > Disposition`。理由：对手执行攻击的能力。
+
+**3. KSI（关键安全指标）**
+
+**对齐**：`BFO:Generically_Dependent_Continuant > ICE`。
+
+**理由**：KSI 定义是信息规约，可以存在于 FedRAMP 文档、评估工具、合规数据库中；同一内容可以拥有多个承载者。
+
+**4. 证据片段（Evidence Fragment）**
+
+**对齐**：`BFO:Generically_Dependent_Continuant > ICE`。
+
+**理由**：从论文提取的信息，可以在知识库、报告和其他论文等多个地方引用。
+
+**5. 标准（FedRAMP、MITRE ATLAS）**
+
+**对齐**：`BFO:Generically_Dependent_Continuant > ICE`。
+
+**理由**：存在于文档、网站和数据库中的信息规约。
+
+**6. 脆弱性（Vulnerability）**
+
+**对齐**：`BFO:Specifically_Dependent_Continuant > Realizable > Disposition`。
+
+**理由**：系统被利用的倾向，依存于具体系统，在漏洞利用过程中实现。
+
+**7. 风险（Risk）**
+
+**对齐**：`BFO:Specifically_Dependent_Continuant > Realizable > Disposition`。
+
+**理由**：资产在特定条件下遭受伤害的倾向，依存于具体资产或系统。
+
+**8. 主张（Claim）**
+
+**对齐**：`BFO:Generically_Dependent_Continuant > ICE`。
+
+**理由**：关于实体间关系的命题内容，可以存在于论文、本体和报告中。
+
+**9. 机制（Mechanism）**
+
+**对齐**：`BFO:Generically_Dependent_Continuant > ICE` 或 `BFO:Occurrent > Process`。
+
+- 如果指解释或描述：ICE，即关于事物如何运作的信息。
+- 如果指实际因果过程：Process，即运行中的机制。
+
+**推荐**：ICE，作为解释模型。
+
+> 译注：上述对齐是原文针对示例项目的建模选择。应区分信息内容与物理文档、通用技术类型与一次具体实现，以及风险本身与风险评分；不能仅凭术语名称决定 BFO 类别。
+
+#### 记录对齐理由[^29][^27]
+
+**每次对齐都应记录**：
+
+1. **决策路径**：对 BFO Classifier 各问题的回答。
+2. **理由**：为什么选择该 BFO 类。
+3. **备选方案**：评估过哪些其他 BFO 类。
+4. **边缘情况**：哪些情境中对齐仍不确定。
+5. **领域专家验证**：利益相关者的确认。
+
+**文档示例**：
+
+```text
+类：Risk
+BFO 对齐：BFO:Disposition
+决策路径：持续体 → 依赖 → 特定依赖 → 可实现实体 → 倾向
+理由：风险是资产遭受伤害的倾向，依存于具体系统，不能像信息一样转移。
+当威胁利用脆弱性时，风险在伤害事件中实现。
+备选方案：Quality（排除——风险需要实现过程，并非始终显现）
+边缘情况：风险得分或指标可能是测量性质，应与风险本身区分
+验证：安全架构师确认，风险是潜在伤害，而非实际测量值
+```
+
+### 阶段四：构建中层安全本体（第 11—16 周）
+
+#### 创建可复用的安全框架
+
+**目标**：开发扩展 BFO 的领域本体，并能在不同安全项目中复用。[^6][^8]
+
+**中层类的部分层次**：
+
+> 译注：下文保留原文代码。带树状字符、自然语言注释、`BFO:ICE` 等别名及省略号的内容属于建模草案，并非可直接导入工具的完整 OWL。应先明确正式 IRI、补齐声明、统一类与个体，再转换为有效语法。软件内容与物理设备也应分别建模，不能仅因软件是“人造物”就归入物质实体。
+
+```owl
+# Material Security Entities
+BFO:Material_Entity
+  └─ SecurityDevice [new]
+      ├─ NetworkSecurityDevice
+      │   ├─ Firewall
+      │   ├─ IntrusionDetectionSystem
+      │   └─ IntrusionPreventionSystem
+      ├─ EndpointSecurityDevice
+      │   ├─ AntivirusSoftware (if considering software as artifact)
+      │   └─ HostFirewall
+      └─ PhysicalSecurityDevice
+          ├─ AccessControlSystem
+          └─ SurveillanceCamera
+
+# Information Security Entities
+BFO:Generically_Dependent_Continuant
+  └─ SecurityInformationArtifact [new]
+      ├─ SecurityPolicy
+      │   ├─ AccessControlPolicy
+      │   └─ DataProtectionPolicy
+      ├─ SecurityStandard
+      │   ├─ RegulatoryStandard (FedRAMP, NIST)
+      │   └─ IndustryBestPractice (CIS, OWASP)
+      ├─ ThreatIntelligence
+      │   ├─ ThreatIndicator
+      │   └─ AttackPatternSpecification
+      └─ VulnerabilityReport
+          ├─ CVEReport
+          └─ VulnerabilityDisclosure
+
+# Security Processes
+BFO:Process
+  └─ SecurityProcess [new]
+      ├─ AttackProcess
+      │   ├─ ReconnaissanceProcess
+      │   ├─ InitialAccessProcess
+      │   ├─ ExecutionProcess
+      │   ├─ PersistenceProcess
+      │   ├─ PrivilegeEscalationProcess
+      │   ├─ DefenseEvasionProcess
+      │   ├─ CredentialAccessProcess
+      │   ├─ DiscoveryProcess
+      │   ├─ LateralMovementProcess
+      │   ├─ CollectionProcess
+      │   └─ ExfiltrationProcess
+      ├─ DefenseProcess
+      │   ├─ MonitoringProcess
+      │   ├─ DetectionProcess
+      │   ├─ IncidentResponseProcess
+      │   │   ├─ ContainmentProcess
+      │   │   ├─ EradicationProcess
+      │   │   └─ RecoveryProcess
+      │   └─ PreventionProcess
+      └─ AssessmentProcess
+          ├─ VulnerabilityAssessmentProcess
+          ├─ PenetrationTestingProcess
+          ├─ RiskAssessmentProcess
+          └─ ComplianceAuditProcess
+
+# Security Realizable Entities
+BFO:Realizable_Entity
+  └─ SecurityRealizable [new]
+      ├─ SecurityDisposition
+      │   ├─ Vulnerability
+      │   │   ├─ SoftwareVulnerability
+      │   │   ├─ ConfigurationVulnerability
+      │   │   └─ DesignVulnerability
+      │   ├─ Threat
+      │   │   ├─ InsiderThreat
+      │   │   └─ ExternalThreat
+      │   └─ Risk
+      │       ├─ OperationalRisk
+      │       ├─ ComplianceRisk
+      │       └─ ReputationalRisk
+      ├─ SecurityFunction
+      │   ├─ ProtectionFunction
+      │   │   ├─ AccessControlFunction
+      │   │   ├─ EncryptionFunction
+      │   │   └─ AuthenticationFunction
+      │   ├─ DetectionFunction
+      │   │   ├─ AnomalyDetectionFunction
+      │   │   └─ SignatureDetectionFunction
+      │   └─ ResponseFunction
+      │       ├─ AlertingFunction
+      │       └─ IsolationFunction
+      └─ SecurityRole
+          ├─ SecurityAdministratorRole
+          ├─ SecurityAnalystRole
+          ├─ IncidentResponderRole
+          ├─ SecurityAuditorRole
+          └─ ChiefInformationSecurityOfficerRole
+
+# Security Qualities
+BFO:Quality
+  └─ SecurityQuality [new]
+      ├─ ConfidentialityLevel
+      ├─ IntegrityLevel
+      ├─ AvailabilityLevel
+      ├─ SeverityLevel
+      └─ EffectivenessRating
+```
+
+#### 定义中层关系
+
+**用领域关系扩展 BFO 关系**：
+
+```owl
+# Inherited from BFO
+- inheres_in: Vulnerability inheres_in System
+- bearer_of: System bearer_of Vulnerability
+- realizes: ExploitProcess realizes Vulnerability
+- participates_in: Adversary participates_in AttackProcess
+
+# New Domain Relations (not in BFO)
+ObjectProperty: exploitsVulnerability
+  Domain: AttackProcess
+  Range: Vulnerability
+  SubPropertyOf: realizes (exploiting is form of realizing vulnerability)
+
+ObjectProperty: mitigatesAttack
+  Domain: DefenseProcess
+  Range: AttackProcess
+  Annotations: "Defense process counteracts attack process"
+
+ObjectProperty: protectsAgainst
+  Domain: SecurityFunction
+  Range: Threat
+  Annotations: "Function designed to protect against threat"
+
+ObjectProperty: detectsThreat
+  Domain: DetectionFunction
+  Range: Threat
+
+ObjectProperty: remediatesVulnerability
+  Domain: ResponseFunction
+  Range: Vulnerability
+
+ObjectProperty: hasImpactLevel
+  Domain: Vulnerability OR Risk
+  Range: SeverityLevel (Quality)
+
+ObjectProperty: compliesWithStandard
+  Domain: SecurityProcess OR SecurityDevice
+  Range: SecurityStandard (ICE)
+```
+
+#### 为中层类建立公理
+
+**添加逻辑约束**：
+
+```owl
+Class: Vulnerability
+  SubClassOf: BFO:Disposition
+  SubClassOf: inheres_in some System
+  SubClassOf: realized_by some ExploitProcess
+  DisjointWith: SecurityFunction, Threat
+
+Class: SecurityFunction
+  SubClassOf: BFO:Function
+  SubClassOf: inheres_in some SecurityDevice
+  SubClassOf: realized_by some DefenseProcess
+
+Class: AttackProcess
+  SubClassOf: BFO:Process
+  SubClassOf: exploitsVulnerability some Vulnerability
+  SubClassOf: participates_in some Adversary
+  SubClassOf: has_part min 1 AttackPhase
+
+Class: SecurityDevice
+  SubClassOf: BFO:Object
+  SubClassOf: bearer_of some SecurityFunction
+  SubClassOf: participates_in some DefenseProcess
+```
+
+> 译注：`participates_in` 的方向是“持续体参与过程”。上例 `AttackProcess participates_in some Adversary` 将其反向使用，应结合正式关系定义改为过程“具有参与者”。另外，`realized_by some ExploitProcess` 等存在限制，会要求对应实现过程存在；不能未经需求确认，就要求每个脆弱性都已被利用、每项功能都已实现。
+
+### 阶段五：特化到 AI 网络安全领域（第 17—24 周）
+
+#### 将中层本体扩展到本文项目
+
+**FedRAMP 模块**：
+
+```owl
+# Extend Information Artifacts
+SecurityStandard
+  └─ FedRAMPStandard [new domain class]
+      SubClassOf: SecurityStandard
+      SubClassOf: BFO:Generically_Dependent_Continuant
+      Annotations: "Federal Risk and Authorization Management Program standard"
+
+FedRAMPStandard
+  └─ FedRAMPKSI [new]
+      SubClassOf: FedRAMPStandard
+      SubClassOf: specifiesRequirement some SecurityRequirement
+      Annotations: "One of 72 Key Security Indicators in FedRAMP 20x"
+
+# Individuals (KSI instances)
+Individual: KSI_001_AccessControl
+  Type: FedRAMPKSI
+  hasKSINumber "001"
+  hasDescription "Limit information system access..."
+  hasControlFamily "Access Control (AC)"
+
+Individual: KSI_002_AwarenessTraining
+  Type: FedRAMPKSI
+  hasKSINumber "002"
+  ...
+
+[Continue for all 72 KSIs]
+
+# Controls
+SecurityFunction
+  └─ FedRAMPControl [new]
+      SubClassOf: SecurityFunction
+      SubClassOf: addressesKSI some FedRAMPKSI
+      SubClassOf: addressesKSI min 1 FedRAMPKSI
+      Annotations: "Control specified in FedRAMP baseline"
+
+FedRAMPControl
+  ├─ AccessControl
+  │   ├─ MFAControl
+  │   └─ RBACControl
+  ├─ AuditControl
+  │   └─ LoggingControl
+  └─ ... (all control families)
+```
+
+**MITRE ATLAS 模块**：
+
+```owl
+# Extend Information Artifacts
+AttackPatternSpecification
+  └─ ATLASPatternSpecification [new]
+      SubClassOf: AttackPatternSpecification
+      SubClassOf: BFO:Generically_Dependent_Continuant
+      Annotations: "Attack pattern from MITRE ATLAS framework"
+
+ATLASPatternSpecification
+  └─ ATLASTechnique [new]
+      SubClassOf: ATLASPatternSpecification
+      SubClassOf: usesTactic some ATLASTactic
+      SubClassOf: mitigatedBy some ATLASMitigation
+
+# Individuals (Technique instances)
+Individual: T0043_Craft_Adversarial_Data
+  Type: ATLASTechnique
+  hasTechniqueID "T0043"
+  hasDescription "Craft adversarial data to evade ML model"
+  usesTactic Tactic_ML_Attack_Staging
+
+Individual: T0044_Full_ML_Model_Access
+  Type: ATLASTechnique
+  hasTechniqueID "T0044"
+  ...
+
+# Extend Processes
+AttackProcess
+  └─ AdversarialMLAttack [new]
+      SubClassOf: AttackProcess
+      SubClassOf: targetsAISystem some AISystem
+      SubClassOf: followsPattern some ATLASPatternSpecification
+
+AdversarialMLAttack
+  ├─ ModelInversionAttack
+  ├─ ModelExtractionAttack
+  ├─ DataPoisoningAttack
+  │   ├─ LabelFlippingAttack
+  │   └─ BackdoorAttack
+  ├─ EvasionAttack
+  │   └─ AdversarialExampleAttack
+  └─ MembershipInferenceAttack
+
+# Tactics (Organizing Concepts - ICE)
+Individual: Tactic_Reconnaissance
+  Type: ATLASTactic
+Individual: Tactic_Resource_Development
+  Type: ATLASTactic
+Individual: Tactic_ML_Attack_Staging
+  Type: ATLASTactic
+...
+```
+
+**证据模块**：
+
+```owl
+# Extend Information Artifacts
+BFO:Generically_Dependent_Continuant
+  └─ ResearchArtifact [new]
+      SubClassOf: BFO:ICE
+
+ResearchArtifact
+  ├─ ResearchPaper
+  │   SubClassOf: hasAuthor some Researcher
+  │   SubClassOf: publishedIn some Venue
+  │   SubClassOf: hasPublicationDate some xsd:date
+  ├─ EvidenceFragment
+  │   SubClassOf: extractedFrom some ResearchPaper
+  │   SubClassOf: hasConfidenceLevel some xsd:float
+  │   SubClassOf: supportsEvidence some Claim
+  ├─ Claim
+  │   SubClassOf: aboutEntity some BFO:Entity
+  │   SubClassOf: supportedBy min 1 EvidenceFragment
+  │   └─ EffectivenessClaim
+  │       SubClassOf: Claim
+  │       SubClassOf: aboutControl some SecurityFunction
+  │       SubClassOf: aboutAttack some AttackProcess
+  │   └─ MechanismClaim
+  │       SubClassOf: Claim
+  │       SubClassOf: explainsMechanism some Mechanism
+  └─ Mechanism
+      SubClassOf: ResearchArtifact
+      SubClassOf: explainsRelationship between (?x, ?y)
+      Annotations: "Causal or explanatory model"
+```
+
+> 译注：代码中的 KSI 数量、编号、名称和 ATLAS 标识符均按原文保留，是该文的示例输入，未作为现行官方目录核验。`FedRAMPKSI SubClassOf FedRAMPStandard`、机制表达式 `between (?x, ?y)` 等写法也需在正式建模时重新检视，不能直接视为已验证的标准映射或 OWL 语法。
+
+#### 用集成本体桥接模块
+
+```owl
+# Cross-Module Relations
+ObjectProperty: addressesKSI
+  Domain: FedRAMPControl
+  Range: FedRAMPKSI
+  Annotations: "Control addresses security indicator"
+
+ObjectProperty: mitigatesATLASTechnique
+  Domain: FedRAMPControl
+  Range: ATLASTechnique
+  Annotations: "Control mitigates ATLAS technique"
+
+ObjectProperty: techniqueTargetsKSI
+  Domain: ATLASTechnique
+  Range: FedRAMPKSI
+  Annotations: "Attack technique targets systems measured by KSI"
+
+ObjectProperty: providesEvidenceFor
+  Domain: EvidenceFragment
+  Range: Claim
+
+ObjectProperty: claimAboutControl
+  Domain: EffectivenessClaim
+  Range: FedRAMPControl
+
+ObjectProperty: claimAboutTechnique
+  Domain: EffectivenessClaim
+  Range: ATLASTechnique
+
+# Integration Axioms
+EffectivenessClaim
+  SubClassOf: claimAboutControl some FedRAMPControl
+  SubClassOf: claimAboutTechnique some ATLASTechnique
+  SubClassOf: supportedBy min 1 EvidenceFragment
+  Annotations: "Claim that control is effective against technique, backed by evidence"
+```
+
+### 阶段六：填充与验证（第 25—36 周）
+
+#### 填充实例
+
+**FedRAMP KSI**：创建 72 个个体，从 KSI_001 到 KSI_072。
+
+**MITRE ATLAS 技术**：为所有技术创建个体，例如 T0043、T0044 等。
+
+**研究论文**：为证据语料库创建个体：
+
+```owl
+Individual: Paper_Smith2024
+  Type: ResearchPaper
+  hasAuthor "Smith, J."
+  publishedIn "IEEE S&P 2024"
+  hasPublicationDate "2024-05-20"
+  hasDOI "10.1109/SP.2024.12345"
+
+Individual: Evidence_Fragment_001
+  Type: EvidenceFragment
+  extractedFrom Paper_Smith2024
+  hasContent "MFA reduced unauthorized access by 94% in controlled experiment"
+  hasConfidenceLevel "0.92"
+  supportsEvidence Claim_MFA_Effectiveness
+
+Individual: Claim_MFA_Effectiveness
+  Type: EffectivenessClaim
+  claimAboutControl MFAControl
+  claimAboutTechnique T0043_Craft_Adversarial_Data
+  supportedBy Evidence_Fragment_001
+  supportedBy Evidence_Fragment_047
+  hasStrength "Strong"
+```
+
+> 译注：上述论文、DOI、“MFA 将未授权访问减少 94%”及置信度等，均应作为原文演示数据理解，不能作为真实研究结论引用。前面的 `hasAuthor`、`publishedIn` 指向实体，这里却使用字符串，也存在属性建模不一致；`MFAControl` 在不同片段中交替作为类和个体使用，落地时需统一。
+
+#### 使用能力问题验证
+
+**将 CQ 转换为 DL 查询或 SPARQL**：
+
+**CQ1**：“哪些 FedRAMP 控制措施应对 KSI-015（访问控制）？”
+
+```sparql
+SELECT ?control
+WHERE {
+  ?control rdf:type :FedRAMPControl .
+  ?control :addressesKSI :KSI_015_AccessControl .
+}
+```
+
+**CQ2**：“哪些 MITRE ATLAS 技术可以由 MFA 缓解？”
+
+```sparql
+SELECT ?technique
+WHERE {
+  :MFAControl :mitigatesATLASTechnique ?technique .
+  ?technique rdf:type :ATLASTechnique .
+}
+```
+
+**CQ3**：“哪些研究证据（置信度大于 0.8）支持控制措施 C 可以缓解攻击 A？”
+
+```sparql
+SELECT ?evidence ?paper ?confidence
+WHERE {
+  ?claim rdf:type :EffectivenessClaim .
+  ?claim :claimAboutControl :MFAControl .
+  ?claim :claimAboutTechnique :T0043_Craft_Adversarial_Data .
+  ?claim :supportedBy ?evidence .
+  ?evidence :hasConfidenceLevel ?confidence .
+  FILTER (?confidence > 0.8)
+  ?evidence :extractedFrom ?paper .
+}
+```
+
+> 译注：独立执行这些查询前，需补齐 `rdf:` 和默认前缀 `:`。置信度还应采用可比较的数值类型，而非未指定类型的字符串。前文访问控制示例用了 KSI_001，此处用了 KSI_015，需按实际数据统一。
+
+**执行查询并验证结果**：
+
+- 查询失败：可能缺少类、属性或实例。
+- 返回错误结果：可能存在错误公理或对齐。
+- 查询缓慢：优化限制，添加索引。
+
+#### 推理器验证
+
+**运行 DL 推理器**，例如 HermiT、Pellet、FaCT++：
+
+1. **一致性检查**：没有逻辑矛盾。
+2. **类可满足性**：所有类都能够拥有实例。
+3. **推断分类体系**：检查自动推断的包含关系。
+4. **实例归类**：推断个体所属的类型。
+
+**推断知识示例**：
+
+```text
+MFAControl implements AccessControlFunction
+AccessControlFunction SubClassOf SecurityFunction
+SecurityFunction SubClassOf BFO:Function
+→ Reasoner infers: MFAControl SubClassOf BFO:Function
+```
+
+> 译注：仅凭 `MFAControl implements AccessControlFunction`，不能推出 `MFAControl SubClassOf BFO:Function`。这条属性关系不会自动把主语变成宾语所属类的子类；需要额外的类型或类公理，并明确 `MFAControl` 是具体实施对象、功能个体还是功能类型。
+
+#### 迭代与细化
+
+**缺口分析**：
+
+- CQ 无法回答 → 补充缺失的类或属性。
+- 答案错误 → 修正公理和对齐。
+- 性能问题 → 简化限制、模块化。
+
+**利益相关者评审**：
+
+- 领域专家验证术语和定义。
+- 安全架构师验证攻击与控制措施的映射。
+- 合规人员验证 KSI 映射。
+- 研究人员验证证据表示。
+
+**细化循环，重复直到达到目标质量**：
+
+1. 从验证结果中识别问题。
+2. 更新本体，添加、修改或移除元素。
+3. 重新运行推理器和 CQ 查询。
+4. 与利益相关者评审。
+5. 记录变更及其理由。
+
+## 本文项目采用 BFO 自顶向下方法的优势
+
+### 1. 最大程度的互操作性[^2][^6][^8]
+
+**原文列举的 BFO 对齐安全本体**：
+
+- **UCO（Unified Cyber Ontology，统一网络本体）**：网络调查。
+- **安全本体**：威胁、脆弱性和攻击分类体系。
+- **基础设施本体**：云计算、网络架构。
+
+**项目收益**：导入并复用这些本体中的类，避免重新实现。原文认为，因为都采用 BFO 基础，就可以自动实现语义对齐。
+
+> 译注：以上为原文列举，不能仅凭名称假定某个本体的具体版本已对齐 BFO。复用前应检查实际导入、公理和映射，集成边界见前文译注。
+
+### 2. 形式严谨性与推理[^6]
+
+**继承的 BFO 公理**：
+
+- 互斥性：持续体与发生体互斥。
+- 部分关系传递性：若 A 是 B 的一部分、B 是 C 的一部分，则 A 是 C 的一部分。
+- 依赖约束：性质必须依存于独立持续体。
+
+**项目收益**：推理器可以自动检测：
+
+- 建模错误，例如攻击既是过程又是对象。
+- 缺失公理，例如控制措施没有承载者。
+- 不一致，例如相互矛盾的限制。
+
+> 译注：部分关系的传递性必须区分具体关系与时间语义；OWL 开放世界推理也不会仅因未写出承载者，就判定数据错误。存在限制可由未命名对象满足，因此缺失字段检查与逻辑一致性检查应分开处理。
+
+### 3. 长期稳定性[^2][^7]
+
+**ISO 标准**：BFO 不会随意改变，更新遵循严格的标准化流程。[^2]
+
+**项目收益**：保护本体投入。原文将其描述为没有基础本体被放弃或重大版本不兼容的风险。
+
+> 译注：标准化有助于治理和稳定，但不能保证未来永远没有版本迁移或维护风险。工程实施仍应固定版本并记录升级策略。
+
+### 4. 社区与资源[^25][^7][^5][^1]
+
+**丰富支持**：
+
+- **指南书**：超过 300 页，包含示例。[^5]
+- **教程**：数小时视频课程。[^7][^25][^1]
+- **工作坊**：定期培训活动。[^5]
+- **社区**：活跃的邮件列表和论坛。
+- **工具**：BFO Classifier、对齐验证器。[^28][^27]
+
+**项目收益**：团队不必独自摸索，可以借助社区专业知识提问、交流经验。
+
+### 5. 多领域集成潜力
+
+**未来扩展**：如果之后需要集成：
+
+- **生物医学**：例如医疗 AI 安全。
+- **工业**：例如制造业 AI 安全。
+- **地理空间**：例如物理安全。
+
+原文认为，BFO 对齐可以使集成顺畅，因为各领域共享顶层词汇。
+
+## 挑战与缓解策略
+
+### 挑战一：学习曲线陡峭
+
+**问题**：需要学习 2—4 周，哲学概念对工程师有挑战。[^29][^6]
+
+**缓解方法**：
+
+- **分阶段培训**：2—3 人的核心团队集中学习，再逐步培训其他人。
+- **外部专业支持**：聘请 BFO 顾问主持启动工作坊。
+- **边做边学**：从熟悉的中层安全本体开始，用已知概念练习 BFO 对齐。
+- **工具支持**：使用 BFO Classifier 引导决策，减少对深入理论知识的依赖。[^27]
+
+### 挑战二：对齐存在歧义
+
+**问题**：部分领域概念无法明确映射，可能存在多种合理的 BFO 解释。[^29][^27]
+
+**缓解方法**：
+
+- **记录决策**：记录对齐理由和考虑过的备选方案。
+- **一致性优先**：选择一种解释，并一致使用，不必追求一次完美。
+- **咨询社区**：将模糊案例发到 BFO 邮件列表，获取专家意见。
+- **迭代细化**：对齐不是最终定论，可以根据下游问题调整。
+
+### 挑战三：抽象开销
+
+**问题**：GDC、SDC 等抽象类可能让利益相关者感到陌生。
+
+**缓解方法**：
+
+- **分层展示**：只向利益相关者展示领域层本体，隐藏 BFO 复杂性。
+- **领域术语**：在注释中使用熟悉术语，如“安全控制措施”，而非“可实现实体功能”。
+- **可视化工具**：开发按特定领域视图呈现本体的界面。
+- **选择性展示**：只有本体工程师需要深入了解 BFO，领域专家在中层或领域层交互。
+
+### 挑战四：内容空泛的风险
+
+**问题**：自顶向下方法可能创建从未被实例化的抽象类。[^30]
+
+**缓解方法**：
+
+- **证据驱动**：仅在领域用例需要时创建中层类。
+- **定期评审**：每季度检查未使用的类；六个月没有实例时考虑弃用。
+- **CQ 验证**：每个类都应支持至少一个能力问题的回答。
+- **混合方法**：自顶向下组织结构，自底向上填充内容；第六阶段聚焦实例。
+
+### 挑战五：时间投入
+
+**问题**：从学习到完成验证，需要 36 周，即约九个月，周期较长。
+
+**缓解方法**：
+
+- **并行工作**：核心团队在第 1—4 周学习 BFO 时，其他人员收集领域术语，即第二阶段工作。
+- **增量交付**：第 16 周先发布 FedRAMP 模块，第 20 周发布 ATLAS 模块，第 24 周发布证据模块。
+- **MVP 方法**：第 12 周前建立能回答最重要 10 个 CQ 的最小可行本体，再迭代扩展。
+- **复用中层本体**：以已有 BFO 对齐安全本体为起点，避免从零构建。
+
+## 推荐的混合方法：自顶向下组织结构，自底向上填充内容
+
+### 本文项目的最佳策略
+
+**结合各自优势**：
+
+1. **自顶向下（第 1—16 周）**：学习 BFO、对齐核心概念、构建中层安全本体。
+2. **自底向上（第 17—24 周）**：从论文提取证据，填充 KSI 和 ATLAS 实例。
+3. **从中间向两端迭代（第 25—36 周）**：围绕 KSI、控制措施、攻击等领域核心概念，根据 CQ 细化。
+
+**结果**：自顶向下带来形式严谨性和互操作性，自底向上提供实证基础和相关性，从中间向两端开发支持敏捷迭代。
+
+### 具体时间表
+
+| 阶段 | 周次  | 活动         | 方法                               |
+| :--- | :---- | :----------- | :--------------------------------- |
+| 1    | 1—4   | 学习 BFO     | 自顶向下                           |
+| 2    | 5—6   | 收集领域术语 | 自底向上                           |
+| 3    | 7—10  | 对齐 BFO     | 自顶向下                           |
+| 4    | 11—16 | 构建中层本体 | 自顶向下                           |
+| 5    | 17—20 | FedRAMP 模块 | 自顶向下组织结构，自底向上填充实例 |
+| 6    | 21—24 | ATLAS 模块   | 自顶向下与自底向上结合             |
+| 7    | 25—28 | 证据模块     | 自底向上提取                       |
+| 8    | 29—36 | 验证与细化   | 从中间向两端，CQ 驱动迭代          |
+
+> 译注：原文不同段落的阶段安排、证据模块交付时间略有不同，以上均按原文保留。2—4 周学习、36 周开发等是其示例规划，并非 BFO 方法规定的固定工期。
+
+## 结论：何时选择基于 BFO 的自顶向下方法
+
+**适合选择的情况**：
+
+- 与其他 BFO 本体长期互操作至关重要。
+- 合规推理或认证需要形式语义严谨性。
+- 团队已有或可以获得 BFO 专业能力，例如聘请顾问或培训核心成员。
+- 可以接受约九个月，构建全面、生产级本体。
+- 预计需要与生物医学、工业或其他 BFO 领域集成。
+
+**应考虑替代方法的情况**：
+
+- 优先快速原型，例如期限只有三个月 → 从中间向两端开发。
+- 团队缺少本体工程经验，且无培训预算 → 自底向上。
+- 利益相关者排斥抽象形式化 → 从中间向两端开发。
+- 领域高度新颖、先例很少 → 从中间向两端开发，迭代发现结构。
+
+对于本文的 **AI 网络安全证据系统**，以 BFO 开展自顶向下开发具有吸引力，尤其是在复用既有安全本体和为 FedRAMP 合规推理提供形式精度方面。前提是投入必要学习，并通过分层展示和工具支持管理抽象复杂性。
+
+## 参考资料
+
+以下脚注保留原文的编号和链接。原文仅在隐藏元素中引用的第 31—44 项资料单列于“原文补充资料”；相对路径均指向原仓库。
+
+[^1]: https://www.youtube.com/watch?v=GWkk5AfRCpM
+
+[^2]: https://en.wikipedia.org/wiki/Basic_Formal_Ontology
+
+[^3]: https://philarchive.org/archive/OTTBBF
+
+[^4]: http://ontology.buffalo.edu/smith/articles/realizables.pdf
+
+[^5]: https://basic-formal-ontology.org
+
+[^6]: https://www.nist.gov/document/nist-ai-rfi-cubrcinc002pdf
+
+[^7]: https://www.youtube.com/watch?v=uflMfvI-ZxI
+
+[^8]: https://www.youtube.com/watch?v=glmdyYbEjyc
+
+[^9]: https://isao2016.inf.unibz.it/wp-content/uploads/2016/06/bolzano-notes.pdf
+
+[^10]: https://www.stephendiehl.com/posts/bfo/
+
+[^11]: https://www.youtube.com/watch?v=GJJcu0UKQyo
+
+[^12]: https://pmc.ncbi.nlm.nih.gov/articles/PMC3520998/
+
+[^13]: https://www.utwente.nl/en/eemcs/fois2024/resources/papers/ceusters-fiat-surfaces-in-basic-formal-ontology.pdf
+
+[^14]: https://www.nist.gov/document/nist-ai-rfi-cubrcinc004pdf
+
+[^15]: https://ceur-ws.org/Vol-2137/ws_SoLe_paper_1.pdf
+
+[^16]: https://fois2021.inf.unibz.it/wp-content/uploads/2021/08/paper_23.pdf
+
+[^17]: https://ceur-ws.org/Vol-3249/paper5-FOUST.pdf
+
+[^18]: https://www.nature.com/articles/npre.2008.1941.1.pdf
+
+[^19]: https://pmc.ncbi.nlm.nih.gov/articles/PMC4089563/
+
+[^20]: https://keet.wordpress.com/2008/07/09/bfo’s-specific-and-generic-dependence-and-generalising-progress-in-essential-and-mandatory-parts/
+
+[^21]: http://www.jarrar.info/publications/JC17.pdf
+
+[^22]: https://www.virtualflybrain.org/blog/releases/ontologies/bfo/
+
+[^23]: http://isao2020.inf.unibz.it/wp-content/uploads/2016/06/bolzano-slides-3.pdf
+
+[^24]: https://www.youtube.com/watch?v=8-dGGDQ7qCw
+
+[^25]: https://www.youtube.com/playlist?list=PLyngZgIl3WTiv14_38gdzEubaurk4v6E3
+
+[^26]: https://www.sciencedirect.com/science/article/abs/pii/S1566253508000377
+
+[^27]: https://ceur-ws.org/Vol-3249/paper3-FOUST.pdf
+
+[^28]: https://keet.wordpress.com/2021/12/10/bfo-decision-diagram-and-alignment-tool/
+
+[^29]: https://pubs.cs.uct.ac.za/1678/1/FAIA-377-FAIA231123.pdf
+
+[^30]: https://ceur-ws.org/Vol-3603/workshopOIIDDS1.pdf
+
+## 原文补充资料
+
+- **[31]** [github.com/GSA/guides_4_AIagents/blob/master/Guide_Engineering_Basic_SchemaDesign.md](https://github.com/GSA/guides_4_AIagents/blob/master/Guide_Engineering_Basic_SchemaDesign.md)
+- **[32]** [github.com/GSA/guides_4_AIagents/blob/master/prompt_context.txt](https://github.com/GSA/guides_4_AIagents/blob/master/prompt_context.txt)
+- **[33]** [github.com/GSA/guides_4_AIagents/blob/master/2008.07863v1_metadata.json](https://github.com/GSA/guides_4_AIagents/blob/master/2008.07863v1_metadata.json)
+- **[34]** [github.com/GSA/guides_4_AIagents/blob/master/2504.00441_metadata.txt](https://github.com/GSA/guides_4_AIagents/blob/master/2504.00441_metadata.txt)
+- **[35]** [github.com/GSA/guides_4_AIagents/blob/master/README.md](https://github.com/GSA/guides_4_AIagents/blob/master/README.md)
+- **[36]** [basic-formal-ontology.org/documents/seyed-shapiro-fois-2012.pdf](http://basic-formal-ontology.org/documents/seyed-shapiro-fois-2012.pdf)
+- **[37]** [ncorwiki.buffalo.edu/index.php/Basic_Formal_Ontology_2.0](https://ncorwiki.buffalo.edu/index.php/Basic_Formal_Ontology_2.0)
+- **[38]** [www.sciencedirect.com/topics/computer-science/ontology-alignment](https://www.sciencedirect.com/topics/computer-science/ontology-alignment)
+- **[39]** [cse.buffalo.edu/sneps/Bibliography/seyedDissertation.pdf](https://cse.buffalo.edu/sneps/Bibliography/seyedDissertation.pdf)
+- **[40]** [developers.sefaria.org/docs/topic-ontology](https://developers.sefaria.org/docs/topic-ontology)
+- **[41]** [protege.stanford.edu/publications/ontology_development/ontology101.pdf](https://protege.stanford.edu/publications/ontology_development/ontology101.pdf)
+- **[42]** [www.cto.mil/wp-content/uploads/2025/06/SERC_Handbook-on-Digital-Engineering-with-Ontologies_2.0.pdf](https://www.cto.mil/wp-content/uploads/2025/06/SERC_Handbook-on-Digital-Engineering-with-Ontologies_2.0.pdf)
+- **[43]** [ontology.naas.ai/bfo/Occurrent/Process/](https://ontology.naas.ai/bfo/Occurrent/Process/)
+- **[44]** [oborel.github.io/obo-relations/process-relations/](https://oborel.github.io/obo-relations/process-relations/)
