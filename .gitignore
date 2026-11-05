@@ -111,3 +111,6 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+# Private admin credentials and TypeScript incremental cache
+.env.admin.local
+*.tsbuildinfo
