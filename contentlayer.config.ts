@@ -5,6 +5,7 @@ import { slug } from 'github-slugger'
 import path from 'path'
 import { fromHtmlIsomorphic } from 'hast-util-from-html-isomorphic'
 // Remark packages
+import remarkCjkFriendly from 'remark-cjk-friendly'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
 import { remarkAlert } from 'remark-github-blockquote-alert'
@@ -155,6 +156,7 @@ export default makeSource({
     remarkPlugins: [
       remarkExtractFrontmatter,
       remarkGfm,
+      remarkCjkFriendly,
       remarkCodeTitles,
       remarkMath,
       remarkImgToJsx,

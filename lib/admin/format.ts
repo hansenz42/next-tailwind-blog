@@ -1,4 +1,5 @@
 import { remark } from 'remark'
+import remarkCjkFriendly from 'remark-cjk-friendly'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
 
@@ -34,7 +35,11 @@ export function formatArticle(
   const warnings = new Set<string>()
   const links: string[] = []
   const color = theme === 'jade' ? '#147d70' : '#292c32'
-  const tree = remark().use(remarkGfm).use(remarkMath).parse(markdown) as Node
+  const tree = remark()
+    .use(remarkGfm)
+    .use(remarkCjkFriendly)
+    .use(remarkMath)
+    .parse(markdown) as Node
   const definitions = new Map<string, Node>()
   function collect(node: Node) {
     if (node.type === 'definition' || node.type === 'footnoteDefinition')

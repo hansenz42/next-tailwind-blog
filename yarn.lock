@@ -7443,6 +7443,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"get-east-asian-width@npm:^1.4.0":
+  version: 1.7.0
+  resolution: "get-east-asian-width@npm:1.7.0"
+  checksum: 9fb8cfb036c220a8cb974975a8bd6b728ae985cd49c4cc27504e46f9cdbf4e8d0f3dd3f8cda8ce62bc59f77eaf6f296ff39c1f9254f3dd665f8aa65f85d92840
+  languageName: node
+  linkType: hard
+
 "get-intrinsic@npm:^1.2.4, get-intrinsic@npm:^1.2.5, get-intrinsic@npm:^1.2.6, get-intrinsic@npm:^1.2.7, get-intrinsic@npm:^1.3.0":
   version: 1.3.0
   resolution: "get-intrinsic@npm:1.3.0"
@@ -9380,6 +9387,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"mdast-util-to-markdown-cjk-friendly@npm:1.0.0":
+  version: 1.0.0
+  resolution: "mdast-util-to-markdown-cjk-friendly@npm:1.0.0"
+  dependencies:
+    mdast-util-to-markdown: ^2.1.2
+    micromark-extension-cjk-friendly-util: 3.0.1
+    micromark-util-symbol: ^2.0.1
+  peerDependencies:
+    "@types/mdast": "*"
+  peerDependenciesMeta:
+    "@types/mdast":
+      optional: true
+  checksum: dc382e7a7326781f1423745650fb24eeb47a55de3e3a730feed478a3dfd3f216c70bbe90d8c2be0c0b0057ee5e7e07ebfa3a152a67eba5eb15b76534d6a19caf
+  languageName: node
+  linkType: hard
+
 "mdast-util-to-markdown@npm:^2.0.0, mdast-util-to-markdown@npm:^2.1.0":
   version: 2.1.2
   resolution: "mdast-util-to-markdown@npm:2.1.2"
@@ -9394,6 +9417,25 @@ __metadata:
     unist-util-visit: ^5.0.0
     zwitch: ^2.0.0
   checksum: 288d152bd50c00632e6e01c610bb904a220d1e226c8086c40627877959746f83ab0b872f4150cb7d910198953b1bf756e384ac3fee3e7b0ddb4517f9084c5803
+  languageName: node
+  linkType: hard
+
+"mdast-util-to-markdown@npm:^2.1.2":
+  version: 2.2.2
+  resolution: "mdast-util-to-markdown@npm:2.2.2"
+  dependencies:
+    "@types/mdast": ^4.0.0
+    "@types/unist": ^3.0.0
+    longest-streak: ^3.0.0
+    mdast-util-phrasing: ^4.0.0
+    mdast-util-to-string: ^4.0.0
+    micromark-util-character: ^2.0.0
+    micromark-util-classify-character: ^2.0.0
+    micromark-util-decode-string: ^2.0.0
+    micromark-util-html-tag-name: ^2.0.0
+    unist-util-visit: ^5.0.0
+    zwitch: ^2.0.0
+  checksum: 40e1b7c6462b3744b17e820e096d425b680e8e2196bba673fa1638d430864881f979d58ee318d33d42e7dfaaf249841d064be8932da1e00c96d5dfa3b5d6e489
   languageName: node
   linkType: hard
 
@@ -9527,6 +9569,39 @@ __metadata:
     micromark-util-symbol: ^2.0.0
     micromark-util-types: ^2.0.0
   checksum: cfb0fd9c895f86a4e9344f7f0344fe6bd1018945798222835248146a42430b8c7bc0b2857af574cf4e1b4ce4e5c1a35a1479942421492e37baddde8de85814dc
+  languageName: node
+  linkType: hard
+
+"micromark-extension-cjk-friendly-util@npm:3.0.1":
+  version: 3.0.1
+  resolution: "micromark-extension-cjk-friendly-util@npm:3.0.1"
+  dependencies:
+    get-east-asian-width: ^1.4.0
+    micromark-util-character: ^2.1.1
+    micromark-util-symbol: ^2.0.1
+  peerDependenciesMeta:
+    micromark-util-types:
+      optional: true
+  checksum: 9e767a0076fe560d2595814e84eae56e2014d36afce38e9707d04226ef517918fc4332c0982282dd62690982ed3f5a64c94d37088ff5079db04255a111f688ce
+  languageName: node
+  linkType: hard
+
+"micromark-extension-cjk-friendly@npm:2.0.1":
+  version: 2.0.1
+  resolution: "micromark-extension-cjk-friendly@npm:2.0.1"
+  dependencies:
+    devlop: ^1.1.0
+    micromark-extension-cjk-friendly-util: 3.0.1
+    micromark-util-chunked: ^2.0.1
+    micromark-util-resolve-all: ^2.0.1
+    micromark-util-symbol: ^2.0.1
+  peerDependencies:
+    micromark: ^4.0.0
+    micromark-util-types: ^2.0.0
+  peerDependenciesMeta:
+    micromark-util-types:
+      optional: true
+  checksum: adfe2552a16f9b4282c9b7d28d8c20a4f37daee875fdb7f892bb4c2c98f5dfcc1f4fe1ef62dafa6c66427759f9526468034957db4d7d4ef339bde839d8a78854
   languageName: node
   linkType: hard
 
@@ -9800,7 +9875,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"micromark-util-character@npm:^2.0.0":
+"micromark-util-character@npm:^2.0.0, micromark-util-character@npm:^2.1.1":
   version: 2.1.1
   resolution: "micromark-util-character@npm:2.1.1"
   dependencies:
@@ -9810,7 +9885,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"micromark-util-chunked@npm:^2.0.0":
+"micromark-util-chunked@npm:^2.0.0, micromark-util-chunked@npm:^2.0.1":
   version: 2.0.1
   resolution: "micromark-util-chunked@npm:2.0.1"
   dependencies:
@@ -9899,7 +9974,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"micromark-util-resolve-all@npm:^2.0.0":
+"micromark-util-resolve-all@npm:^2.0.0, micromark-util-resolve-all@npm:^2.0.1":
   version: 2.0.1
   resolution: "micromark-util-resolve-all@npm:2.0.1"
   dependencies:
@@ -9931,7 +10006,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"micromark-util-symbol@npm:^2.0.0":
+"micromark-util-symbol@npm:^2.0.0, micromark-util-symbol@npm:^2.0.1":
   version: 2.0.1
   resolution: "micromark-util-symbol@npm:2.0.1"
   checksum: fb7346950550bc85a55793dda94a8b3cb3abc068dbd7570d1162db7aee803411d06c0a5de4ae59cd945f46143bdeadd4bba02a02248fa0d18cc577babaa00044
@@ -11649,6 +11724,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"remark-cjk-friendly@npm:2.3.1":
+  version: 2.3.1
+  resolution: "remark-cjk-friendly@npm:2.3.1"
+  dependencies:
+    mdast-util-to-markdown-cjk-friendly: 1.0.0
+    micromark-extension-cjk-friendly: 2.0.1
+  peerDependencies:
+    "@types/mdast": ^4.0.0
+    unified: ^11.0.0
+  peerDependenciesMeta:
+    "@types/mdast":
+      optional: true
+  checksum: 919f9bbae22ff0d5d91b888cdf2c0179594553a1c4f4c01a16b50b10602cae958638acd668cd4d0152ac70ca8edaaa876be505f6cd5fcd9d3866c513fa826541
+  languageName: node
+  linkType: hard
+
 "remark-frontmatter@npm:^5.0.0":
   version: 5.0.0
   resolution: "remark-frontmatter@npm:5.0.0"
@@ -12709,6 +12800,7 @@ __metadata:
     rehype-prism-plus: ^2.0.2
     rehype-slug: ^6.0.0
     remark: ^15.0.1
+    remark-cjk-friendly: 2.3.1
     remark-gfm: ^4.0.1
     remark-github-blockquote-alert: ^2.0.1
     remark-math: ^6.0.0
